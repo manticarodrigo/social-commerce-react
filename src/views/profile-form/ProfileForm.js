@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 
-export class Profile extends Component {
+export class ProfileForm extends Component {
 	constructor(props) {
 	  super(props);
 	  this.state = {
