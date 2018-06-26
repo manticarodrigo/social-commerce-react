@@ -31,42 +31,43 @@ export class ProductForm extends Component {
   
 	render() {
 	  return (
-			<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
-				<img width='60' src='https://www.cornerstone-hw.com/wp-content/uploads/2018/02/example-1prdct1.png'/>
-				<br />
-				<TextField
-					fullWidth
-					margin="normal"
-					label="Titulo"
-					name="title"
-					checked={this.state.title}
-					onChange={this.handleChange} />
-				<TextField
-					fullWidth
-					margin="normal"
-					label="Descripción"
-					name="description"
-					checked={this.state.description}
-					onChange={this.handleChange} />
-				<TextField
-					fullWidth
-					margin="normal"
-					label="Costo"
-					name="cost"
-					checked={this.state.cost}
-					onChange={this.handleChange} />
-				<TextField
-					fullWidth
-					margin="normal"
-					label="Cantidad de Inventario"
-					name="inventoryCount"
-					checked={this.state.inventoryCount}
-					onChange={this.handleChange} />
-				<br />
-				<Button variant="contained" color="primary">
-					Ver vistazo de catalogo
+			<div>
+				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
+					<img style={{width: '100px', height: '100px', objectFit: 'cover'}} src='https://cdn.shopify.com/s/files/1/1204/3402/products/Cypress-Black_1024x1024.jpg?v=1480613608'/>
+					<br />
+					<TextField
+						fullWidth
+						margin="normal"
+						label="Titulo"
+						name="title"
+						checked={this.state.title}
+						onChange={this.handleChange} />
+					<TextField
+						fullWidth
+						margin="normal"
+						label="Descripción"
+						name="description"
+						checked={this.state.description}
+						onChange={this.handleChange} />
+					<TextField
+						fullWidth
+						margin="normal"
+						label="Costo"
+						name="cost"
+						checked={this.state.cost}
+						onChange={this.handleChange} />
+					<TextField
+						fullWidth
+						margin="normal"
+						label="Cantidad de Inventario"
+						name="inventoryCount"
+						checked={this.state.inventoryCount}
+						onChange={this.handleChange} />
+				</form>
+				<Button onClick={this.handleSubmit} style={{width: '100%', marginTop: '1em'}} size='large' variant="contained" color="primary">
+					Previstar catalogo
 				</Button>
-			</form>
+			</div>
 	  )
 	}
 }

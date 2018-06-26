@@ -23,7 +23,8 @@ export class ProfileForm extends Component {
 	
   handleSubmit(event) {
     alert('A name was submitted: ' + this.state.name)
-    event.preventDefault()
+		event.preventDefault()
+		this.props.history.replace('/new-product')
   }
   
 	handleChange(event) {
@@ -37,68 +38,69 @@ export class ProfileForm extends Component {
   
 	render() {
 	  return (
-		<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
-		  <TextField
-				fullWidth
-				margin="normal"
-				label="Nombre de Negocio"
-				name="business"
-				checked={this.state.business}
-				onChange={this.handleChange} />
-		  <TextField
-				fullWidth
-				margin="normal"
-				label="Nombre de Persona"
-				name="name"
-				value={this.state.name}
-				onChange={this.handleChange} />
-			<TextField
-				fullWidth
-				margin="normal"
-				label="Email"
-				name="email"
-				value={this.state.email}
-				onChange={this.handleChange} />
-			<TextField
-				fullWidth
-				margin="normal"
-				label="Telefono"
-				name="phone"
-				value={this.state.phone}
-				onChange={this.handleChange} />
-			<TextField
-				fullWidth
-				margin="normal"
-				label="DNI"
-				name="dni"
-				value={this.state.dni}
-				onChange={this.handleChange} />
-			<TextField
-				fullWidth
-				margin="normal"
-				label="RUC"
-				name="ruc"
-				value={this.state.ruc}
-				onChange={this.handleChange} />
-			<TextField
-				fullWidth
-				margin="normal"
-				label="Cuenta de Banco"
-				name="bankAcct"
-				value={this.state.bankAcct}
-				onChange={this.handleChange} />
-			<TextField
-				fullWidth
-				margin="normal"
-				label="Logo de Empresa"
-				name="businessLogo"
-				value={this.state.businessLogo}
-				onChange={this.handleChange} />
-			<br />
-			<Button variant="contained" color="primary">
-        Siguiente
-      </Button>
-		</form>
+			<div>
+				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
+					<TextField
+						fullWidth
+						margin="normal"
+						label="Nombre de Negocio"
+						name="business"
+						checked={this.state.business}
+						onChange={this.handleChange} />
+					<TextField
+						fullWidth
+						margin="normal"
+						label="Nombre de Persona"
+						name="name"
+						value={this.state.name}
+						onChange={this.handleChange} />
+					<TextField
+						fullWidth
+						margin="normal"
+						label="Email"
+						name="email"
+						value={this.state.email}
+						onChange={this.handleChange} />
+					<TextField
+						fullWidth
+						margin="normal"
+						label="Telefono"
+						name="phone"
+						value={this.state.phone}
+						onChange={this.handleChange} />
+					<TextField
+						fullWidth
+						margin="normal"
+						label="DNI"
+						name="dni"
+						value={this.state.dni}
+						onChange={this.handleChange} />
+					<TextField
+						fullWidth
+						margin="normal"
+						label="RUC"
+						name="ruc"
+						value={this.state.ruc}
+						onChange={this.handleChange} />
+					<TextField
+						fullWidth
+						margin="normal"
+						label="Cuenta de Banco"
+						name="bankAcct"
+						value={this.state.bankAcct}
+						onChange={this.handleChange} />
+					<TextField
+						fullWidth
+						margin="normal"
+						label="Logo de Empresa"
+						name="businessLogo"
+						value={this.state.businessLogo}
+						onChange={this.handleChange} />
+				</form>
+				<Button onClick={this.handleSubmit} style={{width: '100%', marginTop: '1em'}} size='large' variant="contained" color="primary">
+					Continuar
+				</Button>
+			</div>
 	  )
 	}
 }

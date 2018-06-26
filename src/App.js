@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import FacebookLogin from 'react-facebook-login'
 import './App.css'
 
@@ -20,19 +20,26 @@ class App extends Component {
   render() {
     const user = this.state.user
     return (
-      <div style={{padding: '5em'}} className="App">
+      <div className="App">
         <NavBar />
-        {this.state.user ? (
-          <Router>
-            <Route exact path="/" render={()=><ProfileForm name={user.name} email={user.email} id={user.id} />} />
-          </Router>
-        ) : (
-          <FacebookLogin
-              appId="350503485475174"
-              fields="name,email,picture"
-              callback={this.responseFacebook.bind(this)}
-              icon="fa-facebook" />
-        )}
+        <div className='Content'>
+          {this.state.user ? (
+            <Router>
+              <Switch>
+                {/* <Route exact path="/" render={()=><ProfileForm name={user.name} email={user.email} id={user.id} />} /> */}
+                <Route path="/" component={ProductForm} />
+              </Switch>
+            </Router>
+          ) : (
+            <div className='centered'>
+              <FacebookLogin
+                  appId="350503485475174"
+                  fields="name,email,picture"
+                  callback={this.responseFacebook.bind(this)}
+                  icon="fa-facebook" />
+            </div>
+          )}
+        </div>
       </div>
     )
   }

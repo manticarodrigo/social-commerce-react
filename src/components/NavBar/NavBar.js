@@ -6,7 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 
 const styles = {
   root: {
@@ -28,12 +28,12 @@ function NavBar(props) {
       <AppBar position="static">
         <Toolbar>
           <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-            <MenuIcon />
+            <KeyboardArrowLeftIcon />
           </IconButton>
           <Typography variant="title" color="inherit" className={classes.flex}>
             Social Commerce
           </Typography>
-          <Button color="inherit">Login</Button>
+          <Button color="inherit">Confirmar</Button>
         </Toolbar>
       </AppBar>
     </div>

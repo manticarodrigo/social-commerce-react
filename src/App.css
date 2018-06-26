@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  height: 100vh;
 }
 
 .App-logo {
@@ -25,4 +26,16 @@
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+.Content {
+  margin: 1em;
+  height: calc(100% - 64px);
+}
+
+.Content .centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
