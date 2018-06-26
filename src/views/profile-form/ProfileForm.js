@@ -2,12 +2,24 @@ import React, { Component } from 'react'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 
+const style = {
+	button: {
+		width: '100%',
+		height:'50px',
+		marginTop: '1em',
+		position: 'absolute',
+		bottom: '0',
+		left: '0'
+	}
+}
+
 export class ProfileForm extends Component {
 	constructor(props) {
 	  super(props);
 	  this.state = {
 			id: this.props.id ? this.props.id : "",
 			business: "",
+			businessLogo: "",
 			name: this.props.name ? this.props.name : "",
 			email: this.props.email ? this.props.email : "",
 			phone: "",
@@ -15,7 +27,6 @@ export class ProfileForm extends Component {
 			ruc: "",
 			bankAcct: "",
 			logisticProvider: "",
-			businessLogo: "",
 	  }
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleChange = this.handleChange.bind(this)
@@ -43,14 +54,21 @@ export class ProfileForm extends Component {
 					<TextField
 						fullWidth
 						margin="normal"
-						label="Nombre de Negocio"
+						label="Negocio"
 						name="business"
 						checked={this.state.business}
 						onChange={this.handleChange} />
 					<TextField
 						fullWidth
 						margin="normal"
-						label="Nombre de Persona"
+						label="Logo URL"
+						name="businessLogo"
+						value={this.state.businessLogo}
+						onChange={this.handleChange} />
+					<TextField
+						fullWidth
+						margin="normal"
+						label="Nombre"
 						name="name"
 						value={this.state.name}
 						onChange={this.handleChange} />
@@ -89,16 +107,9 @@ export class ProfileForm extends Component {
 						name="bankAcct"
 						value={this.state.bankAcct}
 						onChange={this.handleChange} />
-					<TextField
-						fullWidth
-						margin="normal"
-						label="Logo de Empresa"
-						name="businessLogo"
-						value={this.state.businessLogo}
-						onChange={this.handleChange} />
 				</form>
-				<Button onClick={this.handleSubmit} style={{width: '100%', marginTop: '1em'}} size='large' variant="contained" color="primary">
-					Continuar
+				<Button onClick={this.handleSubmit} style={style.button} size='large' variant="contained" color="primary">
+					Continua
 				</Button>
 			</div>
 	  )
