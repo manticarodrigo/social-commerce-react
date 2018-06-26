@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button'
 import FileUpload from '@material-ui/icons/FileUpload'
 
 import AlbumDialog from '../../components/Facebook/AlbumDialog'
+import ImageDialog from '../../components/Facebook/ImageDialog'
 
 const style = {
 	button: {
@@ -34,19 +35,16 @@ export class ProfileForm extends Component {
 		bankAcct: "",
 		logisticProvider: "",
     albumDialogOpen: false,
-    selectedAlbumValue: null,
-  };
+		selectedAlbumValue: null,
+  }
 
   handleAlbumDialogOpen = () => {
-    this.setState({
-      albumDialogOpen: true,
-    })
+    this.setState({ albumDialogOpen: true })
   }
 
   handleAlbumDialogClose = value => {
-		this.setState({ selectedAlbumValue: value, albumDialogOpen: false })
-		console.log(value)
-  }
+		this.setState({ selectedAlbumValue: value, albumDialogOpen: false, imageDialogOpen: value != null ? true : false })
+	}
 	
   handleSubmit(event) {
     alert('A name was submitted: ' + this.state.name)
@@ -90,6 +88,7 @@ export class ProfileForm extends Component {
           selectedValue={this.state.selectedAlbumValue}
           open={this.state.albumDialogOpen}
           onClose={this.handleAlbumDialogClose} />
+				
 				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
 					<div>
 						<Button

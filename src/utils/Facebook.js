@@ -15,7 +15,7 @@ export function getAlbums(accessToken) {
 	})
 }
 
-export function fetchImagesIn(albumId, accessToken) {
+export function getImagesIn(albumId, accessToken) {
 	return new Promise((resolve, reject) => {
 		axios.get('https://graph.facebook.com/' + albumId + '/photos?fields=images&access_token=' + accessToken)
 		.then(res => {
