@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { getAlbums } from '../../utils/Facebook'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import FileUpload from '@material-ui/icons/FileUpload'
@@ -16,13 +17,14 @@ const style = {
 
 export class ProfileForm extends Component {
 	constructor(props) {
-	  super(props);
+		super(props)
+		const profile = this.props.profile
 	  this.state = {
-			id: this.props.id ? this.props.id : "",
+			id: profile.id ? profile.id : "",
 			business: "",
 			businessLogo: "",
-			name: this.props.name ? this.props.name : "",
-			email: this.props.email ? this.props.email : "",
+			name: profile.name ? profile.name : "",
+			email: profile.email ? profile.email : "",
 			phone: "",
 			dni: "",
 			ruc: "",
@@ -36,7 +38,7 @@ export class ProfileForm extends Component {
   handleSubmit(event) {
     alert('A name was submitted: ' + this.state.name)
 		event.preventDefault()
-		this.props.history.replace('/new-product')
+		// this.props.history.replace('/new-product')
   }
   
 	handleChange(event) {
@@ -58,8 +60,17 @@ export class ProfileForm extends Component {
 			reader.readAsDataURL(event.target.files[0]);
 		}
 	}
+
+	fetchFacebookImages() {
+		const accessToken = this.props.token.accessToken
+		getAlbums(accessToken)
+		.then(res => {
+			console.log(res)
+		})
+	}
   
 	render() {
+		this.fetchFacebookImages()
 	  return (
 			<div>
 				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>

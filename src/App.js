@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import SocialButton from './components/SocialButton'
+import SocialButton from './components/SocialButton/SocialButton'
 import './App.css'
 
 import NavBar from './components/NavBar/NavBar'
@@ -20,7 +20,9 @@ class App extends Component {
 
   responseFacebook(response) {
     console.log(response)
-    this.setState({user: response})
+    if (response.profile) {
+      this.setState({user: response})
+    }
   }
 
   responseGoogle(response) {
@@ -38,7 +40,7 @@ class App extends Component {
               <div className='Content'>
                 <Router>
                   <Switch>
-                    <Route exact path="/" render={()=><ProfileForm name={user.profile.name} email={user.profile.email} id={user.profile.id} />} />
+                    <Route exact path="/" render={()=><ProfileForm profile={user.profile} token={user.token} />} />
                     <Route path="/" component={ProductForm} />
                   </Switch>
                 </Router>
@@ -53,6 +55,7 @@ class App extends Component {
                 <SocialButton
                   provider="facebook"
                   appId="350503485475174"
+                  scope="user_photos"
                   onLoginSuccess={this.responseFacebook.bind(this)}
                   onLoginFailure={this.responseFacebook.bind(this)}>
                   {this.state.login ? 'Ingresa' : 'Registra'} con Facebook
