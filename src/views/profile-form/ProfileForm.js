@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { getAlbums } from '../../utils/Facebook'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import FileUpload from '@material-ui/icons/FileUpload'
+
+import AlbumDialog from '../../components/Facebook/AlbumDialog'
 
 const style = {
 	button: {
@@ -18,27 +19,38 @@ const style = {
 export class ProfileForm extends Component {
 	constructor(props) {
 		super(props)
-		const profile = this.props.profile
-	  this.state = {
-			id: profile.id ? profile.id : "",
-			business: "",
-			businessLogo: "",
-			name: profile.name ? profile.name : "",
-			email: profile.email ? profile.email : "",
-			phone: "",
-			dni: "",
-			ruc: "",
-			bankAcct: "",
-			logisticProvider: "",
-	  }
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleChange = this.handleChange.bind(this)
 	}
+	state = {
+		id: this.props.profile.id ? this.props.profile.id : "",
+		business: "",
+		businessLogo: "",
+		name: this.props.profile.name ? this.props.profile.name : "",
+		email: this.props.profile.email ? this.props.profile.email : "",
+		phone: "",
+		dni: "",
+		ruc: "",
+		bankAcct: "",
+		logisticProvider: "",
+    albumDialogOpen: false,
+    selectedAlbumValue: null,
+  };
+
+  handleAlbumDialogOpen = () => {
+    this.setState({
+      albumDialogOpen: true,
+    })
+  }
+
+  handleAlbumDialogClose = value => {
+		this.setState({ selectedAlbumValue: value, albumDialogOpen: false })
+		console.log(value)
+  }
 	
   handleSubmit(event) {
     alert('A name was submitted: ' + this.state.name)
 		event.preventDefault()
-		// this.props.history.replace('/new-product')
   }
   
 	handleChange(event) {
@@ -60,19 +72,24 @@ export class ProfileForm extends Component {
 			reader.readAsDataURL(event.target.files[0]);
 		}
 	}
-
-	fetchFacebookImages() {
-		const accessToken = this.props.token.accessToken
-		getAlbums(accessToken)
-		.then(res => {
-			console.log(res)
-		})
-	}
   
 	render() {
-		this.fetchFacebookImages()
 	  return (
 			<div>
+				<Button
+					style={{width: '88px', margin: '0 16px 0 0'}}
+					variant="outlined"
+					component="label"
+					color="primary"
+					onClick={this.handleAlbumDialogOpen}
+				>
+					Album Dialog
+				</Button>
+				<AlbumDialog
+					token={this.props.token}
+          selectedValue={this.state.selectedAlbumValue}
+          open={this.state.albumDialogOpen}
+          onClose={this.handleAlbumDialogClose} />
 				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
 					<div>
 						<Button
