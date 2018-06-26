@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
+import FileUpload from '@material-ui/icons/FileUpload'
 
 const style = {
 	button: {
@@ -46,25 +47,46 @@ export class ProfileForm extends Component {
 			[name]: value
 	  })
 	}
+
+	handleImageChanged(event) {
+		console.log(event.target.files[0])
+		if (event.target.files && event.target.files[0]) {
+			let reader = new FileReader();
+			reader.onload = (e) => {
+					this.setState({businessLogo: e.target.result})
+			}
+			reader.readAsDataURL(event.target.files[0]);
+		}
+	}
   
 	render() {
 	  return (
 			<div>
 				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
-					<TextField
-						fullWidth
-						margin="normal"
-						label="Negocio"
-						name="business"
-						checked={this.state.business}
-						onChange={this.handleChange} />
-					<TextField
-						fullWidth
-						margin="normal"
-						label="Logo URL"
-						name="businessLogo"
-						value={this.state.businessLogo}
-						onChange={this.handleChange} />
+					<div>
+						<Button
+							style={{width: '88px', margin: '0 16px 0 0'}}
+							variant="outlined"
+							component="label"
+							color="primary"
+							disabled={this.state.loading}
+						>
+							<FileUpload style={{display: this.state.businessLogo == '' ? 'block' : 'none'}} />
+							<img style={{display: this.state.businessLogo != '' ? 'block' : 'none', width: '88px', objectFit: 'cover'}} src={this.state.businessLogo} />
+							<input
+								onChange={this.handleImageChanged.bind(this)}
+								style={{display: 'none'}}
+								type="file"
+							/>
+						</Button>
+						<TextField
+							style={{width: 'calc(100% - 104px'}}
+							margin="normal"
+							label="Negocio"
+							name="business"
+							checked={this.state.business}
+							onChange={this.handleChange} />
+					</div>
 					<TextField
 						fullWidth
 						margin="normal"

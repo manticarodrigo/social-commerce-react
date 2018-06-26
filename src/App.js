@@ -38,7 +38,7 @@ class App extends Component {
               <div className='Content'>
                 <Router>
                   <Switch>
-                    {/* <Route exact path="/" render={()=><ProfileForm name={user.profile.name} email={user.profile.email} id={user.profile.id} />} /> */}
+                    <Route exact path="/" render={()=><ProfileForm name={user.profile.name} email={user.profile.email} id={user.profile.id} />} />
                     <Route path="/" component={ProductForm} />
                   </Switch>
                 </Router>
