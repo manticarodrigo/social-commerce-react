@@ -8,9 +8,12 @@ import NavBar from './components/NavBar/NavBar'
 import { ProfileForm } from './views/profile-form/ProfileForm'
 import { ProductForm } from './views/product-form/ProductForm'
 
+import { facebookLogin } from './services/WordPress'
+
 class App extends Component {
   state = {
     user: null,
+    auth: null,
     login: true
   }
 
@@ -21,7 +24,16 @@ class App extends Component {
   responseFacebook(response) {
     console.log(response)
     if (response.profile) {
-      this.setState({user: response})
+      facebookLogin(response.token.accessToken)
+      .then(res => {
+        console.log(res)
+        if (res.status === 200) {
+          this.setState({user: response, auth: res.data})
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
     }
   }
 
@@ -32,6 +44,7 @@ class App extends Component {
 
   render() {
     const user = this.state.user
+    const auth = this.state.auth
     return (
       <div className="App">
           {user ? (
@@ -40,7 +53,7 @@ class App extends Component {
               <div className='Content'>
                 <Router>
                   <Switch>
-                    <Route exact path="/" render={()=><ProfileForm profile={user.profile} token={user.token} />} />
+                    <Route exact path="/" render={()=><ProfileForm profile={user.profile} token={user.token} auth={auth} />} />
                     <Route path="/" component={ProductForm} />
                   </Switch>
                 </Router>

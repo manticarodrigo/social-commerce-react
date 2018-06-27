@@ -3,10 +3,10 @@ import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 
 const style = {
-	button: {
-		width: '100%',
+	saveButton: {
+		width: 'calc(100% - 2em)',
 		height:'50px',
-		marginTop: '1em',
+		margin: '1em',
 		position: 'absolute',
 		bottom: '0',
 		left: '0'
@@ -78,7 +78,7 @@ export class ProductForm extends Component {
 						checked={this.state.inventoryCount}
 						onChange={this.handleChange} />
 				</form>
-				<Button onClick={this.handleSubmit} style={style.button} size='large' variant="contained" color="primary">
+				<Button onClick={this.handleSubmit} style={style.saveButton} size='large' variant="contained" color="primary">
 					Revisa tu catalogo
 				</Button>
 			</div>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { getImagesIn } from '../../utils/Facebook'
+import { getImagesIn } from '../../services/Facebook'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Dialog from '@material-ui/core/Dialog'
 import GridList from '@material-ui/core/GridList'

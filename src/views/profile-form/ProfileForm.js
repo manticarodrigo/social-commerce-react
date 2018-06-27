@@ -7,11 +7,13 @@ import UploadDialog from '../../components/Dialog/UploadDialog'
 import AlbumDialog from '../../components/Dialog/AlbumDialog'
 import ImageDialog from '../../components/Dialog/ImageDialog'
 
+import { updateUser } from '../../services/WordPress'
+
 const style = {
-	button: {
-		width: '100%',
+	saveButton: {
+		width: 'calc(100% - 2em)',
 		height:'50px',
-		marginTop: '1em',
+		margin: '1em',
 		position: 'absolute',
 		bottom: '0',
 		left: '0'
@@ -27,7 +29,7 @@ export class ProfileForm extends Component {
 	inputElement = null
 	state = {
 		id: this.props.profile.id ? this.props.profile.id : "",
-		business: "",
+		businessName: "",
 		businessLogo: "",
 		name: this.props.profile.name ? this.props.profile.name : "",
 		email: this.props.profile.email ? this.props.profile.email : "",
@@ -88,8 +90,10 @@ export class ProfileForm extends Component {
 	}
 	
   handleSubmit(event) {
-    alert('A name was submitted: ' + this.state.name)
+    // alert('A name was submitted: ' + this.state.name)
 		event.preventDefault()
+		const profile = this.state
+		updateUser(this.props.auth, profile)
   }
   
 	handleChange(event) {
@@ -142,6 +146,7 @@ export class ProfileForm extends Component {
 							color="primary"
 							onClick={this.handleUploadDialogOpen}
 						>
+							{this.state.businessLogo === '' ? 'Logo' : null}
 							<FileUpload style={{display: this.state.businessLogo === '' ? 'block' : 'none'}} />
 							<img style={{display: this.state.businessLogo !== '' ? 'block' : 'none', width: '88px', height: '88px', objectFit: 'cover'}} src={this.state.businessLogo} alt={this.state.businessLogo} />
 						</Button>
@@ -155,8 +160,8 @@ export class ProfileForm extends Component {
 							style={{width: 'calc(100% - 104px'}}
 							margin="normal"
 							label="Negocio"
-							name="business"
-							checked={this.state.business}
+							name="businessName"
+							checked={this.state.businessName}
 							onChange={this.handleChange} />
 					</div>
 					<TextField
@@ -202,7 +207,7 @@ export class ProfileForm extends Component {
 						value={this.state.bankAcct}
 						onChange={this.handleChange} />
 				</form>
-				<Button onClick={this.handleSubmit} style={style.button} size='large' variant="contained" color="primary">
+				<Button onClick={this.handleSubmit} style={style.saveButton} size='large' variant="contained" color="primary">
 					Continua
 				</Button>
 			</div>
