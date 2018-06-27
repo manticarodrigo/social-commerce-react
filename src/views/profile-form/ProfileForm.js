@@ -94,6 +94,12 @@ export class ProfileForm extends Component {
 		event.preventDefault()
 		const profile = this.state
 		updateUser(this.props.auth, profile)
+		.then(res => {
+			console.log(res)
+		})
+		.catch(err => {
+			console.log(err)
+		})
   }
   
 	handleChange(event) {

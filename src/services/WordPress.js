@@ -20,5 +20,5 @@ export function updateUser(auth, profile) {
 			logisticProvider: profile.logisticProvider,
 		}
 	}
-	return axios.post('http://localhost:8080/wp-json/wp/v2/users/' + auth.wp_user_id + '?insecure=cool', data, {headers: {Cookie: auth.cookie }})
+	return axios.post('http://localhost:8080/wp-json/wp/v2/users/' + auth.wp_user_id + '?insecure=cool', data)
 }
