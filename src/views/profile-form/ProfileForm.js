@@ -3,8 +3,9 @@ import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import FileUpload from '@material-ui/icons/FileUpload'
 
-import AlbumDialog from '../../components/Facebook/AlbumDialog'
-import ImageDialog from '../../components/Facebook/ImageDialog'
+import UploadDialog from '../../components/Dialog/UploadDialog'
+import AlbumDialog from '../../components/Dialog/AlbumDialog'
+import ImageDialog from '../../components/Dialog/ImageDialog'
 
 const style = {
 	button: {
@@ -23,6 +24,7 @@ export class ProfileForm extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleChange = this.handleChange.bind(this)
 	}
+	inputElement = null
 	state = {
 		id: this.props.profile.id ? this.props.profile.id : "",
 		business: "",
@@ -34,9 +36,24 @@ export class ProfileForm extends Component {
 		ruc: "",
 		bankAcct: "",
 		logisticProvider: "",
+		uploadDialogOpen: false,
     albumDialogOpen: false,
 		selectedAlbumValue: null,
+		imageDialogOpen: false,
+		selectedImageValue: null,
+	}
+	
+	handleUploadDialogOpen = () => {
+		console.log('yo')
+    this.setState({ uploadDialogOpen: true })
   }
+
+  handleUploadDialogClose = value => {
+		this.setState({ uploadDialogOpen: false, albumDialogOpen: value == 'Upload from Facebook' ? true : false })
+		if (value == 'Upload from Device') {
+			this.inputElement.click()
+		}
+	}
 
   handleAlbumDialogOpen = () => {
     this.setState({ albumDialogOpen: true })
@@ -44,6 +61,14 @@ export class ProfileForm extends Component {
 
   handleAlbumDialogClose = value => {
 		this.setState({ selectedAlbumValue: value, albumDialogOpen: false, imageDialogOpen: value != null ? true : false })
+	}
+
+	handleImageDialogOpen = () => {
+    this.setState({ imageDialogOpen: true })
+  }
+
+  handleImageDialogClose = value => {
+		this.setState({ selectedImageValue: value, imageDialogOpen: false, imageDialogOpen: value != null ? true : false })
 	}
 	
   handleSubmit(event) {
@@ -74,38 +99,42 @@ export class ProfileForm extends Component {
 	render() {
 	  return (
 			<div>
-				<Button
-					style={{width: '88px', margin: '0 16px 0 0'}}
-					variant="outlined"
-					component="label"
-					color="primary"
-					onClick={this.handleAlbumDialogOpen}
-				>
-					Album Dialog
-				</Button>
+				<UploadDialog
+					options={['Upload from Facebook', 'Upload from Device']}
+          selectedValue={this.state.selectedUploadValue}
+          open={this.state.uploadDialogOpen}
+          onClose={this.handleUploadDialogClose} />
 				<AlbumDialog
 					token={this.props.token}
           selectedValue={this.state.selectedAlbumValue}
           open={this.state.albumDialogOpen}
           onClose={this.handleAlbumDialogClose} />
-				
+				{this.state.imageDialogOpen && (
+					<ImageDialog
+						album={this.state.selectedAlbumValue}
+						token={this.props.token}
+						selectedValue={this.state.selectedImageValue}
+						open={this.state.imageDialogOpen}
+						onClose={this.handleImageDialogClose} />
+				)}
 				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
 					<div>
 						<Button
-							style={{width: '88px', margin: '0 16px 0 0'}}
+							style={{width: '88px', height: '88px', margin: '0 16px 0 0'}}
 							variant="outlined"
 							component="label"
 							color="primary"
-							disabled={this.state.loading}
+							onClick={this.handleUploadDialogOpen}
 						>
 							<FileUpload style={{display: this.state.businessLogo == '' ? 'block' : 'none'}} />
-							<img style={{display: this.state.businessLogo != '' ? 'block' : 'none', width: '88px', objectFit: 'cover'}} src={this.state.businessLogo} />
-							<input
+							<img style={{display: this.state.businessLogo != '' ? 'block' : 'none', width: '88px', height: '88px', objectFit: 'cover'}} src={this.state.businessLogo} />
+						</Button>
+						<input
+								ref={input => this.inputElement = input}
 								onChange={this.handleImageChanged.bind(this)}
 								style={{display: 'none'}}
 								type="file"
 							/>
-						</Button>
 						<TextField
 							style={{width: 'calc(100% - 104px'}}
 							margin="normal"

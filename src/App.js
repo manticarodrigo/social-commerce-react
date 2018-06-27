@@ -70,7 +70,7 @@ class App extends Component {
                   {this.state.login ? 'Ingresa' : 'Registra'} con Google
                 </SocialButton>
                 <p style={{color: '#fff'}}><a href='#' onClick={this.toggleLogin.bind(this)}>{!this.state.login ? 'Ingresa' : 'Registra'}</a></p>
-                <p style={{color: '#fff'}}>Al ingresar esta indicando que ha leido<br />y acepta nuestros <a href="#">Terminos y Condiciones</a>.</p>
+                <p style={{color: '#fff', fontSize: '14px'}}>Al ingresar esta indicando que ha leido<br />y acepta nuestros <a href="#">Terminos y Condiciones</a>.</p>
               </div>
             </div>
           )}

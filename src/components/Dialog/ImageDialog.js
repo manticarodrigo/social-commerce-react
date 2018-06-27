@@ -6,16 +6,18 @@ import Dialog from '@material-ui/core/Dialog'
 import GridList from '@material-ui/core/GridList'
 import GridListTile from '@material-ui/core/GridListTile'
 
-var images = []
-
 class ImageDialog extends Component {
   constructor(props) {
     super(props)
     this.fetchFacebookImages()
   }
 
+  state = {
+    images: []
+  }
+
   handleClose = () => {
-    this.props.onClose(this.props.selectedImageValue)
+    this.props.onClose(this.props.selectedValue)
   }
 
   handleListItemClick = value => {
@@ -27,7 +29,7 @@ class ImageDialog extends Component {
     getImagesIn(this.props.album.id, accessToken)
     .then(res => {
       console.log(res)
-      images = res
+      this.setState({ images: res })
     })
   }
 
@@ -35,11 +37,11 @@ class ImageDialog extends Component {
     const { classes, onClose, selectedValue, ...other } = this.props
     return (
       <Dialog onClose={this.handleClose} aria-labelledby="image-dialog-title" {...other}>
-        <DialogTitle id="image-dialog-title">Choose image in {this.props.album.name}</DialogTitle>
+        <DialogTitle id="image-dialog-title">Choose Image in {this.props.album.name}</DialogTitle>
         <div>
-          <GridList cellHeight={160} cols={3}>
-            {images.map(url => (
-              <GridListTile key={url} cols={3}>
+          <GridList cellHeight={160} cols={4}>
+            {this.state.images.map(url => (
+              <GridListTile key={url} cols={4}>
                 <img src={url} alt={url} onClick={() => this.handleListItemClick(url)} key={url} />
               </GridListTile>
             ))}
@@ -52,7 +54,7 @@ class ImageDialog extends Component {
 
 ImageDialog.propTypes = {
   onClose: PropTypes.func,
-  selectedImageValue: PropTypes.string,
+  selectedValue: PropTypes.string,
 }
 
 export default ImageDialog
