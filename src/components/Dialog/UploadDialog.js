@@ -7,10 +7,6 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import Dialog from '@material-ui/core/Dialog'
 
 class UploadDialog extends Component {
-  constructor(props) {
-    super(props)
-  }
-
   state = {
     options: this.props.options
   }

@@ -38,7 +38,7 @@ export class ProductForm extends Component {
 	  this.setState({
 			[name]: value
 		})
-		if (value != '') {
+		if (value !== '') {
 			this.setState({imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHF2PqPq0dbM-PMpcY4xXgF2iwx8OqhISJrPrKnDV5WGOs4P2htw'})
 		}
 	}
@@ -47,7 +47,7 @@ export class ProductForm extends Component {
 	  return (
 			<div>
 				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
-					<img style={{width: '100px', height: '100px', objectFit: 'cover'}} src={this.state.imageUrl}/>
+					<img style={{width: '100px', height: '100px', objectFit: 'cover'}} src={this.state.imageUrl} alt={this.state.imageUrl} />
 					<br />
 					<TextField
 						fullWidth

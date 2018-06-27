@@ -55,7 +55,7 @@ class AlbumDialog extends Component {
   
 AlbumDialog.propTypes = {
   onClose: PropTypes.func,
-  selectedValue: PropTypes.string,
+  selectedValue: PropTypes.object,
 }
 
 export default AlbumDialog

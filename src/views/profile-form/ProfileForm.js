@@ -44,31 +44,47 @@ export class ProfileForm extends Component {
 	}
 	
 	handleUploadDialogOpen = () => {
-		console.log('yo')
-    this.setState({ uploadDialogOpen: true })
+    this.setState({
+			uploadDialogOpen: true
+		})
   }
 
   handleUploadDialogClose = value => {
-		this.setState({ uploadDialogOpen: false, albumDialogOpen: value == 'Upload from Facebook' ? true : false })
-		if (value == 'Upload from Device') {
+		this.setState({
+			uploadDialogOpen: false,
+			albumDialogOpen: value === 'Upload from Facebook' ? true : false
+		})
+		if (value === 'Upload from Device') {
 			this.inputElement.click()
 		}
 	}
 
   handleAlbumDialogOpen = () => {
-    this.setState({ albumDialogOpen: true })
+    this.setState({
+			albumDialogOpen: true
+		})
   }
 
   handleAlbumDialogClose = value => {
-		this.setState({ selectedAlbumValue: value, albumDialogOpen: false, imageDialogOpen: value != null ? true : false })
+		this.setState({
+			selectedAlbumValue: value,
+			albumDialogOpen: false,
+			imageDialogOpen: value != null ? true : false
+		})
 	}
 
 	handleImageDialogOpen = () => {
-    this.setState({ imageDialogOpen: true })
+    this.setState({
+			imageDialogOpen: true
+		})
   }
 
   handleImageDialogClose = value => {
-		this.setState({ selectedImageValue: value, imageDialogOpen: false, imageDialogOpen: value != null ? true : false })
+		this.setState({
+			businessLogo: value,
+			selectedImageValue: value,
+			imageDialogOpen: false
+		})
 	}
 	
   handleSubmit(event) {
@@ -126,8 +142,8 @@ export class ProfileForm extends Component {
 							color="primary"
 							onClick={this.handleUploadDialogOpen}
 						>
-							<FileUpload style={{display: this.state.businessLogo == '' ? 'block' : 'none'}} />
-							<img style={{display: this.state.businessLogo != '' ? 'block' : 'none', width: '88px', height: '88px', objectFit: 'cover'}} src={this.state.businessLogo} />
+							<FileUpload style={{display: this.state.businessLogo === '' ? 'block' : 'none'}} />
+							<img style={{display: this.state.businessLogo !== '' ? 'block' : 'none', width: '88px', height: '88px', objectFit: 'cover'}} src={this.state.businessLogo} alt={this.state.businessLogo} />
 						</Button>
 						<input
 								ref={input => this.inputElement = input}
