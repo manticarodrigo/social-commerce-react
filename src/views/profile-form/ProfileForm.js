@@ -7,7 +7,7 @@ import UploadDialog from '../../components/Dialog/UploadDialog'
 import AlbumDialog from '../../components/Dialog/AlbumDialog'
 import ImageDialog from '../../components/Dialog/ImageDialog'
 
-import { createCategory } from '../../services/WordPress'
+import { createCategory, updateUser, updateUserMeta } from '../../services/WordPress'
 
 const style = {
 	saveButton: {
@@ -93,7 +93,8 @@ export class ProfileForm extends Component {
     // alert('A name was submitted: ' + this.state.name)
 		event.preventDefault()
 		const profile = this.state
-		createCategory(profile)
+		const { auth } = this.props
+		updateUser(auth, profile)
 		.then(res => {
 			console.log(res)
 		})
