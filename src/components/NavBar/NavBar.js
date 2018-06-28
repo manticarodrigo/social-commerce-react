@@ -52,7 +52,7 @@ class NavBar extends React.Component {
               <ArrowBackIcon />
             </IconButton>
             <Typography variant="title" color="inherit" className={classes.flex}>
-              Crear Perfíl
+              Catálogo
             </Typography>
             {user && (
               <div>

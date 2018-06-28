@@ -7,7 +7,7 @@ import UploadDialog from '../../components/Dialog/UploadDialog'
 import AlbumDialog from '../../components/Dialog/AlbumDialog'
 import ImageDialog from '../../components/Dialog/ImageDialog'
 
-import { updateUser } from '../../services/WordPress'
+import { createCategory } from '../../services/WordPress'
 
 const style = {
 	saveButton: {
@@ -36,7 +36,7 @@ export class ProfileForm extends Component {
 		phone: "",
 		dni: "",
 		ruc: "",
-		bankAcct: "",
+		bankAccountt: "",
 		logisticProvider: "",
 		uploadDialogOpen: false,
     albumDialogOpen: false,
@@ -93,7 +93,7 @@ export class ProfileForm extends Component {
     // alert('A name was submitted: ' + this.state.name)
 		event.preventDefault()
 		const profile = this.state
-		updateUser(this.props.auth, profile)
+		createCategory(profile)
 		.then(res => {
 			console.log(res)
 		})
@@ -209,8 +209,8 @@ export class ProfileForm extends Component {
 						fullWidth
 						margin="normal"
 						label="Cuenta de Banco"
-						name="bankAcct"
-						value={this.state.bankAcct}
+						name="bankAccount"
+						value={this.state.bankAccount}
 						onChange={this.handleChange} />
 				</form>
 				<Button onClick={this.handleSubmit} style={style.saveButton} size='large' variant="contained" color="primary">
