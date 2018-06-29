@@ -1,6 +1,13 @@
 import React, { Component } from 'react'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
+import FileUpload from '@material-ui/icons/FileUpload'
+
+import UploadDialog from '../../components/Dialog/UploadDialog'
+import AlbumDialog from '../../components/Dialog/AlbumDialog'
+import ImageDialog from '../../components/Dialog/ImageDialog'
+
+import { uploadMedia, createProduct } from '../../services/WordPress'
 
 const style = {
 	saveButton: {
@@ -21,14 +28,80 @@ export class ProductForm extends Component {
 			description: '',
 			cost: '',
 			inventoryCount: '',
-			imageUrl: 'https://www.foot.com/wp-content/uploads/2017/03/placeholder.gif'
+			imageUrl: '',
+			imageFile: null,
+			uploadDialogOpen: false,
+			albumDialogOpen: false,
+			selectedAlbumValue: null,
+			imageDialogOpen: false,
+			selectedImageValue: null,
 	  }
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleChange = this.handleChange.bind(this)
 	}
+
+	handleUploadDialogOpen = () => {
+    this.setState({
+			uploadDialogOpen: true
+		})
+  }
+
+  handleUploadDialogClose = value => {
+		this.setState({
+			uploadDialogOpen: false,
+			albumDialogOpen: value === 'Upload from Facebook' ? true : false
+		})
+		if (value === 'Upload from Device') {
+			this.inputElement.click()
+		}
+	}
+
+  handleAlbumDialogOpen = () => {
+    this.setState({
+			albumDialogOpen: true
+		})
+  }
+
+  handleAlbumDialogClose = value => {
+		this.setState({
+			selectedAlbumValue: value,
+			albumDialogOpen: false,
+			imageDialogOpen: value != null ? true : false
+		})
+	}
+
+	handleImageDialogOpen = () => {
+    this.setState({
+			imageDialogOpen: true
+		})
+  }
+
+  handleImageDialogClose = value => {
+		this.setState({
+			imageUrl: value,
+			selectedImageValue: value,
+			imageDialogOpen: false
+		})
+	}
 	
   handleSubmit(event) {
-    event.preventDefault()
+		event.preventDefault()
+		const profile = this.state
+		uploadMedia(profile.imageFile)
+		.then(res => {
+			console.log(res)
+			profile.imageUrl = res.data.source_url
+			createProduct(profile)
+			.then(res => {
+				console.log(res)
+			})
+			.catch(err => {
+				console.log(err)
+			})
+		})
+		.catch(err => {
+			console.log(err)
+		})
   }
   
 	handleChange(event) {
@@ -38,17 +111,60 @@ export class ProductForm extends Component {
 	  this.setState({
 			[name]: value
 		})
-		if (value !== '') {
-			this.setState({imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHF2PqPq0dbM-PMpcY4xXgF2iwx8OqhISJrPrKnDV5WGOs4P2htw'})
+	}
+
+	handleImageChanged(event) {
+		if (event.target.files && event.target.files[0]) {
+			this.setState({imageFile: event.target.files[0]})
+			let reader = new FileReader();
+			reader.onload = (e) => {
+					this.setState({imageUrl: e.target.result})
+			}
+			reader.readAsDataURL(event.target.files[0])
 		}
 	}
   
 	render() {
 	  return (
 			<div>
+				<UploadDialog
+					options={['Upload from Facebook', 'Upload from Device']}
+          selectedValue={this.state.selectedUploadValue}
+          open={this.state.uploadDialogOpen}
+          onClose={this.handleUploadDialogClose} />
+				<AlbumDialog
+					token={this.props.token}
+          selectedValue={this.state.selectedAlbumValue}
+          open={this.state.albumDialogOpen}
+          onClose={this.handleAlbumDialogClose} />
+				{this.state.imageDialogOpen && (
+					<ImageDialog
+						album={this.state.selectedAlbumValue}
+						token={this.props.token}
+						selectedValue={this.state.selectedImageValue}
+						open={this.state.imageDialogOpen}
+						onClose={this.handleImageDialogClose} />
+				)}
 				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
-					<img style={{width: '100px', height: '100px', objectFit: 'cover'}} src={this.state.imageUrl} alt={this.state.imageUrl} />
-					<br />
+					<div>
+						<Button
+							style={{width: '88px', height: '88px', margin: '0 16px 0 0'}}
+							variant="outlined"
+							component="label"
+							color="primary"
+							onClick={this.handleUploadDialogOpen}
+						>
+							{this.state.imageUrl === '' ? 'Foto' : null}
+							<FileUpload style={{display: this.state.imageUrl === '' ? 'block' : 'none'}} />
+							<img style={{display: this.state.imageUrl !== '' ? 'block' : 'none', width: '88px', height: '88px', objectFit: 'cover'}} src={this.state.imageUrl} alt={this.state.imageUrl} />
+						</Button>
+						<input
+								ref={input => this.inputElement = input}
+								onChange={this.handleImageChanged.bind(this)}
+								style={{display: 'none'}}
+								type="file"
+							/>
+					</div>
 					<TextField
 						fullWidth
 						margin="normal"
@@ -79,7 +195,7 @@ export class ProductForm extends Component {
 						onChange={this.handleChange} />
 				</form>
 				<Button onClick={this.handleSubmit} style={style.saveButton} size='large' variant="contained" color="primary">
-					Revisa tu catalogo
+					Agrega Producto
 				</Button>
 			</div>
 	  )

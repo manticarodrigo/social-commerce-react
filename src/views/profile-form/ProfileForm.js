@@ -7,7 +7,7 @@ import UploadDialog from '../../components/Dialog/UploadDialog'
 import AlbumDialog from '../../components/Dialog/AlbumDialog'
 import ImageDialog from '../../components/Dialog/ImageDialog'
 
-import { createCategory, updateUser, updateUserMeta } from '../../services/WordPress'
+import { uploadMedia, createCategory, updateUser, updateUserMeta } from '../../services/WordPress'
 
 const style = {
 	saveButton: {
@@ -28,16 +28,16 @@ export class ProfileForm extends Component {
 	}
 	inputElement = null
 	state = {
-		id: this.props.profile.id ? this.props.profile.id : "",
-		businessName: "",
-		businessLogo: "",
-		name: this.props.profile.name ? this.props.profile.name : "",
-		email: this.props.profile.email ? this.props.profile.email : "",
-		phone: "",
-		dni: "",
-		ruc: "",
-		bankAccountt: "",
-		logisticProvider: "",
+		id: this.props.profile.id ? this.props.profile.id : '',
+		businessName: '',
+		businessLogo: '',
+		name: this.props.profile.name ? this.props.profile.name : '',
+		email: this.props.profile.email ? this.props.profile.email : '',
+		phone: '',
+		dni: '',
+		ruc: '',
+		bankAccountt: '',
+		logisticProvider: '',
 		uploadDialogOpen: false,
     albumDialogOpen: false,
 		selectedAlbumValue: null,
@@ -90,7 +90,6 @@ export class ProfileForm extends Component {
 	}
 	
   handleSubmit(event) {
-    // alert('A name was submitted: ' + this.state.name)
 		event.preventDefault()
 		const profile = this.state
 		const { auth } = this.props
@@ -113,7 +112,6 @@ export class ProfileForm extends Component {
 	}
 
 	handleImageChanged(event) {
-		console.log(event.target.files[0])
 		if (event.target.files && event.target.files[0]) {
 			let reader = new FileReader();
 			reader.onload = (e) => {
