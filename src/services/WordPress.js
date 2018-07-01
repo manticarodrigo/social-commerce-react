@@ -6,20 +6,25 @@ export function facebookLogin(accessToken) {
 	return axios.get(url + '/?json=user.fb_connect&access_token=' + accessToken + '&insecure=cool')
 }
 
-export function createCategory(profile) {
+export function createCategory(auth, profile) {
 	const data = {
-		name: profile.businessName,
-		image: {
-			src: profile.businessLogo
-		}
+		ownerId: auth.wp_user_id,
+		businessName: profile.businessName,
+		businessLogo: profile.businessLogo,
+		dni: profile.dni,
+		ruc: profile.ruc,
+		phone: profile.phone,
+		bankAccount: profile.bankAccount,
+		logisticProvider: profile.logisticProvider
 	}
+	console.log(data);
 	const options = {
 		auth: {
 			username: 'ck_f684a0eb45fa52beb1f04769592af6d8d536b306',
 			password: 'cs_5497e0d935de4b2fb31de3d0f13ca420a24ced7e'
 		}
 	}
-	return axios.post(url + '/wp-json/wc/v2/products/categories/', data, options)
+	return axios.post(url + '/wp-json/socialcommerce/v1/profiles/create/', data, options)
 }
 
 export function updateUser(auth, profile) {

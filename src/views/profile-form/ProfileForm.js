@@ -39,7 +39,7 @@ export class ProfileForm extends Component {
 		bankAccountt: '',
 		logisticProvider: '',
 		uploadDialogOpen: false,
-    albumDialogOpen: false,
+    	albumDialogOpen: false,
 		selectedAlbumValue: null,
 		imageDialogOpen: false,
 		selectedImageValue: null,
@@ -93,13 +93,20 @@ export class ProfileForm extends Component {
 		event.preventDefault()
 		const profile = this.state
 		const { auth } = this.props
-		updateUser(auth, profile)
+		// updateUser(auth, profile)
+		// .then(res => {
+		// 	console.log(res)
+		// })
+		// .catch(err => {
+		// 	console.log(err)
+		// })
+		createCategory(auth, profile)
 		.then(res => {
-			console.log(res)
+			console.log(res);
 		})
 		.catch(err => {
 			console.log(err)
-		})
+		});
   }
   
 	handleChange(event) {
@@ -159,6 +166,7 @@ export class ProfileForm extends Component {
 								ref={input => this.inputElement = input}
 								onChange={this.handleImageChanged.bind(this)}
 								style={{display: 'none'}}
+								name="businessLogo"
 								type="file"
 							/>
 						<TextField

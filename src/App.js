@@ -53,7 +53,7 @@ class App extends Component {
             <div>
               <NavBar user={user} />
               <div className='Content'>
-                <ProductForm profile={user.profile} token={user.token} auth={auth} />
+                <ProfileForm profile={user.profile} token={user.token} auth={auth} />
               </div>
             </div>
           ) : (
