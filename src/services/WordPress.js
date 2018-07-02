@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const url = 'http://localhost:8080'
+const url = process.env.REACT_APP_BACKEND_URL
 
 export function facebookLogin(accessToken) {
 	return axios.get(url + '/?json=user.fb_connect&access_token=' + accessToken + '&insecure=cool')

@@ -92,7 +92,7 @@ class App extends Component {
                 </h1>
                 <SocialButton
                   provider="facebook"
-                  appId="350503485475174"
+                  appId={process.env.REACT_APP_FACEBOOK_APP_ID}
                   scope="user_photos"
                   onLoginSuccess={this.responseFacebook.bind(this)}
                   onLoginFailure={this.responseFacebook.bind(this)}>
