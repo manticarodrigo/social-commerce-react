@@ -54,16 +54,16 @@ export function updateUserMeta(auth, profile) {
 	return axios.get(url + endpoint+ '?insecure=cool')
 }
 
-export function createProduct(profile) {
+export function createProduct(product) {
 	const data = {
-		name: profile.title,
-		regular_price: profile.cost,
-		description: profile.description,
-		short_description: profile.description,
-		categories: [{id: 15}],
-		images: [{src: profile.imageUrl, position: 0}],
+		name: product.title,
+		regular_price: product.cost,
+		description: product.description,
+		short_description: product.description,
+		categories: [{id: product.wpTermId}],
+		images: [{src: product.imageUrl, position: 0}],
 		manage_stock: true,
-		stock_quantity: profile.inventoryCount,
+		stock_quantity: product.inventoryCount,
 		in_stock: true,
 	}
 	console.log(data)
@@ -77,15 +77,16 @@ export function createProduct(profile) {
 }
 
 export function uploadMedia(file) {
+	console.log(file)
 	const stamp = Date.now()
 	var formData = new FormData()
-	formData.append( 'file', file )
-	formData.append( 'title', stamp )
+	formData.append('file', file)
+	formData.append('title', stamp)
+	formData.append('caption', 'test');
 
-	return axios({
-    method: 'post',
-    url: url + '/wp-json/wp/v2/media',
-    data: formData,
-    config: { headers: {'Content-Type': 'multipart/form-data' }}
-	})
+	return axios.post(url + '/wp-json/wp/v2/media', formData, {
+		headers: {
+			'Content-Type': 'multipart/form-data'
+		}
+	});
 }

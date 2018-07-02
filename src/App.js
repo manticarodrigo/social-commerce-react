@@ -16,7 +16,8 @@ class App extends Component {
     user: null,
     auth: null,
     category: null,
-    login: true
+    login: true,
+    wpTermId: 48 // remember to switch to false
   }
 
   toggleLogin() {
@@ -39,21 +40,32 @@ class App extends Component {
     }
   }
 
+  handleWpTerm(wpTermId) {
+    console.log('Term Created, id: ', wpTermId);
+    this.setState({ wpTermId: wpTermId });
+  }
+
   responseGoogle(response) {
     console.log(response)
     // this.setState({user: response})
   }
 
   render() {
-    const user = this.state.user
-    const auth = this.state.auth
+    const user = this.state.user;
+    const auth = this.state.auth;
+    const wpTermId = this.state.wpTermId;
     return (
       <div className="App">
           {user ? (
             <div>
               <NavBar user={user} />
               <div className='Content'>
-                <ProfileForm profile={user.profile} token={user.token} auth={auth} />
+                { !wpTermId ? (
+                  <ProfileForm profile={user.profile} token={user.token} auth={auth} handleWpTerm={this.handleWpTerm.bind(this)} />
+                  ) : (
+                    <ProductForm profile={user.profile} token={user.token} auth={auth} wpTermId={this.state.wpTermId} />
+                  )
+                }
               </div>
             </div>
           ) : (

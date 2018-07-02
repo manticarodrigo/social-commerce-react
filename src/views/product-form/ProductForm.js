@@ -35,6 +35,7 @@ export class ProductForm extends Component {
 			selectedAlbumValue: null,
 			imageDialogOpen: false,
 			selectedImageValue: null,
+			wpTermId: this.props.wpTermId
 	  }
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleChange = this.handleChange.bind(this)
@@ -86,22 +87,34 @@ export class ProductForm extends Component {
 	
   handleSubmit(event) {
 		event.preventDefault()
-		const profile = this.state
-		uploadMedia(profile.imageFile)
-		.then(res => {
-			console.log(res)
-			profile.imageUrl = res.data.source_url
-			createProduct(profile)
-			.then(res => {
-				console.log(res)
-			})
-			.catch(err => {
-				console.log(err)
-			})
-		})
-		.catch(err => {
-			console.log(err)
-		})
+		const product = this.state
+		
+		// Media is uploaded by woocommerce, when pass an url
+		createProduct(product)
+		  .then(res => {
+		    console.log(res)
+		  })
+		  .catch(err => {
+		    console.log(err)
+		  })
+
+		// We should find a way to send an file or a url
+		
+		// uploadMedia(product.imageFile)
+		// .then(res => {
+		// 	console.log(res)
+		// 	product.imageUrl = res.data.source_url
+		// 	createProduct(product)
+		// 	.then(res => {
+		// 		console.log(res)
+		// 	})
+		// 	.catch(err => {
+		// 		console.log(err)
+		// 	})
+		// })
+		// .catch(err => {
+		// 	console.log(err)
+		// })
   }
   
 	handleChange(event) {
@@ -117,9 +130,9 @@ export class ProductForm extends Component {
 		if (event.target.files && event.target.files[0]) {
 			this.setState({imageFile: event.target.files[0]})
 			let reader = new FileReader();
-			reader.onload = (e) => {
-					this.setState({imageUrl: e.target.result})
-			}
+			// reader.onload = (e) => {
+			// 	this.setState({imageUrl: e.target.result})
+			// }
 			reader.readAsDataURL(event.target.files[0])
 		}
 	}
@@ -129,14 +142,14 @@ export class ProductForm extends Component {
 			<div>
 				<UploadDialog
 					options={['Upload from Facebook', 'Upload from Device']}
-          selectedValue={this.state.selectedUploadValue}
-          open={this.state.uploadDialogOpen}
-          onClose={this.handleUploadDialogClose} />
+          			selectedValue={this.state.selectedUploadValue}
+			        open={this.state.uploadDialogOpen}
+			        onClose={this.handleUploadDialogClose} />
 				<AlbumDialog
 					token={this.props.token}
-          selectedValue={this.state.selectedAlbumValue}
-          open={this.state.albumDialogOpen}
-          onClose={this.handleAlbumDialogClose} />
+			        selectedValue={this.state.selectedAlbumValue}
+			        open={this.state.albumDialogOpen}
+			        onClose={this.handleAlbumDialogClose} />
 				{this.state.imageDialogOpen && (
 					<ImageDialog
 						album={this.state.selectedAlbumValue}
