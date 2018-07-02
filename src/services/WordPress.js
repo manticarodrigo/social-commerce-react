@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const url = 'http://localhost:8080'
+const url = process.env.REACT_APP_BACKEND_URL
 
 export function facebookLogin(accessToken) {
 	return axios.get(url + '/?json=user.fb_connect&access_token=' + accessToken + '&insecure=cool')
@@ -18,13 +18,7 @@ export function createCategory(auth, profile) {
 		logisticProvider: profile.logisticProvider
 	}
 	console.log(data);
-	const options = {
-		auth: {
-			username: 'ck_f684a0eb45fa52beb1f04769592af6d8d536b306',
-			password: 'cs_5497e0d935de4b2fb31de3d0f13ca420a24ced7e'
-		}
-	}
-	return axios.post(url + '/wp-json/socialcommerce/v1/profiles/create/', data, options)
+	return axios.post(url + '/wp-json/socialcommerce/v1/profiles/create/', data)
 }
 
 export function updateUser(auth, profile) {
@@ -69,8 +63,8 @@ export function createProduct(product) {
 	console.log(data)
 	const options = {
 		auth: {
-			username: 'ck_f684a0eb45fa52beb1f04769592af6d8d536b306',
-			password: 'cs_5497e0d935de4b2fb31de3d0f13ca420a24ced7e'
+			username: process.env.REACT_APP_WOOCOMMERCE_USERNAME,
+			password: process.env.REACT_APP_WOOCOMMERCE_PASSWORD
 		}
 	}
 	return axios.post(url + '/wp-json/wc/v2/products/', data, options)
