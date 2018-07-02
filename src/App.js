@@ -17,6 +17,7 @@ class App extends Component {
     category: null,
     login: true,
     wpTermId: false, // set to false in prod
+    wpTermLink: false,
     productsCreate: false
   }
 
@@ -40,9 +41,9 @@ class App extends Component {
     }
   }
 
-  handleWpTerm(wpTermId) {
+  handleWpTerm(wpTermId, wpTermLink) {
     console.log('Term Created, id: ', wpTermId)
-    this.setState({ wpTermId: wpTermId })
+    this.setState({ wpTermId: wpTermId, wpTermLink: wpTermLink })
   }
 
   handleProductsSent() {
@@ -55,10 +56,7 @@ class App extends Component {
   }
 
   render() {
-    const user = this.state.user
-    const auth = this.state.auth
-    const wpTermId = this.state.wpTermId
-    const productsCreated = this.state.productsCreated
+    const { user, auth, wpTermId, wpTermLink, productsCreated } = this.state
     return (
       <div className="App">
           {user ? (
@@ -71,7 +69,7 @@ class App extends Component {
                   !productsCreated ? (
                     <ProductForm profile={user.profile} token={user.token} auth={auth} handleSubmit={this.handleProductsSent.bind(this)} wpTermId={this.state.wpTermId} />
                   ) : (
-                    <Catalog wpTermId={this.state.wpTermId} />
+                    <Catalog wpTermLink={wpTermLink} />
                   )
                 )}
               </div>

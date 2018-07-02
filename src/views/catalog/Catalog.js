@@ -27,10 +27,10 @@ export class Catalog extends Component {
 	}
   
 	render() {
-		const { profile, wpTermId } = this.props
+		const { profile, wpTermLink } = this.props
 	  return (
 			<div style={style.fullSize}>
-				<iframe style={style.iframe} src={'http://localhost:8080/product-category/' + wpTermId } />
+				<iframe style={style.iframe} src={wpTermLink} />
 			</div>
 	  )
 	}

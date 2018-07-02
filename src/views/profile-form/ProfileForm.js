@@ -104,7 +104,7 @@ export class ProfileForm extends Component {
 		.then(res => {
 			console.log(res);
 			if (res.data && res.data.term_id != null) {
-				this.props.handleWpTerm(res.data.term_id);
+				this.props.handleWpTerm(res.data.term_id, res.data.term_link);
 			}
 		})
 		.catch(err => {
