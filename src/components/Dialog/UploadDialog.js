@@ -1,46 +1,104 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import Dialog from '@material-ui/core/Dialog'
+import { uploadMedia } from '../../services/WordPress'
+
+import OptionsDialog from './OptionsDialog'
+import AlbumDialog from './AlbumDialog'
+import ImageDialog from './ImageDialog'
 
 class UploadDialog extends Component {
-  state = {
-    options: this.props.options
+  constructor(props) {
+    super(props)
+    const options = ['Upload from Facebook', 'Upload from Device']
+    const optionsDialog = (
+      <OptionsDialog
+        options={options}
+        open={true}
+        onClose={this.handleOptionsDialogClose.bind(this)} />
+    )
+    this.state = {
+      currentDialog: optionsDialog
+    }
+    this.handleImageChanged = this.handleImageChanged.bind(this)
   }
+  
+  inputElement = null
 
-  handleClose = () => {
-    this.props.onClose(this.props.selectedValue)
-  }
+  handleOptionsDialogClose(value) {
+    if (value === 'Upload from Device') {
+      this.inputElement.click()
+      this.setState({ currentDialog: null }) // TODO: Destroy UploadDialog component
+		} else {
+      const albumDialog = (
+        <AlbumDialog
+          token={this.props.token}
+          open={true}
+          onClose={this.handleAlbumDialogClose.bind(this)} />
+      )
+      this.setState({ currentDialog: albumDialog })
+    }
+	}
 
-  handleListItemClick = value => {
-    this.props.onClose(value)
+  handleAlbumDialogClose(value) {
+    console.log(value)
+    const imageDialog = (
+      <ImageDialog
+        album={value}
+        token={this.props.token}
+        open={true}
+        onClose={this.handleImageDialogClose.bind(this)} />
+    )
+		this.setState({
+			currentDialog: value != null ? imageDialog : null // TODO: Destroy UploadDialog component
+		})
+	}
+
+  handleImageDialogClose(value) {
+		this.props.onClose(value)
   }
+  
+  handleImageChanged(event) {
+		// if (event.target.files && event.target.files[0]) {
+		// 	let reader = new FileReader();
+		// 	reader.onload = (e) => {
+    //     console.log(e.target.result)
+		// 	}
+		// 	reader.readAsDataURL(event.target.files[0]);
+    // }
+    
+    // uploadMedia(product.imageFile)
+		// .then(res => {
+		// 	console.log(res)
+		// 	product.imageUrl = res.data.source_url
+		// 	createProduct(product)
+		// 	.then(res => {
+		// 		console.log(res)
+		// 	})
+		// 	.catch(err => {
+		// 		console.log(err)
+		// 	})
+		// })
+		// .catch(err => {
+		// 	console.log(err)
+		// })
+	}
 
   render() {
-    const { classes, onClose, selectedValue, ...other } = this.props
+    const { currentDialog } = this.state
     return (
-      <Dialog onClose={this.handleClose} aria-labelledby="upload-dialog-title" {...other}>
-        <DialogTitle id="upload-dialog-title">Upload Image</DialogTitle>
-        <div>
-          <List>
-            {this.state.options.map(option => (
-              <ListItem button onClick={() => this.handleListItemClick(option)} key={option}>
-                <ListItemText primary={option} />
-              </ListItem>
-            ))}
-          </List>
-        </div>
-      </Dialog>
+      <div>
+        {currentDialog && (
+          currentDialog
+        )}
+        <input
+          ref={input => this.inputElement = input}
+          onChange={this.handleImageChanged}
+          style={{display: 'none'}}
+          name="imageFile"
+          type="file"
+        />
+      </div>
     )
   }
-}
-
-UploadDialog.propTypes = {
-  onClose: PropTypes.func,
-  selectedValue: PropTypes.string,
 }
 
 export default UploadDialog

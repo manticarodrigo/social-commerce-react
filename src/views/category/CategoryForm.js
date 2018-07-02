@@ -4,10 +4,8 @@ import Button from '@material-ui/core/Button'
 import FileUpload from '@material-ui/icons/FileUpload'
 
 import UploadDialog from '../../components/Dialog/UploadDialog'
-import AlbumDialog from '../../components/Dialog/AlbumDialog'
-import ImageDialog from '../../components/Dialog/ImageDialog'
 
-import { uploadMedia, createCategory, updateUser, updateUserMeta } from '../../services/WordPress'
+import { uploadMedia, createCategory } from '../../services/WordPress'
 
 const style = {
 	saveButton: {
@@ -23,69 +21,36 @@ const style = {
 export class CategoryForm extends Component {
 	constructor(props) {
 		super(props)
+		this.state = {
+			id: this.props.profile.id ? this.props.profile.id : '',
+			businessName: '',
+			businessLogo: '',
+			name: this.props.profile.name ? this.props.profile.name : '',
+			email: this.props.profile.email ? this.props.profile.email : '',
+			phone: '',
+			dni: '',
+			ruc: '',
+			bankAccount: '',
+			logisticProvider: '',
+			uploadDialogOpen: false
+		}
+
 		this.handleSubmit = this.handleSubmit.bind(this)
-		this.handleChange = this.handleChange.bind(this)
-	}
-	inputElement = null
-	state = {
-		id: this.props.profile.id ? this.props.profile.id : '',
-		businessName: '',
-		businessLogo: '',
-		name: this.props.profile.name ? this.props.profile.name : '',
-		email: this.props.profile.email ? this.props.profile.email : '',
-		phone: '',
-		dni: '',
-		ruc: '',
-		bankAccountt: '',
-		logisticProvider: '',
-		uploadDialogOpen: false,
-    	albumDialogOpen: false,
-		selectedAlbumValue: null,
-		imageDialogOpen: false,
-		selectedImageValue: null
+		this.handleInputChange = this.handleInputChange.bind(this)
+		this.handleUploadDialogOpen = this.handleUploadDialogOpen.bind(this)
+		this.handleUploadDialogClose = this.handleUploadDialogClose.bind(this)
 	}
 	
-	handleUploadDialogOpen = () => {
+	handleUploadDialogOpen() {
     this.setState({
 			uploadDialogOpen: true
 		})
   }
 
-  handleUploadDialogClose = value => {
+  handleUploadDialogClose(value) {
 		this.setState({
 			uploadDialogOpen: false,
-			albumDialogOpen: value === 'Upload from Facebook' ? true : false
-		})
-		if (value === 'Upload from Device') {
-			this.inputElement.click()
-		}
-	}
-
-  handleAlbumDialogOpen = () => {
-    this.setState({
-			albumDialogOpen: true
-		})
-  }
-
-  handleAlbumDialogClose = value => {
-		this.setState({
-			selectedAlbumValue: value,
-			albumDialogOpen: false,
-			imageDialogOpen: value != null ? true : false
-		})
-	}
-
-	handleImageDialogOpen = () => {
-    this.setState({
-			imageDialogOpen: true
-		})
-  }
-
-  handleImageDialogClose = value => {
-		this.setState({
-			businessLogo: value,
-			selectedImageValue: value,
-			imageDialogOpen: false
+			businessLogo: value
 		})
 	}
 	
@@ -93,13 +58,6 @@ export class CategoryForm extends Component {
 		event.preventDefault()
 		const profile = this.state
 		const { auth } = this.props
-		// updateUser(auth, profile)
-		// .then(res => {
-		// 	console.log(res)
-		// })
-		// .catch(err => {
-		// 	console.log(err)
-		// })
 		createCategory(auth, profile)
 		.then(res => {
 			console.log(res);
@@ -112,7 +70,7 @@ export class CategoryForm extends Component {
 		});
   }
   
-	handleChange(event) {
+	handleInputChange(event) {
 	  const target = event.target;
 	  const value = target.type === 'checkbox' ? target.checked : target.value	
 	  const name = target.name;
@@ -120,37 +78,16 @@ export class CategoryForm extends Component {
 			[name]: value
 	  })
 	}
-
-	handleImageChanged(event) {
-		if (event.target.files && event.target.files[0]) {
-			let reader = new FileReader();
-			reader.onload = (e) => {
-					this.setState({businessLogo: e.target.result})
-			}
-			reader.readAsDataURL(event.target.files[0]);
-		}
-	}
   
 	render() {
+		const { token } = this.props
+		const { uploadDialogOpen } = this.state
 	  return (
 			<div>
-				<UploadDialog
-					options={['Upload from Facebook', 'Upload from Device']}
-          selectedValue={this.state.selectedUploadValue}
-          open={this.state.uploadDialogOpen}
-          onClose={this.handleUploadDialogClose} />
-				<AlbumDialog
-					token={this.props.token}
-          selectedValue={this.state.selectedAlbumValue}
-          open={this.state.albumDialogOpen}
-          onClose={this.handleAlbumDialogClose} />
-				{this.state.imageDialogOpen && (
-					<ImageDialog
-						album={this.state.selectedAlbumValue}
-						token={this.props.token}
-						selectedValue={this.state.selectedImageValue}
-						open={this.state.imageDialogOpen}
-						onClose={this.handleImageDialogClose} />
+				{uploadDialogOpen && (
+					<UploadDialog
+						token={token}
+						onClose={this.handleUploadDialogClose} />
 				)}
 				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
 					<div>
@@ -165,20 +102,13 @@ export class CategoryForm extends Component {
 							<FileUpload style={{display: this.state.businessLogo === '' ? 'block' : 'none'}} />
 							<img style={{display: this.state.businessLogo !== '' ? 'block' : 'none', width: '88px', height: '88px', objectFit: 'cover'}} src={this.state.businessLogo} alt={this.state.businessLogo} />
 						</Button>
-						<input
-								ref={input => this.inputElement = input}
-								onChange={this.handleImageChanged.bind(this)}
-								style={{display: 'none'}}
-								name="businessLogo"
-								type="file"
-							/>
 						<TextField
 							style={{width: 'calc(100% - 104px'}}
 							margin="normal"
 							label="Negocio"
 							name="businessName"
-							checked={this.state.businessName}
-							onChange={this.handleChange} />
+							value={this.state.businessName}
+							onChange={this.handleInputChange} />
 					</div>
 					<TextField
 						fullWidth
@@ -186,42 +116,42 @@ export class CategoryForm extends Component {
 						label="Nombre"
 						name="name"
 						value={this.state.name}
-						onChange={this.handleChange} />
+						onChange={this.handleInputChange} />
 					<TextField
 						fullWidth
 						margin="normal"
 						label="Email"
 						name="email"
 						value={this.state.email}
-						onChange={this.handleChange} />
+						onChange={this.handleInputChange} />
 					<TextField
 						fullWidth
 						margin="normal"
 						label="Telefono"
 						name="phone"
 						value={this.state.phone}
-						onChange={this.handleChange} />
+						onChange={this.handleInputChange} />
 					<TextField
 						fullWidth
 						margin="normal"
 						label="DNI"
 						name="dni"
 						value={this.state.dni}
-						onChange={this.handleChange} />
+						onChange={this.handleInputChange} />
 					<TextField
 						fullWidth
 						margin="normal"
 						label="RUC"
 						name="ruc"
 						value={this.state.ruc}
-						onChange={this.handleChange} />
+						onChange={this.handleInputChange} />
 					<TextField
 						fullWidth
 						margin="normal"
 						label="Cuenta de Banco"
 						name="bankAccount"
 						value={this.state.bankAccount}
-						onChange={this.handleChange} />
+						onChange={this.handleInputChange} />
 				</form>
 				<Button onClick={this.handleSubmit} style={style.saveButton} size='large' variant="contained" color="primary">
 					Continua

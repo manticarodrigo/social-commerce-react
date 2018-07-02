@@ -64,12 +64,22 @@ class App extends Component {
               <NavBar user={user} />
               <div className='Content'>
                 { !wpTermId ? (
-                  <CategoryForm profile={user.profile} token={user.token} auth={auth} handleWpTerm={this.handleWpTerm.bind(this)} />
+                  <CategoryForm
+                    profile={user.profile}
+                    token={user.token}
+                    auth={auth}
+                    handleWpTerm={this.handleWpTerm.bind(this)} />
                 ) : (
                   !productsCreated ? (
-                    <ProductForm profile={user.profile} token={user.token} auth={auth} handleSubmit={this.handleProductsSent.bind(this)} wpTermId={this.state.wpTermId} />
+                    <ProductForm
+                      profile={user.profile}
+                      token={user.token}
+                      auth={auth}
+                      handleSubmit={this.handleProductsSent.bind(this)}
+                      wpTermId={this.state.wpTermId} />
                   ) : (
-                    <Catalog wpTermLink={wpTermLink} />
+                    <Catalog
+                      wpTermLink={wpTermLink} />
                   )
                 )}
               </div>

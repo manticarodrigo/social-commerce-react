@@ -4,10 +4,8 @@ import Button from '@material-ui/core/Button'
 import FileUpload from '@material-ui/icons/FileUpload'
 
 import UploadDialog from '../../components/Dialog/UploadDialog'
-import AlbumDialog from '../../components/Dialog/AlbumDialog'
-import ImageDialog from '../../components/Dialog/ImageDialog'
 
-import { uploadMedia, createProduct } from '../../services/WordPress'
+import { createProduct } from '../../services/WordPress'
 
 const style = {
 	saveButton: {
@@ -31,65 +29,31 @@ export class ProductForm extends Component {
 			imageUrl: '',
 			imageFile: null,
 			uploadDialogOpen: false,
-			albumDialogOpen: false,
-			selectedAlbumValue: null,
-			imageDialogOpen: false,
-			selectedImageValue: null,
 			wpTermId: this.props.wpTermId
 	  }
 		this.handleSubmit = this.handleSubmit.bind(this)
-		this.handleChange = this.handleChange.bind(this)
+		this.handleInputChange = this.handleInputChange.bind(this)
+		this.handleUploadDialogOpen = this.handleUploadDialogOpen.bind(this)
+		this.handleUploadDialogClose = this.handleUploadDialogClose.bind(this)
 	}
 
-	handleUploadDialogOpen = () => {
+	handleUploadDialogOpen() {
     this.setState({
 			uploadDialogOpen: true
 		})
   }
 
-  handleUploadDialogClose = value => {
+  handleUploadDialogClose(value) {
 		this.setState({
 			uploadDialogOpen: false,
-			albumDialogOpen: value === 'Upload from Facebook' ? true : false
-		})
-		if (value === 'Upload from Device') {
-			this.inputElement.click()
-		}
-	}
-
-  handleAlbumDialogOpen = () => {
-    this.setState({
-			albumDialogOpen: true
-		})
-  }
-
-  handleAlbumDialogClose = value => {
-		this.setState({
-			selectedAlbumValue: value,
-			albumDialogOpen: false,
-			imageDialogOpen: value != null ? true : false
-		})
-	}
-
-	handleImageDialogOpen = () => {
-    this.setState({
-			imageDialogOpen: true
-		})
-  }
-
-  handleImageDialogClose = value => {
-		this.setState({
-			imageUrl: value,
-			selectedImageValue: value,
-			imageDialogOpen: false
+			imageUrl: value
 		})
 	}
 	
   handleSubmit(event) {
 		event.preventDefault()
 		const product = this.state
-		
-		// Media is uploaded by woocommerce, when pass an url
+		// Media is uploaded by woocommerce, when pass a url
 		createProduct(product)
 		  .then(res => {
 				console.log(res)
@@ -98,27 +62,9 @@ export class ProductForm extends Component {
 		  .catch(err => {
 		    console.log(err)
 		  })
-
-		// We should find a way to send an file or a url
-		
-		// uploadMedia(product.imageFile)
-		// .then(res => {
-		// 	console.log(res)
-		// 	product.imageUrl = res.data.source_url
-		// 	createProduct(product)
-		// 	.then(res => {
-		// 		console.log(res)
-		// 	})
-		// 	.catch(err => {
-		// 		console.log(err)
-		// 	})
-		// })
-		// .catch(err => {
-		// 	console.log(err)
-		// })
   }
   
-	handleChange(event) {
+	handleInputChange(event) {
 	  const target = event.target;
 	  const value = target.type === 'checkbox' ? target.checked : target.value	
 	  const name = target.name;
@@ -131,33 +77,22 @@ export class ProductForm extends Component {
 		if (event.target.files && event.target.files[0]) {
 			this.setState({imageFile: event.target.files[0]})
 			let reader = new FileReader();
-			// reader.onload = (e) => {
-			// 	this.setState({imageUrl: e.target.result})
-			// }
+			reader.onload = (e) => {
+				this.setState({imageUrl: e.target.result})
+			}
 			reader.readAsDataURL(event.target.files[0])
 		}
 	}
   
 	render() {
+		const { token } = this.props
+		const { uploadDialogOpen } = this.state
 	  return (
 			<div>
-				<UploadDialog
-					options={['Upload from Facebook', 'Upload from Device']}
-          			selectedValue={this.state.selectedUploadValue}
-			        open={this.state.uploadDialogOpen}
-			        onClose={this.handleUploadDialogClose} />
-				<AlbumDialog
-					token={this.props.token}
-			        selectedValue={this.state.selectedAlbumValue}
-			        open={this.state.albumDialogOpen}
-			        onClose={this.handleAlbumDialogClose} />
-				{this.state.imageDialogOpen && (
-					<ImageDialog
-						album={this.state.selectedAlbumValue}
-						token={this.props.token}
-						selectedValue={this.state.selectedImageValue}
-						open={this.state.imageDialogOpen}
-						onClose={this.handleImageDialogClose} />
+				{uploadDialogOpen && (
+					<UploadDialog
+						token={token}
+						onClose={this.handleUploadDialogClose} />
 				)}
 				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
 					<div>
@@ -184,29 +119,29 @@ export class ProductForm extends Component {
 						margin="normal"
 						label="Titulo"
 						name="title"
-						checked={this.state.title}
-						onChange={this.handleChange} />
+						value={this.state.title}
+						onChange={this.handleInputChange} />
 					<TextField
 						fullWidth
 						margin="normal"
 						label="Descripción"
 						name="description"
-						checked={this.state.description}
-						onChange={this.handleChange} />
+						value={this.state.description}
+						onChange={this.handleInputChange} />
 					<TextField
 						fullWidth
 						margin="normal"
 						label="Costo"
 						name="cost"
-						checked={this.state.cost}
-						onChange={this.handleChange} />
+						value={this.state.cost}
+						onChange={this.handleInputChange} />
 					<TextField
 						fullWidth
 						margin="normal"
 						label="Cantidad de Inventario"
 						name="inventoryCount"
-						checked={this.state.inventoryCount}
-						onChange={this.handleChange} />
+						value={this.state.inventoryCount}
+						onChange={this.handleInputChange} />
 				</form>
 				<Button onClick={this.handleSubmit} style={style.saveButton} size='large' variant="contained" color="primary">
 					Agrega Producto
