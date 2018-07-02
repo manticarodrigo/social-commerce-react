@@ -13,9 +13,6 @@ import IconButton from '@material-ui/core/IconButton'
 
 import NavBar from '../../components/NavBar/NavBar'
 
-import ProfileForm from '../profile-form/ProfileForm'
-import ProductForm from '../product-form/ProductForm'
-
 const style = {
 	
 }

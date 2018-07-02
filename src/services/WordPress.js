@@ -17,14 +17,7 @@ export function createCategory(auth, profile) {
 		bankAccount: profile.bankAccount,
 		logisticProvider: profile.logisticProvider
 	}
-	console.log(data);
-	const options = {
-		auth: {
-			username: 'ck_f684a0eb45fa52beb1f04769592af6d8d536b306',
-			password: 'cs_5497e0d935de4b2fb31de3d0f13ca420a24ced7e'
-		}
-	}
-	return axios.post(url + '/wp-json/socialcommerce/v1/profiles/create/', data, options)
+	return axios.post(url + '/wp-json/socialcommerce/v1/profiles/create/', data)
 }
 
 export function updateUser(auth, profile) {
@@ -66,14 +59,25 @@ export function createProduct(product) {
 		stock_quantity: product.inventoryCount,
 		in_stock: true,
 	}
-	console.log(data)
-	const options = {
-		auth: {
-			username: 'ck_f684a0eb45fa52beb1f04769592af6d8d536b306',
-			password: 'cs_5497e0d935de4b2fb31de3d0f13ca420a24ced7e'
-		}
+	return axios.post(url + '/wp-json/wc/v2/products/', data)
+}
+
+export function createProducts(products) {
+	var data = {create:[]}
+	for (var product in products) {
+		data.create.push({
+			name: product.title,
+			regular_price: product.cost,
+			description: product.description,
+			short_description: product.description,
+			categories: [{id: product.wpTermId}],
+			images: [{src: product.imageUrl, position: 0}],
+			manage_stock: true,
+			stock_quantity: product.inventoryCount,
+			in_stock: true,
+		})
 	}
-	return axios.post(url + '/wp-json/wc/v2/products/', data, options)
+	return axios.post(url + '/wp-json/wc/v2/products/batch', data)
 }
 
 export function uploadMedia(file) {

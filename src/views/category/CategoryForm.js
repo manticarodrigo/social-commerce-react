@@ -20,7 +20,7 @@ const style = {
 	}
 }
 
-export class ProfileForm extends Component {
+export class CategoryForm extends Component {
 	constructor(props) {
 		super(props)
 		this.handleSubmit = this.handleSubmit.bind(this)

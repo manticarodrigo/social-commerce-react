@@ -4,8 +4,8 @@ import './App.css'
 
 import NavBar from './components/NavBar/NavBar'
 
-import { ProfileForm } from './views/profile-form/ProfileForm'
-import { ProductForm } from './views/product-form/ProductForm'
+import { CategoryForm } from './views/category/CategoryForm'
+import { ProductForm } from './views/product/ProductForm'
 import { Catalog } from './views/catalog/Catalog'
 
 import { facebookLogin } from './services/WordPress'
@@ -64,7 +64,7 @@ class App extends Component {
               <NavBar user={user} />
               <div className='Content'>
                 { !wpTermId ? (
-                  <ProfileForm profile={user.profile} token={user.token} auth={auth} handleWpTerm={this.handleWpTerm.bind(this)} />
+                  <CategoryForm profile={user.profile} token={user.token} auth={auth} handleWpTerm={this.handleWpTerm.bind(this)} />
                 ) : (
                   !productsCreated ? (
                     <ProductForm profile={user.profile} token={user.token} auth={auth} handleSubmit={this.handleProductsSent.bind(this)} wpTermId={this.state.wpTermId} />
