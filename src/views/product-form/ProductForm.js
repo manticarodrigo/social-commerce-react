@@ -92,7 +92,8 @@ export class ProductForm extends Component {
 		// Media is uploaded by woocommerce, when pass an url
 		createProduct(product)
 		  .then(res => {
-		    console.log(res)
+				console.log(res)
+				this.props.handleSubmit()
 		  })
 		  .catch(err => {
 		    console.log(err)

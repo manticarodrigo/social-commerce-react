@@ -4,10 +4,9 @@ import './App.css'
 
 import NavBar from './components/NavBar/NavBar'
 
-import { Dashboard } from './views/dashboard/Dashboard'
-
 import { ProfileForm } from './views/profile-form/ProfileForm'
 import { ProductForm } from './views/product-form/ProductForm'
+import { Catalog } from './views/catalog/Catalog'
 
 import { facebookLogin } from './services/WordPress'
 
@@ -17,7 +16,8 @@ class App extends Component {
     auth: null,
     category: null,
     login: true,
-    wpTermId: 48 // remember to switch to false
+    wpTermId: false, // set to false in prod
+    productsCreate: false
   }
 
   toggleLogin() {
@@ -41,8 +41,12 @@ class App extends Component {
   }
 
   handleWpTerm(wpTermId) {
-    console.log('Term Created, id: ', wpTermId);
-    this.setState({ wpTermId: wpTermId });
+    console.log('Term Created, id: ', wpTermId)
+    this.setState({ wpTermId: wpTermId })
+  }
+
+  handleProductsSent() {
+    this.setState({ productsCreated: true })
   }
 
   responseGoogle(response) {
@@ -51,9 +55,10 @@ class App extends Component {
   }
 
   render() {
-    const user = this.state.user;
-    const auth = this.state.auth;
-    const wpTermId = this.state.wpTermId;
+    const user = this.state.user
+    const auth = this.state.auth
+    const wpTermId = this.state.wpTermId
+    const productsCreated = this.state.productsCreated
     return (
       <div className="App">
           {user ? (
@@ -62,10 +67,13 @@ class App extends Component {
               <div className='Content'>
                 { !wpTermId ? (
                   <ProfileForm profile={user.profile} token={user.token} auth={auth} handleWpTerm={this.handleWpTerm.bind(this)} />
+                ) : (
+                  !productsCreated ? (
+                    <ProductForm profile={user.profile} token={user.token} auth={auth} handleSubmit={this.handleProductsSent.bind(this)} wpTermId={this.state.wpTermId} />
                   ) : (
-                    <ProductForm profile={user.profile} token={user.token} auth={auth} wpTermId={this.state.wpTermId} />
+                    <Catalog wpTermId={this.state.wpTermId} />
                   )
-                }
+                )}
               </div>
             </div>
           ) : (
