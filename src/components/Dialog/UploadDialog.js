@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { uploadMedia } from '../../services/WordPress'
+// import { uploadMedia } from '../../services/WordPress'
 
 import OptionsDialog from './OptionsDialog'
 import AlbumDialog from './AlbumDialog'

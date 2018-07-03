@@ -1,0 +1,14 @@
+.ApproveButton {
+  width: calc(100% - 2em);
+  height: 50px;
+  margin: 1em !important;
+}
+
+.SocialMediaShareButton,
+.SocialMediaShareButton div {
+  display: inline-block;
+}
+
+.SocialMediaShareButton div {
+  padding: 0.5em;
+}

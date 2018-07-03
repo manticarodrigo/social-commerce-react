@@ -3,6 +3,8 @@ import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import FileUpload from '@material-ui/icons/FileUpload'
 
+import NavBar from '../../components/NavBar/NavBar'
+
 import UploadDialog from '../../components/Dialog/UploadDialog'
 
 import { createProduct } from '../../services/WordPress'
@@ -20,7 +22,7 @@ const style = {
 
 export class ProductForm extends Component {
 	constructor(props) {
-	  super(props);
+	  super(props)
 	  this.state = {
 			title: '',
 			description: '',
@@ -29,7 +31,7 @@ export class ProductForm extends Component {
 			imageUrl: '',
 			imageFile: null,
 			uploadDialogOpen: false,
-			wpTermId: this.props.wpTermId
+			category: this.props.category
 	  }
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleInputChange = this.handleInputChange.bind(this)
@@ -52,9 +54,8 @@ export class ProductForm extends Component {
 	
   handleSubmit(event) {
 		event.preventDefault()
-		const product = this.state
-		// Media is uploaded by woocommerce, when pass a url
-		createProduct(product)
+		const data = this.state
+		createProduct(data)
 		  .then(res => {
 				console.log(res)
 				this.props.handleSubmit()
@@ -89,63 +90,66 @@ export class ProductForm extends Component {
 		const { uploadDialogOpen } = this.state
 	  return (
 			<div>
-				{uploadDialogOpen && (
-					<UploadDialog
-						token={token}
-						onClose={this.handleUploadDialogClose} />
-				)}
-				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
-					<div>
-						<Button
-							style={{width: '88px', height: '88px', margin: '0 16px 0 0'}}
-							variant="outlined"
-							component="label"
-							color="primary"
-							onClick={this.handleUploadDialogOpen}
-						>
-							{this.state.imageUrl === '' ? 'Foto' : null}
-							<FileUpload style={{display: this.state.imageUrl === '' ? 'block' : 'none'}} />
-							<img style={{display: this.state.imageUrl !== '' ? 'block' : 'none', width: '88px', height: '88px', objectFit: 'cover'}} src={this.state.imageUrl} alt={this.state.imageUrl} />
-						</Button>
-						<input
-								ref={input => this.inputElement = input}
-								onChange={this.handleImageChanged.bind(this)}
-								style={{display: 'none'}}
-								type="file"
-							/>
-					</div>
-					<TextField
-						fullWidth
-						margin="normal"
-						label="Titulo"
-						name="title"
-						value={this.state.title}
-						onChange={this.handleInputChange} />
-					<TextField
-						fullWidth
-						margin="normal"
-						label="Descripción"
-						name="description"
-						value={this.state.description}
-						onChange={this.handleInputChange} />
-					<TextField
-						fullWidth
-						margin="normal"
-						label="Costo"
-						name="cost"
-						value={this.state.cost}
-						onChange={this.handleInputChange} />
-					<TextField
-						fullWidth
-						margin="normal"
-						label="Cantidad de Inventario"
-						name="inventoryCount"
-						value={this.state.inventoryCount}
-						onChange={this.handleInputChange} />
-				</form>
-				<Button onClick={this.handleSubmit} style={style.saveButton} size='large' variant="contained" color="primary">
-					Agrega Producto
-				</Button>
+				<NavBar title='Crear Productos' />
+				<div className='Content'>
+					{uploadDialogOpen && (
+						<UploadDialog
+							token={token}
+							onClose={this.handleUploadDialogClose} />
+					)}
+					<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
+						<div>
+							<Button
+								style={{width: '88px', height: '88px', margin: '0 16px 0 0'}}
+								variant='outlined'
+								component='label'
+								color='primary'
+								onClick={this.handleUploadDialogOpen}
+							>
+								{this.state.imageUrl === '' ? 'Foto' : null}
+								<FileUpload style={{display: this.state.imageUrl === '' ? 'block' : 'none'}} />
+								<img style={{display: this.state.imageUrl !== '' ? 'block' : 'none', width: '88px', height: '88px', objectFit: 'cover'}} src={this.state.imageUrl} alt={this.state.imageUrl} />
+							</Button>
+							<input
+									ref={input => this.inputElement = input}
+									onChange={this.handleImageChanged.bind(this)}
+									style={{display: 'none'}}
+									type='file'
+								/>
+						</div>
+						<TextField
+							fullWidth
+							margin='normal'
+							label='Titulo'
+							name='title'
+							value={this.state.title}
+							onChange={this.handleInputChange} />
+						<TextField
+							fullWidth
+							margin='normal'
+							label='Descripción'
+							name='description'
+							value={this.state.description}
+							onChange={this.handleInputChange} />
+						<TextField
+							fullWidth
+							margin='normal'
+							label='Costo'
+							name='cost'
+							value={this.state.cost}
+							onChange={this.handleInputChange} />
+						<TextField
+							fullWidth
+							margin='normal'
+							label='Cantidad de Inventario'
+							name='inventoryCount'
+							value={this.state.inventoryCount}
+							onChange={this.handleInputChange} />
+					</form>
+					<Button onClick={this.handleSubmit} style={style.saveButton} size='large' variant='contained' color='primary'>
+						Agrega Producto
+					</Button>
+				</div>
 			</div>
 	  )
 	}

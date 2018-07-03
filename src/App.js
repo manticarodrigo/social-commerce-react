@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import SocialButton from './components/SocialButton/SocialButton'
 import './App.css'
 
-import NavBar from './components/NavBar/NavBar'
-
 import { CategoryForm } from './views/category/CategoryForm'
 import { ProductForm } from './views/product/ProductForm'
 import { Catalog } from './views/catalog/Catalog'
@@ -11,14 +9,15 @@ import { Catalog } from './views/catalog/Catalog'
 import { facebookLogin } from './services/WordPress'
 
 class App extends Component {
-  state = {
-    user: null,
-    auth: null,
-    category: null,
-    login: true,
-    wpTermId: false, // set to false in prod
-    wpTermLink: false,
-    productsCreate: false
+  constructor(props) {
+    super(props)
+    this.state = {
+      login: true,
+      user: null,
+      auth: null,
+      category: null,
+      productsCreated: false
+    }
   }
 
   toggleLogin() {
@@ -32,6 +31,13 @@ class App extends Component {
       .then(res => {
         console.log(res)
         if (res.status === 200) {
+          // // Test state
+          // const testCategory = {
+          //   term_id: 16,
+          //   term_link: 'http://localhost:8080/product-category/test',
+          //   term_name: 'Test'
+          // }
+          // this.setState({category: testCategory, productsCreated: true})
           this.setState({user: response, auth: res.data})
         }
       })
@@ -41,9 +47,9 @@ class App extends Component {
     }
   }
 
-  handleWpTerm(wpTermId, wpTermLink) {
-    console.log('Term Created, id: ', wpTermId)
-    this.setState({ wpTermId: wpTermId, wpTermLink: wpTermLink })
+  handleCategorySent(category) {
+    console.log('Term created, id: ', category.term_id)
+    this.setState({ category: category })
   }
 
   handleProductsSent() {
@@ -56,33 +62,30 @@ class App extends Component {
   }
 
   render() {
-    const { user, auth, wpTermId, wpTermLink, productsCreated } = this.state
+    const { user, auth, category, productsCreated } = this.state
     return (
       <div className="App">
           {user ? (
-            <div>
-              <NavBar user={user} />
-              <div className='Content'>
-                { !wpTermId ? (
-                  <CategoryForm
+            <div style={{height: '100%'}}>
+              { !category ? (
+                <CategoryForm
+                  profile={user.profile}
+                  token={user.token}
+                  auth={auth}
+                  handleSubmit={this.handleCategorySent.bind(this)} />
+              ) : (
+                !productsCreated ? (
+                  <ProductForm
                     profile={user.profile}
                     token={user.token}
                     auth={auth}
-                    handleWpTerm={this.handleWpTerm.bind(this)} />
+                    handleSubmit={this.handleProductsSent.bind(this)}
+                    category={category} />
                 ) : (
-                  !productsCreated ? (
-                    <ProductForm
-                      profile={user.profile}
-                      token={user.token}
-                      auth={auth}
-                      handleSubmit={this.handleProductsSent.bind(this)}
-                      wpTermId={this.state.wpTermId} />
-                  ) : (
-                    <Catalog
-                      wpTermLink={wpTermLink} />
-                  )
-                )}
-              </div>
+                  <Catalog
+                    category={category} />
+                )
+              )}
             </div>
           ) : (
             <div className='Login'>
