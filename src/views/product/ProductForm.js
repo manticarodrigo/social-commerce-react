@@ -55,14 +55,25 @@ export class ProductForm extends Component {
   handleSubmit(event) {
 		event.preventDefault()
 		const data = this.state
-		createProduct(data)
-		  .then(res => {
-				console.log(res)
-				this.props.handleSubmit()
-		  })
-		  .catch(err => {
-		    console.log(err)
-		  })
+		const { title, description, cost, inventoryCount, imageUrl } = this.state
+		if (
+			title != '' &&
+			description != '' &&
+			cost != '' &&
+			inventoryCount != '' &&
+			imageUrl != ''
+		) {
+			createProduct(data)
+				.then(res => {
+					console.log(res)
+					this.props.handleSubmit()
+				})
+				.catch(err => {
+					console.log(err)
+				})
+		} else {
+			alert('Favor llenar campos requeridos.')
+		}
   }
   
 	handleInputChange(event) {
@@ -118,6 +129,7 @@ export class ProductForm extends Component {
 								/>
 						</div>
 						<TextField
+							required
 							fullWidth
 							margin='normal'
 							label='Titulo'
@@ -125,6 +137,7 @@ export class ProductForm extends Component {
 							value={this.state.title}
 							onChange={this.handleInputChange} />
 						<TextField
+							required
 							fullWidth
 							margin='normal'
 							label='Descripción'
@@ -132,6 +145,7 @@ export class ProductForm extends Component {
 							value={this.state.description}
 							onChange={this.handleInputChange} />
 						<TextField
+							required
 							fullWidth
 							margin='normal'
 							label='Costo'
@@ -139,6 +153,7 @@ export class ProductForm extends Component {
 							value={this.state.cost}
 							onChange={this.handleInputChange} />
 						<TextField
+							required
 							fullWidth
 							margin='normal'
 							label='Cantidad de Inventario'

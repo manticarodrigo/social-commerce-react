@@ -60,17 +60,30 @@ export class CategoryForm extends Component {
   handleSubmit(event) {
 		event.preventDefault()
 		const data = this.state
+		const { businessName, businessLogo, name, email, phone, dni } = this.state
 		const { auth } = this.props
-		createCategory(auth, data)
-		.then(res => {
-			console.log(res)
-			if (res.data && res.data.term_id !== null) {
-				this.props.handleSubmit(res.data)
-			}
-		})
-		.catch(err => {
-			console.log(err)
-		})
+		if (
+			businessName != '' &&
+			businessLogo != '' &&
+			name != '' &&
+			email != '' &&
+			phone != '' &&
+			dni != ''
+		) {
+			createCategory(auth, data)
+			.then(res => {
+				console.log(res)
+				if (res.data && res.data.term_id !== null) {
+					this.props.handleSubmit(res.data)
+				}
+			})
+			.catch(err => {
+				console.log(err)
+			})
+		} else {
+			alert('Favor llenar campos requeridos.')
+		}
+		
   }
   
 	handleInputChange(event) {
@@ -108,6 +121,7 @@ export class CategoryForm extends Component {
 								<img style={{display: this.state.businessLogo !== '' ? 'block' : 'none', width: '88px', height: '88px', objectFit: 'cover'}} src={this.state.businessLogo} alt={this.state.businessLogo} />
 							</Button>
 							<TextField
+								required
 								style={{width: 'calc(100% - 104px'}}
 								margin='normal'
 								label='Negocio'
@@ -116,6 +130,7 @@ export class CategoryForm extends Component {
 								onChange={this.handleInputChange} />
 						</div>
 						<TextField
+							required
 							fullWidth
 							margin='normal'
 							label='Nombre'
@@ -123,6 +138,7 @@ export class CategoryForm extends Component {
 							value={this.state.name}
 							onChange={this.handleInputChange} />
 						<TextField
+							required
 							fullWidth
 							margin='normal'
 							label='Email'
@@ -130,6 +146,7 @@ export class CategoryForm extends Component {
 							value={this.state.email}
 							onChange={this.handleInputChange} />
 						<TextField
+							required
 							fullWidth
 							margin='normal'
 							label='Telefono'
@@ -137,6 +154,7 @@ export class CategoryForm extends Component {
 							value={this.state.phone}
 							onChange={this.handleInputChange} />
 						<TextField
+							required
 							fullWidth
 							margin='normal'
 							label='DNI'
