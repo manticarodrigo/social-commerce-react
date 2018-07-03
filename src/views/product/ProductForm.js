@@ -46,7 +46,7 @@ export class ProductForm extends Component {
   handleUploadDialogClose(value) {
 		this.setState({
 			uploadDialogOpen: false,
-			imageUrl: value
+			imageUrl: value !== undefined ? value : ''
 		})
 	}
 	

@@ -24,9 +24,11 @@ class UploadDialog extends Component {
   inputElement = null
 
   handleOptionsDialogClose(value) {
-    if (value === 'Upload from Device') {
+    if (value === undefined) {
+      this.props.onClose(value)
+    } else if (value === 'Upload from Device') {
       this.inputElement.click()
-      this.setState({ currentDialog: null }) // TODO: Destroy UploadDialog component
+      this.setState({ currentDialog: null })
 		} else {
       const albumDialog = (
         <AlbumDialog
@@ -39,17 +41,18 @@ class UploadDialog extends Component {
 	}
 
   handleAlbumDialogClose(value) {
-    console.log(value)
-    const imageDialog = (
-      <ImageDialog
-        album={value}
-        token={this.props.token}
-        open={true}
-        onClose={this.handleImageDialogClose.bind(this)} />
-    )
-		this.setState({
-			currentDialog: value != null ? imageDialog : null // TODO: Destroy UploadDialog component
-		})
+    if (value === undefined) {
+      this.props.onClose(value)
+    } else {
+      const imageDialog = (
+        <ImageDialog
+          album={value}
+          token={this.props.token}
+          open={true}
+          onClose={this.handleImageDialogClose.bind(this)} />
+      )
+      this.setState({ currentDialog: imageDialog })
+    }
 	}
 
   handleImageDialogClose(value) {

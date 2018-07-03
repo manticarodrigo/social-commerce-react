@@ -50,7 +50,7 @@ export class CategoryForm extends Component {
   handleUploadDialogClose(value) {
 		this.setState({
 			uploadDialogOpen: false,
-			businessLogo: value
+			businessLogo: value !== undefined ? value : ''
 		})
 	}
 	
@@ -61,7 +61,7 @@ export class CategoryForm extends Component {
 		createCategory(auth, profile)
 		.then(res => {
 			console.log(res);
-			if (res.data && res.data.term_id != null) {
+			if (res.data && res.data.term_id !== null) {
 				this.props.handleWpTerm(res.data.term_id, res.data.term_link);
 			}
 		})

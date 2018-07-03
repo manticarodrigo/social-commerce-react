@@ -12,25 +12,25 @@ const style = {
 	}
 }
 export class Catalog extends Component {
-	constructor(props) {
-		super(props)
-	}
+	// constructor(props) {
+	// 	super(props)
+	// }
 	
-	shouldComponentUpdate() {
-		return false
-	}
+	// shouldComponentUpdate() {
+	// 	return false
+	// }
 
-	componentWillReceiveProps(nextProps) {
-		// if (this.props(old) !== nextProps(new) {
-		// 	// send message...
-		// }
-	}
+	// componentWillReceiveProps(nextProps) {
+	// 	if (this.props(old) !== nextProps(new) {
+	// 		// send message...
+	// 	}
+	// }
   
 	render() {
-		const { profile, wpTermLink } = this.props
+		const { wpTermLink } = this.props
 	  return (
 			<div style={style.fullSize}>
-				<iframe style={style.iframe} src={wpTermLink} />
+				<iframe title='catalog-preview' style={style.iframe} src={wpTermLink} />
 			</div>
 	  )
 	}
