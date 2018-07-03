@@ -87,7 +87,9 @@ export class Catalog extends Component {
 							children={<EmailIcon size={32} round={true} />} />
 					</div>
 				)}
+				<div className='IframeContainer'>
 				<iframe title='catalog-preview' style={style.iframe} src={category.term_link} />
+				</div>
 			</div>
 	  )
 	}
