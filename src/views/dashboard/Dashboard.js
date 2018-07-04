@@ -13,6 +13,7 @@ import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
 
 import NavBar from '../../components/NavBar/NavBar'
+import DeleteDialog from '../../components/Dialog/DeleteDialog'
 
 const style = {
 	fab: {
@@ -26,6 +27,7 @@ class Dashboard extends Component {
 		super(props)
 		this.state = {
 			dense: false,
+			deleteDialog: null
 		}
 
 		this.handleProductAdd = this.handleProductAdd.bind(this)
@@ -47,7 +49,13 @@ class Dashboard extends Component {
 	}
 
 	handleProductDelete(product) {
-		this.props.onDelete(product)
+		const deleteDialog = (
+			<DeleteDialog
+				product={product}
+				onClose={() => this.setState({ deleteDialog: null })}
+				onConfirm={() => this.props.onDelete(product)} />
+		)
+		this.setState({ deleteDialog: deleteDialog})
 	}
 
 	handleProductSelected(product) {
@@ -56,9 +64,10 @@ class Dashboard extends Component {
   
 	render() {
 		const { category, products } = this.props
-		const { dense } = this.state
+		const { dense, deleteDialog } = this.state
 	  return (
 			<div>
+				{deleteDialog}
 				<NavBar title={category ? 'Tienda ' + category.name : 'Tu Tienda'} />
 				<div className='Content'>
 					<List dense={dense}>
