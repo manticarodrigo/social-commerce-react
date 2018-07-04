@@ -35,6 +35,11 @@ class Dashboard extends Component {
 		} else if (!products) {
 			this.props.history.replace('/product/new')
 		}
+		this.handleAddProduct = this.handleAddProduct.bind(this)
+	}
+
+	handleAddProduct() {
+		this.props.history.replace('/product/new')
 	}
   
 	render() {
@@ -61,14 +66,19 @@ class Dashboard extends Component {
 									}
 								/>
 								<ListItemSecondaryAction>
-									<IconButton aria-label="Delete">
+									<IconButton aria-label='Delete'>
 										<DeleteIcon />
 									</IconButton>
 								</ListItemSecondaryAction>
 							</ListItem>
 						))}
 					</List>
-					<Button variant="fab" color="primary" aria-label="add" style={style.fab}>
+					<Button
+						variant='fab'
+						color='primary'
+						aria-label='add'
+						style={style.fab}
+						onClick={this.handleAddProduct}>
 						<AddIcon />
 					</Button>
 				</div>
