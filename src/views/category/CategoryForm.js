@@ -78,29 +78,11 @@ class CategoryForm extends Component {
 			})
 		}
 	}
-
-	// uploadImage(file) {
-	// 	uploadMedia(file)
-	// 	.then(res => {
-	// 		console.log(res)
-	// 		product.imageUrl = res.data.source_url
-	// 		createProduct(product)
-	// 		.then(res => {
-	// 			console.log(res)
-	// 		})
-	// 		.catch(err => {
-	// 			console.log(err)
-	// 		})
-	// 	})
-	// 	.catch(err => {
-	// 		console.log(err)
-	// 	})
-	// }
 	
   handleSubmit(event) {
 		event.preventDefault()
 		const data = this.state
-		const { businessName, businessLogo, name, email, phone, dni } = this.state
+		const { businessName, businessLogo, imageFile, name, email, phone, dni } = this.state
 		const { auth } = this.props
 		if (
 			businessName !== '' &&
@@ -110,16 +92,37 @@ class CategoryForm extends Component {
 			phone !== '' &&
 			dni !== ''
 		) {
-			createCategory(auth, data)
-			.then(res => {
-				console.log(res)
-				if (res.data && res.data.term_id !== null) {
-					this.props.onSubmit(res.data)
-				}
-			})
-			.catch(err => {
-				console.log(err)
-			})
+			if (imageFile) {
+				uploadMedia(imageFile)
+					.then(res => {
+						console.log(res)
+						data.imageId = res.data.id
+						createCategory(auth, data)
+							.then(res => {
+								console.log(res)
+								if (res.data && res.data.term_id !== null) {
+									this.props.onSubmit(res.data)
+								}
+							})
+							.catch(err => {
+								console.log(err)
+							})
+					})
+					.catch(err => {
+						console.log(err)
+					})
+			} else {
+				createCategory(auth, data)
+					.then(res => {
+						console.log(res)
+						if (res.data && res.data.term_id !== null) {
+							this.props.onSubmit(res.data)
+						}
+					})
+					.catch(err => {
+						console.log(err)
+					})
+			}
 		} else {
 			alert('Favor llenar campos requeridos.')
 		}
