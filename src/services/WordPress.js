@@ -21,7 +21,7 @@ export function createCategory(auth, data) {
 }
 
 export function fetchCategories(auth) {
-	const ownerId = auth.wp_user_id
+	// const ownerId = auth.wp_user_id
 	return axios.get(url + '/wp-json/socialcommerce/v1/categories/')
 }
 

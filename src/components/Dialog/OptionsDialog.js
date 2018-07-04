@@ -21,12 +21,13 @@ class OptionsDialog extends Component {
 
   render() {
     const { classes, onClose, selectedValue, ...other } = this.props
+    const { options } = this.state
     return (
       <Dialog onClose={this.handleClose} aria-labelledby="options-dialog-title" {...other}>
         <DialogTitle id="options-dialog-title">Upload Image</DialogTitle>
         <div>
           <List>
-            {this.state.options.map(option => (
+            {options.map(option => (
               <ListItem button onClick={() => this.handleListItemClick(option)} key={option}>
                 <ListItemText primary={option} />
               </ListItem>

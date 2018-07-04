@@ -7,26 +7,17 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import Avatar from '@material-ui/core/Avatar'
-import FolderIcon from '@material-ui/icons/Folder'
+import CardGiftcard from '@material-ui/icons/CardGiftcard'
 import DeleteIcon from '@material-ui/icons/Delete'
 import IconButton from '@material-ui/core/IconButton'
 
 import NavBar from '../../components/NavBar/NavBar'
-
-function generate(element) {
-	return [0, 1, 2].map(value =>
-		React.cloneElement(element, {
-			key: value,
-		}),
-	);
-}
 
 class Dashboard extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
 			dense: false,
-			secondary: false,
 		}
 		const { user, category, products } = this.props
 		if (!user) {
@@ -40,22 +31,26 @@ class Dashboard extends Component {
   
 	render() {
 		const { user, category, products } = this.props
-		const { dense, secondary } = this.state
+		const { dense } = this.state
 	  return (
 			<div>
-				<NavBar title='Tu Tienda' />
+				<NavBar title={category ? 'Tienda ' + category.name : 'Tu Tienda'} />
 				<div className='Content'>
 					<List dense={dense}>
-						{generate(
-							<ListItem>
+						{products && products.map(product => (
+							<ListItem key={product.id}>
 								<ListItemAvatar>
 									<Avatar>
-										<FolderIcon />
+										<CardGiftcard />
 									</Avatar>
 								</ListItemAvatar>
 								<ListItemText
-									primary="Single-line item"
-									secondary={secondary ? 'Secondary text' : null}
+									primary={product.name}
+									secondary={
+										product.description
+											.replace('<p>', '')
+											.replace('</p>', '')
+									}
 								/>
 								<ListItemSecondaryAction>
 									<IconButton aria-label="Delete">
@@ -63,7 +58,7 @@ class Dashboard extends Component {
 									</IconButton>
 								</ListItemSecondaryAction>
 							</ListItem>
-						)}
+						))}
 					</List>
 				</div>
 			</div>
