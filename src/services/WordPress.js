@@ -20,6 +20,11 @@ export function createCategory(auth, data) {
 	return axios.post(url + '/wp-json/socialcommerce/v1/categories/create/', category)
 }
 
+export function fetchCategories(auth) {
+	const ownerId = auth.wp_user_id
+	return axios.get(url + '/wp-json/socialcommerce/v1/categories/')
+}
+
 export function updateUser(auth, data) {
 	const user = {
 		name: data.name,

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
 import Button from '@material-ui/core/Button'
 import NavBar from '../../components/NavBar/NavBar'
 
@@ -26,9 +27,11 @@ const style = {
 		border: 'none'
 	}
 }
-export class Catalog extends Component {
+class Catalog extends Component {
 	constructor(props) {
 		super(props)
+		const { category } = this.props
+		if (!category) this.props.history.replace('/')
 		this.state = {
 			approved: false
 		}
@@ -87,10 +90,14 @@ export class Catalog extends Component {
 							children={<EmailIcon size={32} round={true} />} />
 					</div>
 				)}
-				<div className='IframeContainer'>
-				<iframe title='catalog-preview' style={style.iframe} src={category.term_link} />
-				</div>
+				{category && (
+					<div className='IframeContainer'>
+						<iframe title='catalog-preview' style={style.iframe} src={category.term_link} />
+					</div>
+				)}
 			</div>
 	  )
 	}
 }
+
+export default withRouter(Catalog)

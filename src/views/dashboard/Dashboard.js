@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
-import PropTypes from 'prop-types'
 
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -13,10 +12,6 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import IconButton from '@material-ui/core/IconButton'
 
 import NavBar from '../../components/NavBar/NavBar'
-
-const style = {
-	
-}
 
 function generate(element) {
 	return [0, 1, 2].map(value =>
@@ -44,7 +39,7 @@ class Dashboard extends Component {
 	}
   
 	render() {
-		const { classes, user, category, products } = this.props
+		const { user, category, products } = this.props
 		const { dense, secondary } = this.state
 	  return (
 			<div>

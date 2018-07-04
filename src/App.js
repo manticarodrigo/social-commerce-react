@@ -7,9 +7,9 @@ import Login from './views/Login/Login'
 import Dashboard from './views/Dashboard/Dashboard'
 import CategoryForm from './views/Category/CategoryForm'
 import ProductForm from './views/Product/ProductForm'
-import { Catalog } from './views/Catalog/Catalog'
+import Catalog from './views/Catalog/Catalog'
 
-import { facebookLogin } from './services/WordPress'
+import { facebookLogin, fetchCategories } from './services/WordPress'
 
 class App extends Component {
   constructor(props) {
@@ -32,14 +32,24 @@ class App extends Component {
       .then(res => {
         console.log(res)
         if (res.status === 200) {
-          // const testCategory = {
-          //   term_id: 16,
-          //   term_link: 'http://localhost:8080/product-category/test',
-          //   term_name: 'Test'
-          // }
-          // this.setState({category: testCategory, productsCreated: true})
-          this.setState({user: response, auth: res.data})
-          this.props.history.replace('/')
+          const auth = res.data
+          fetchCategories(auth)
+            .then(res => {
+              console.log(res)
+              const categories = res.data.filter(category => {
+                return category.owner_id === auth.wp_user_id.toString()
+              })
+              this.setState({
+                user: response,
+                auth: res.data,
+                category: categories[0]
+              })
+              console.log(categories)
+              this.props.history.replace('/')
+            })
+            .catch(err => {
+              console.log(err)
+            })
         }
       })
       .catch(err => {
