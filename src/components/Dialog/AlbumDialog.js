@@ -1,28 +1,24 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { getAlbums } from '../../services/Facebook'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import DialogTitle from '@material-ui/core/DialogTitle'
+import TextField from '@material-ui/core/TextField'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import Search from '@material-ui/icons/Search'
 import Dialog from '@material-ui/core/Dialog'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import GridList from '@material-ui/core/GridList'
+import GridListTile from '@material-ui/core/GridListTile'
+import GridListTileBar from '@material-ui/core/GridListTileBar'
+import ListSubheader from '@material-ui/core/ListSubheader'
+
+import { getAlbums } from '../../services/Facebook'
 
 class AlbumDialog extends Component {
   constructor(props) {
     super(props)
+    this.state = { albums: [], currentAlbums: [], searchInput: '' }
     this.fetchFacebookAlbums()
-  }
-
-  state = {
-    albums: []
-  }
-
-  handleClose = () => {
-    this.props.onClose(this.props.selectedValue)
-  }
-
-  handleListItemClick = value => {
-    this.props.onClose(value)
+    this.handleClose = this.handleClose.bind(this)
+    this.handleInputChange = this.handleInputChange.bind(this)
   }
 
   fetchFacebookAlbums() {
@@ -30,23 +26,73 @@ class AlbumDialog extends Component {
     getAlbums(accessToken)
     .then(res => {
       console.log(res)
-      this.setState({ albums: res })
+      this.setState({ albums: res, currentAlbums: res })
     })
   }
 
+  handleClose() {
+    this.props.onClose(this.props.selectedValue)
+  }
+
+  handleListItemClick(value) {
+    this.props.onClose(value)
+  }
+
+  handleInputChange(event) {
+	  const target = event.target
+	  const value = target.type === 'checkbox' ? target.checked : target.value	
+    const name = target.name
+    const currentAlbums = this.state.albums
+      .filter(album => {
+        return album.name.toLowerCase().includes(value)
+      })
+	  this.setState({
+      [name]: value,
+      currentAlbums: currentAlbums
+    })
+	}
+
   render() {
     const { classes, onClose, selectedValue, ...other } = this.props
+    const { currentAlbums, searchInput } = this.state
     return (
-      <Dialog onClose={this.handleClose} aria-labelledby="album-dialog-title" {...other}>
-        <DialogTitle id="album-dialog-title">Choose Facebook Album</DialogTitle>
+      <Dialog onClose={this.handleClose} aria-labelledby='album-dialog-title' {...other}>
+      <DialogTitle id="album-dialog-title">
+        <TextField
+          fullWidth
+          margin='none'
+          label='Search albums'
+          name='searchInput'
+          value={searchInput}
+          onChange={this.handleInputChange}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search />
+              </InputAdornment>
+            ),
+          }} />
+        </DialogTitle>
         <div>
-          <List>
-            {this.state.albums.map(album => (
-              <ListItem button onClick={() => this.handleListItemClick(album)} key={album.id}>
-                <ListItemText primary={album.name} />
-              </ListItem>
-            ))}
-          </List>
+          {currentAlbums.map(album => (
+            <GridList key={album.id} cellHeight={180}>
+              <GridListTile key={album.id} cols={2} style={{height: 'auto'}}>
+                <ListSubheader component='div'>{album.name}</ListSubheader>
+              </GridListTile>
+              {album.photos && album.photos.data.map(img => (
+                <GridListTile key={img.id}>
+                  <img
+                    src={img.source}
+                    alt={img.name != null ? img.name : img.source}
+                    onClick={() => this.handleListItemClick(img.source)} />
+                  <GridListTileBar
+                    title={img.name != null ? img.name : 'Untitled'}
+                    subtitle={<span>{album.name}</span>}
+                  />
+                </GridListTile>
+              ))}
+            </GridList>
+          ))}
         </div>
       </Dialog>
     )
@@ -55,7 +101,7 @@ class AlbumDialog extends Component {
   
 AlbumDialog.propTypes = {
   onClose: PropTypes.func,
-  selectedValue: PropTypes.object,
+  selectedValue: PropTypes.object
 }
 
 export default AlbumDialog

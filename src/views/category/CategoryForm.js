@@ -63,12 +63,12 @@ export class CategoryForm extends Component {
 		const { businessName, businessLogo, name, email, phone, dni } = this.state
 		const { auth } = this.props
 		if (
-			businessName != '' &&
-			businessLogo != '' &&
-			name != '' &&
-			email != '' &&
-			phone != '' &&
-			dni != ''
+			businessName !== '' &&
+			businessLogo !== '' &&
+			name !== '' &&
+			email !== '' &&
+			phone !== '' &&
+			dni !== ''
 		) {
 			createCategory(auth, data)
 			.then(res => {

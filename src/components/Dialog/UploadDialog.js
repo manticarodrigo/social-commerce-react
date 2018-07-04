@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 
 import OptionsDialog from './OptionsDialog'
 import AlbumDialog from './AlbumDialog'
-import ImageDialog from './ImageDialog'
 
 class UploadDialog extends Component {
   constructor(props) {
@@ -41,18 +40,7 @@ class UploadDialog extends Component {
 	}
 
   handleAlbumDialogClose(value) {
-    if (value === undefined) {
-      this.props.onClose(value)
-    } else {
-      const imageDialog = (
-        <ImageDialog
-          album={value}
-          token={this.props.token}
-          open={true}
-          onClose={this.handleImageDialogClose.bind(this)} />
-      )
-      this.setState({ currentDialog: imageDialog })
-    }
+    this.props.onClose(value)
 	}
 
   handleImageDialogClose(value) {

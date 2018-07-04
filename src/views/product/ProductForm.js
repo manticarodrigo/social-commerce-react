@@ -57,11 +57,11 @@ export class ProductForm extends Component {
 		const data = this.state
 		const { title, description, cost, inventoryCount, imageUrl } = this.state
 		if (
-			title != '' &&
-			description != '' &&
-			cost != '' &&
-			inventoryCount != '' &&
-			imageUrl != ''
+			title !== '' &&
+			description !== '' &&
+			cost !== '' &&
+			inventoryCount !== '' &&
+			imageUrl !== ''
 		) {
 			createProduct(data)
 				.then(res => {
