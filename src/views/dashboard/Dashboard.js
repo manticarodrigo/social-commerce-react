@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
-
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
@@ -10,9 +9,18 @@ import Avatar from '@material-ui/core/Avatar'
 import CardGiftcard from '@material-ui/icons/CardGiftcard'
 import DeleteIcon from '@material-ui/icons/Delete'
 import IconButton from '@material-ui/core/IconButton'
+import Button from '@material-ui/core/Button'
+import AddIcon from '@material-ui/icons/Add'
 
 import NavBar from '../../components/NavBar/NavBar'
 
+const style = {
+	fab: {
+		position: 'fixed',
+		bottom: '1em',
+		right: '1em'
+	}
+}
 class Dashboard extends Component {
 	constructor(props) {
 		super(props)
@@ -60,6 +68,9 @@ class Dashboard extends Component {
 							</ListItem>
 						))}
 					</List>
+					<Button variant="fab" color="primary" aria-label="add" style={style.fab}>
+						<AddIcon />
+					</Button>
 				</div>
 			</div>
 	  )

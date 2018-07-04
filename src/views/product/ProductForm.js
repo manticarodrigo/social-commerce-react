@@ -15,7 +15,7 @@ const style = {
 		width: 'calc(100% - 2em)',
 		height:'50px',
 		margin: '1em',
-		position: 'absolute',
+		position: 'fixed',
 		bottom: '0',
 		left: '0'
 	}

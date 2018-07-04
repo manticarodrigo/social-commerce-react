@@ -6,12 +6,5 @@
 .Content {
   margin: 1em;
   height: calc(100vh - 64px - 1em);
-}
-
-.Login {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  background-color: #3f51b5;
+  padding-top: 56px;
 }
