@@ -16,6 +16,11 @@ import NavBar from '../../components/NavBar/NavBar'
 import DeleteDialog from '../../components/Dialog/DeleteDialog'
 
 const style = {
+	avatar: {
+		width: '60px',
+		height: '60px',
+		objectFit: 'cover'
+	},
 	fab: {
 		position: 'fixed',
 		bottom: '1em',
@@ -76,8 +81,12 @@ class Dashboard extends Component {
 								key={product.id}
 								onClick={() => this.handleProductSelected(product)}>
 								<ListItemAvatar>
-									<Avatar>
-										<CardGiftcard />
+									<Avatar style={style.avatar}>
+										{product.images ? (
+											<img style={style.avatar} src={product.images[0].src} alt={product.id} />
+										) : (
+											<CardGiftcard />
+										)}
 									</Avatar>
 								</ListItemAvatar>
 								<ListItemText

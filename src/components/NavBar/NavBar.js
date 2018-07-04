@@ -68,7 +68,7 @@ class NavBar extends React.Component {
   }
 
   render() {
-    const { classes, title, onBack } = this.props
+    const { classes, title, onBack, noCategory } = this.props
     const { user, anchorEl } = this.state
     const open = Boolean(anchorEl)
     return (
@@ -112,7 +112,9 @@ class NavBar extends React.Component {
                   onClose={this.handleClose}
                 >
                   <MenuItem onClick={this.handleShareCategory}>Compartír Tienda</MenuItem>
-                  <MenuItem onClick={this.handleEditCategory}>Editar Tienda</MenuItem>
+                  {!noCategory && (
+                    <MenuItem onClick={this.handleEditCategory}>Editar Tienda</MenuItem>
+                  )}
                   <MenuItem onClick={this.handleLogout}>Cerrar sesión</MenuItem>
                 </Menu>
               </div>

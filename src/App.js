@@ -177,7 +177,7 @@ class App extends Component {
             exact path='/tienda/edita'
             render={() => (
               <CategoryForm
-                editing={true}
+                category={category}
                 user={user}
                 auth={auth ? auth : null}
                 onSubmit={this.handleCategorySubmit} />

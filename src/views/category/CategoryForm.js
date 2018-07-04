@@ -25,20 +25,20 @@ class CategoryForm extends Component {
 	constructor(props) {
 		super(props)
 		
-		const { user } = this.props
+		const { user, category } = this.props
 		if (!user) this.props.history.replace('/')
 
 		this.state = {
 			id: user && user.profile.id ? user.profile.id : '',
-			businessName: '',
-			businessLogo: '',
+			businessName: category ? category.name : '',
+			businessLogo: category && category.image ? category.image.src : '',
 			name: user && user.profile.name ? user.profile.name : '',
 			email: user && user.profile.email ? user.profile.email : '',
-			phone: '',
-			dni: '',
-			ruc: '',
-			bankAccount: '',
-			logisticProvider: '',
+			phone: category ? category.phone : '',
+			dni: category ? category.dni : '',
+			ruc: category ? category.ruc : '',
+			bankAccount: category ? category.bank_account : '',
+			logisticProvider: category ? category.logistic_provider : '',
 			uploadDialogOpen: false
 		}
 
@@ -105,13 +105,14 @@ class CategoryForm extends Component {
 	}
   
 	render() {
-		const { user, editing } = this.props
+		const { user, category } = this.props
 		const { uploadDialogOpen } = this.state
 	  return (
 			<div>
 				<NavBar
-					title={editing ? 'Edita Tienda' : 'Crea Tienda'}
-					onBack={editing ? this.handleBack : null}/>
+					noCategory={!category}
+					title={category ? 'Edita Tienda' : 'Crea Tienda'}
+					onBack={category ? this.handleBack : null}/>
 				<div className='Content' style={{paddingBottom: 'calc(50px + 3em'}}>
 					{uploadDialogOpen && (
 						<UploadDialog
@@ -188,7 +189,7 @@ class CategoryForm extends Component {
 							onChange={this.handleInputChange} />
 					</form>
 					<Button onClick={this.handleSubmit} style={style.saveButton} size='large' variant='contained' color='primary'>
-						{editing ? 'Guarda' : 'Agrega'} Tienda
+						{category ? 'Guarda' : 'Agrega'} Tienda
 					</Button>
 				</div>
 			</div>

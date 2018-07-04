@@ -8,7 +8,7 @@ import NavBar from '../../components/NavBar/NavBar'
 
 import UploadDialog from '../../components/Dialog/UploadDialog'
 
-import { createProduct } from '../../services/WordPress'
+import { createProduct, updateProduct } from '../../services/WordPress'
 
 const style = {
 	saveButton: {
@@ -29,6 +29,7 @@ class ProductForm extends Component {
 		if (!user) this.props.history.replace('/')
 
 	  this.state = {
+			id: product ? product.id : '',
 			title: product ? product.name : '',
 			description: product ? product.description.replace('<p>', '').replace('</p>', '') : '',
 			cost: product ? product.price : '',
@@ -74,7 +75,9 @@ class ProductForm extends Component {
 			inventoryCount !== '' &&
 			imageUrl !== ''
 		) {
-			createProduct(data)
+			const { product } = this.props
+			if (product) {
+				updateProduct(data)
 				.then(res => {
 					console.log(res)
 					this.props.onSubmit()
@@ -82,6 +85,16 @@ class ProductForm extends Component {
 				.catch(err => {
 					console.log(err)
 				})
+			} else {
+				createProduct(data)
+					.then(res => {
+						console.log(res)
+						this.props.onSubmit()
+					})
+					.catch(err => {
+						console.log(err)
+					})
+			}
 		} else {
 			alert('Favor llenar campos requeridos.')
 		}

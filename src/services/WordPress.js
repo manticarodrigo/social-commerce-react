@@ -96,6 +96,27 @@ export function createProducts(data) {
 	return axios.post(url + '/wp-json/wc/v2/products/batch', products, options)
 }
 
+export function updateProduct(data) {
+	const product = {
+		name: data.title,
+		regular_price: data.cost,
+		description: data.description,
+		short_description: data.description,
+		categories: [{id: data.category.term_id}],
+		images: [{src: data.imageUrl, position: 0}],
+		manage_stock: true,
+		stock_quantity: data.inventoryCount,
+		in_stock: true,
+	}
+	const options = {
+		auth: {
+			username: process.env.REACT_APP_WOOCOMMERCE_USERNAME,
+			password: process.env.REACT_APP_WOOCOMMERCE_PASSWORD
+		}
+	}
+	return axios.put(url + '/wp-json/wc/v2/products/' + data.id, product, options)
+}
+
 export function deleteProduct(productId) {
 	const options = {
 		auth: {
