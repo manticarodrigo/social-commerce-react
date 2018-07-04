@@ -14,6 +14,8 @@ import { facebookLogin, fetchCategories, fetchProducts } from './services/WordPr
 class App extends Component {
   constructor(props) {
     super(props)
+    const response = localStorage.getItem('response')
+    if (response) this.processAuth(JSON.parse(response))
     this.state = {
       user: null,
       auth: null,
@@ -25,10 +27,8 @@ class App extends Component {
     this.handleAuthResponse = this.handleAuthResponse.bind(this)
   }
 
-  handleAuthResponse(response) {
-    console.log(response)
-    if (response.profile) {
-      facebookLogin(response.token.accessToken)
+  processAuth(response) {
+    facebookLogin(response._token.accessToken)
       .then(res => {
         console.log(res)
         if (res.status === 200) {
@@ -64,6 +64,13 @@ class App extends Component {
       .catch(err => {
         console.log(err)
       })
+  }
+
+  handleAuthResponse(response) {
+    console.log(response)
+    if (response.profile) {
+      localStorage.setItem('response', JSON.stringify(response))
+      this.processAuth(response)
     }
   }
 
@@ -80,7 +87,7 @@ class App extends Component {
   render() {
     const { user, auth, category, products } = this.state
     return (
-      <div className="App">
+      <div className='App'>
         <Switch>
         <Route
             exact path='/'
