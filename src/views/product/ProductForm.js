@@ -35,6 +35,7 @@ class ProductForm extends Component {
 			cost: product ? product.price : '',
 			inventoryCount: product ? product.stock_quantity : '',
 			imageUrl: product ? product.images[0].src : '',
+			imageId: product ? product.images[0].id : null,
 			imageFile: null,
 			uploadDialogOpen: false,
 			category: category
@@ -58,9 +59,11 @@ class ProductForm extends Component {
   }
 
   handleUploadDialogClose(value) {
+		const { imageId } = this.state
 		this.setState({
 			uploadDialogOpen: false,
-			imageUrl: value !== undefined ? value : ''
+			imageUrl: value !== undefined ? value : '',
+			imageId: value !== undefined ? null : imageId
 		})
 	}
 	

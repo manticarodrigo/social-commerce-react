@@ -32,6 +32,7 @@ class CategoryForm extends Component {
 			id: user && user.profile.id ? user.profile.id : '',
 			businessName: category ? category.name : '',
 			businessLogo: category && category.image ? category.image.src : '',
+			imageId: category && category.image ? category.image.id : null,
 			name: user && user.profile.name ? user.profile.name : '',
 			email: user && user.profile.email ? user.profile.email : '',
 			phone: category ? category.phone : '',
@@ -60,9 +61,11 @@ class CategoryForm extends Component {
   }
 
   handleUploadDialogClose(value) {
+		const { imageId } = this.state
 		this.setState({
 			uploadDialogOpen: false,
-			businessLogo: value !== undefined ? value : ''
+			businessLogo: value !== undefined ? value : '',
+			imageId: value !== undefined ? null : imageId
 		})
 	}
 	

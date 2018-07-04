@@ -97,13 +97,15 @@ export function createProducts(data) {
 }
 
 export function updateProduct(data) {
+	const id = {id: data.imageId, position: 0}
+	const src = {src: data.imageUrl, position: 0}
 	const product = {
 		name: data.title,
 		regular_price: data.cost,
 		description: data.description,
 		short_description: data.description,
 		categories: [{id: data.category.term_id}],
-		images: [{src: data.imageUrl, position: 0}],
+		images: [data.imageId ? id : src],
 		manage_stock: true,
 		stock_quantity: data.inventoryCount,
 		in_stock: true,
