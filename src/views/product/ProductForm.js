@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import FileUpload from '@material-ui/icons/FileUpload'
@@ -20,9 +21,11 @@ const style = {
 	}
 }
 
-export class ProductForm extends Component {
+class ProductForm extends Component {
 	constructor(props) {
-	  super(props)
+		super(props)
+		const { user, category } = this.props
+		if (!user) this.props.history.replace('/login')
 	  this.state = {
 			title: '',
 			description: '',
@@ -31,7 +34,7 @@ export class ProductForm extends Component {
 			imageUrl: '',
 			imageFile: null,
 			uploadDialogOpen: false,
-			category: this.props.category
+			category: category
 	  }
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleInputChange = this.handleInputChange.bind(this)
@@ -97,7 +100,7 @@ export class ProductForm extends Component {
 	}
   
 	render() {
-		const { token } = this.props
+		const { user } = this.props
 		const { uploadDialogOpen } = this.state
 	  return (
 			<div>
@@ -105,7 +108,7 @@ export class ProductForm extends Component {
 				<div className='Content'>
 					{uploadDialogOpen && (
 						<UploadDialog
-							token={token}
+							token={user.token}
 							onClose={this.handleUploadDialogClose} />
 					)}
 					<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
@@ -169,3 +172,5 @@ export class ProductForm extends Component {
 	  )
 	}
 }
+
+export default withRouter(ProductForm)

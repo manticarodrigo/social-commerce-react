@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
-import SocialButton from './components/SocialButton/SocialButton'
+import { Route, Switch, withRouter } from 'react-router-dom'
 import './App.css'
 
-import { CategoryForm } from './views/category/CategoryForm'
-import { ProductForm } from './views/product/ProductForm'
-import { Catalog } from './views/catalog/Catalog'
+import Error from './views/Error/Error'
+import Login from './views/Login/Login'
+import Dashboard from './views/Dashboard/Dashboard'
+import CategoryForm from './views/Category/CategoryForm'
+import ProductForm from './views/Product/ProductForm'
+import { Catalog } from './views/Catalog/Catalog'
 
 import { facebookLogin } from './services/WordPress'
 
@@ -12,26 +15,23 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      login: true,
       user: null,
       auth: null,
       category: null,
-      productsCreated: false
+      products: null
     }
+    this.handleCategorySent = this.handleCategorySent.bind(this)
+    this.handleProductsSent = this.handleProductsSent.bind(this)
+    this.handleAuthResponse = this.handleAuthResponse.bind(this)
   }
 
-  toggleLogin() {
-    this.setState({login: !this.state.login})
-  }
-
-  responseFacebook(response) {
+  handleAuthResponse(response) {
     console.log(response)
     if (response.profile) {
       facebookLogin(response.token.accessToken)
       .then(res => {
         console.log(res)
         if (res.status === 200) {
-          // // Test state
           // const testCategory = {
           //   term_id: 16,
           //   term_link: 'http://localhost:8080/product-category/test',
@@ -39,6 +39,7 @@ class App extends Component {
           // }
           // this.setState({category: testCategory, productsCreated: true})
           this.setState({user: response, auth: res.data})
+          this.props.history.replace('/')
         }
       })
       .catch(err => {
@@ -48,76 +49,63 @@ class App extends Component {
   }
 
   handleCategorySent(category) {
-    console.log('Term created, id: ', category.term_id)
     this.setState({ category: category })
+    this.props.history.replace('/product/new')
   }
 
   handleProductsSent() {
-    this.setState({ productsCreated: true })
-  }
-
-  responseGoogle(response) {
-    console.log(response)
-    // this.setState({user: response})
+    this.setState({ products: true })
+    this.props.history.replace('/catalog')
   }
 
   render() {
-    const { user, auth, category, productsCreated } = this.state
+    const { user, auth, category, products } = this.state
     return (
       <div className="App">
-          {user ? (
-            <div style={{height: '100%'}}>
-              { !category ? (
-                <CategoryForm
-                  profile={user.profile}
-                  token={user.token}
-                  auth={auth}
-                  handleSubmit={this.handleCategorySent.bind(this)} />
-              ) : (
-                !productsCreated ? (
-                  <ProductForm
-                    profile={user.profile}
-                    token={user.token}
-                    auth={auth}
-                    handleSubmit={this.handleProductsSent.bind(this)}
-                    category={category} />
-                ) : (
-                  <Catalog
-                    category={category} />
-                )
-              )}
-            </div>
-          ) : (
-            <div className='Login'>
-              <div>
-                <h1 style={{color: '#fff'}}>
-                  Social Commerce
-                </h1>
-                <SocialButton
-                  provider="facebook"
-                  appId={process.env.REACT_APP_FACEBOOK_APP_ID}
-                  scope="user_photos"
-                  onLoginSuccess={this.responseFacebook.bind(this)}
-                  onLoginFailure={this.responseFacebook.bind(this)}>
-                  {this.state.login ? 'Ingresa' : 'Registra'} con Facebook
-                </SocialButton>
-                <br />
-                <SocialButton
-                  provider="google"
-                  // appId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
-                  // onLoginSuccess={this.responseGoogle.bind(this)}
-                  // onLoginFailure={this.responseGoogle.bind(this)}
-                  >
-                  {this.state.login ? 'Ingresa' : 'Registra'} con Google
-                </SocialButton>
-                <p style={{color: '#fff'}}><a href='#' onClick={this.toggleLogin.bind(this)}>{!this.state.login ? 'Ingresa' : 'Registra'}</a></p>
-                <p style={{color: '#fff', fontSize: '14px'}}>Al ingresar esta indicando que ha leido<br />y acepta nuestros <a href="#">Terminos y Condiciones</a>.</p>
-              </div>
-            </div>
-          )}
+        <Switch>
+        <Route
+            exact path='/'
+            render={() => (
+              <Dashboard
+                user={user}
+                auth={auth}
+                category={category}
+                products={products} />
+          )} />
+          <Route
+            exact path='/login'
+            render={() => (
+              <Login
+                onResponse={this.handleAuthResponse} />
+            )} />
+          <Route
+            exact path='/category/new'
+            render={() => (
+              <CategoryForm
+                user={user}
+                auth={auth ? auth : null}
+                handleSubmit={this.handleCategorySent} />
+          )} />
+          <Route
+            exact path='/product/new'
+            render={() => (
+              <ProductForm
+                user={user}
+                auth={auth ? auth : null}
+                handleSubmit={this.handleProductsSent}
+                category={category} />
+          )} />
+          <Route
+            exact path='/catalog'
+            render={() => (
+              <Catalog
+                category={category} />
+          )} />
+          <Route component={Error} />
+        </Switch>
       </div>
     )
   }
 }
 
-export default App
+export default withRouter(App)

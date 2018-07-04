@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 import List from '@material-ui/core/List'
@@ -25,22 +26,29 @@ function generate(element) {
 	);
 }
 
-export class Dashboard extends Component {
+class Dashboard extends Component {
 	constructor(props) {
 		super(props)
+		this.state = {
+			dense: false,
+			secondary: false,
+		}
+		const { user, category, products } = this.props
+		if (!user) {
+			this.props.history.replace('/login')
+		} else if (!category) {
+			this.props.history.replace('/category/new')
+		} else if (!products) {
+			this.props.history.replace('/product/new')
+		}
 	}
-
-	state = {
-    dense: false,
-    secondary: false,
-  }
   
 	render() {
-		const { classes, user } = this.props
-    const { dense, secondary } = this.state
+		const { classes, user, category, products } = this.props
+		const { dense, secondary } = this.state
 	  return (
 			<div>
-				<NavBar user={user} />
+				<NavBar title='Tu Tienda' />
 				<div className='Content'>
 					<List dense={dense}>
 						{generate(
@@ -67,3 +75,5 @@ export class Dashboard extends Component {
 	  )
 	}
 }
+
+export default withRouter(Dashboard)

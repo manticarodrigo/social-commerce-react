@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import FileUpload from '@material-ui/icons/FileUpload'
@@ -20,16 +21,17 @@ const style = {
 	}
 }
 
-export class CategoryForm extends Component {
+class CategoryForm extends Component {
 	constructor(props) {
 		super(props)
-		const { profile } = props
+		const { user } = this.props
+		if (!user) this.props.history.replace('/login')
 		this.state = {
-			id: profile.id ? profile.id : '',
+			id: user && user.profile.id ? user.profile.id : '',
 			businessName: '',
 			businessLogo: '',
-			name: profile.name ? profile.name : '',
-			email: profile.email ? profile.email : '',
+			name: user && user.profile.name ? user.profile.name : '',
+			email: user && user.profile.email ? user.profile.email : '',
 			phone: '',
 			dni: '',
 			ruc: '',
@@ -96,7 +98,7 @@ export class CategoryForm extends Component {
 	}
   
 	render() {
-		const { token } = this.props
+		const { user } = this.props
 		const { uploadDialogOpen } = this.state
 	  return (
 			<div>
@@ -104,7 +106,7 @@ export class CategoryForm extends Component {
 				<div className='Content'>
 					{uploadDialogOpen && (
 						<UploadDialog
-							token={token}
+							token={user.token}
 							onClose={this.handleUploadDialogClose} />
 					)}
 					<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
@@ -184,3 +186,5 @@ export class CategoryForm extends Component {
 	  )
 	}
 }
+
+export default withRouter(CategoryForm)
