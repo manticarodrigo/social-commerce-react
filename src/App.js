@@ -26,7 +26,7 @@ class App extends Component {
     this.handleProductsSent = this.handleProductsSent.bind(this)
     this.handleAuthResponse = this.handleAuthResponse.bind(this)
 
-    const response = JSON.parse(localStorage.getItem('response'))
+    const response = JSON.parse(localStorage.getItem('user'))
     if (response) {
       this.processAuth(response)
     } else {
@@ -35,7 +35,7 @@ class App extends Component {
   }
 
   processAuth(response) {
-    facebookLogin(response._token.accessToken)
+    facebookLogin(response.token.accessToken)
       .then(res => {
         console.log(res)
         if (res.status === 200) {
@@ -81,7 +81,11 @@ class App extends Component {
   handleAuthResponse(response) {
     console.log(response)
     if (response.profile) {
-      localStorage.setItem('response', JSON.stringify(response))
+      const user = {
+        profile: response._profile,
+        token: response._token
+      }
+      localStorage.setItem('user', JSON.stringify(user))
       this.processAuth(response)
     }
   }
