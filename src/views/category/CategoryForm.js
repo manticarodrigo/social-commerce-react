@@ -8,7 +8,7 @@ import NavBar from '../../components/NavBar/NavBar'
 
 import UploadDialog from '../../components/Dialog/UploadDialog'
 
-import { createCategory } from '../../services/WordPress'
+import { uploadMedia, createCategory } from '../../services/WordPress'
 
 const style = {
 	saveButton: {
@@ -33,6 +33,7 @@ class CategoryForm extends Component {
 			businessName: category ? category.name : '',
 			businessLogo: category && category.image ? category.image.src : '',
 			imageId: category && category.image ? category.image.id : null,
+			imageFile: null,
 			name: user && user.profile.name ? user.profile.name : '',
 			email: user && user.profile.email ? user.profile.email : '',
 			phone: category ? category.phone : '',
@@ -62,12 +63,39 @@ class CategoryForm extends Component {
 
   handleUploadDialogClose(value) {
 		const { imageId } = this.state
-		this.setState({
-			uploadDialogOpen: false,
-			businessLogo: value !== undefined ? value : '',
-			imageId: value !== undefined ? null : imageId
-		})
+		if (typeof(value) === 'object') {
+			this.setState({
+				uploadDialogOpen: false,
+				businessLogo: value !== null ? value.imageUrl : '',
+				imageId: null,
+				imageFile: value.imageFile
+			})
+		} else {
+			this.setState({
+				uploadDialogOpen: false,
+				businessLogo: value !== undefined ? value : '',
+				imageId: value !== undefined ? null : imageId
+			})
+		}
 	}
+
+	// uploadImage(file) {
+	// 	uploadMedia(file)
+	// 	.then(res => {
+	// 		console.log(res)
+	// 		product.imageUrl = res.data.source_url
+	// 		createProduct(product)
+	// 		.then(res => {
+	// 			console.log(res)
+	// 		})
+	// 		.catch(err => {
+	// 			console.log(err)
+	// 		})
+	// 	})
+	// 	.catch(err => {
+	// 		console.log(err)
+	// 	})
+	// }
 	
   handleSubmit(event) {
 		event.preventDefault()

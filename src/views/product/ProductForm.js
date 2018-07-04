@@ -8,7 +8,7 @@ import NavBar from '../../components/NavBar/NavBar'
 
 import UploadDialog from '../../components/Dialog/UploadDialog'
 
-import { createProduct, updateProduct } from '../../services/WordPress'
+import { uploadMedia, createProduct, updateProduct } from '../../services/WordPress'
 
 const style = {
 	saveButton: {
@@ -49,6 +49,7 @@ class ProductForm extends Component {
 	}
 
 	handleBack() {
+		this.props.onBack()
 		this.props.history.replace('/tienda')
 	}
 
@@ -58,19 +59,28 @@ class ProductForm extends Component {
 		})
   }
 
-  handleUploadDialogClose(value) {
+	handleUploadDialogClose(value) {
 		const { imageId } = this.state
-		this.setState({
-			uploadDialogOpen: false,
-			imageUrl: value !== undefined ? value : '',
-			imageId: value !== undefined ? null : imageId
-		})
+		if (typeof(value) === 'object') {
+			this.setState({
+				uploadDialogOpen: false,
+				imageUrl: value !== null ? value.imageUrl : '',
+				imageId: null,
+				imageFile: value.imageFile
+			})
+		} else {
+			this.setState({
+				uploadDialogOpen: false,
+				imageUrl: value !== undefined ? value : '',
+				imageId: value !== undefined ? null : imageId
+			})
+		}
 	}
 	
   handleSubmit(event) {
 		event.preventDefault()
 		const data = this.state
-		const { title, description, cost, inventoryCount, imageUrl } = this.state
+		const { title, description, cost, inventoryCount, imageUrl, imageFile } = this.state
 		if (
 			title !== '' &&
 			description !== '' &&
@@ -79,20 +89,31 @@ class ProductForm extends Component {
 			imageUrl !== ''
 		) {
 			const { product } = this.props
-			if (product) {
-				updateProduct(data)
-				.then(res => {
-					console.log(res)
-					this.props.onSubmit()
-				})
-				.catch(err => {
-					console.log(err)
-				})
-			} else {
-				createProduct(data)
+			if (imageFile) {
+				uploadMedia(imageFile)
 					.then(res => {
 						console.log(res)
-						this.props.onSubmit()
+						if (product) {
+							product.imageId = res.data.id
+							updateProduct(data)
+							.then(res => {
+								console.log(res)
+								this.props.onSubmit()
+							})
+							.catch(err => {
+								console.log(err)
+							})
+						} else {
+							data.imageId = res.data.id
+							createProduct(data)
+								.then(res => {
+									console.log(res)
+									this.props.onSubmit()
+								})
+								.catch(err => {
+									console.log(err)
+								})
+						}
 					})
 					.catch(err => {
 						console.log(err)

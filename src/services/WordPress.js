@@ -52,13 +52,15 @@ export function updateUserMeta(auth, data) {
 }
 
 export function createProduct(data) {
+	const id = {id: data.imageId, position: 0}
+	const src = {src: data.imageUrl, position: 0}
 	const product = {
 		name: data.title,
 		regular_price: data.cost,
 		description: data.description,
 		short_description: data.description,
 		categories: [{id: data.category.term_id}],
-		images: [{src: data.imageUrl, position: 0}],
+		images: [data.imageId ? id : src],
 		manage_stock: true,
 		stock_quantity: data.inventoryCount,
 		in_stock: true,
@@ -72,29 +74,29 @@ export function createProduct(data) {
 	return axios.post(url + '/wp-json/wc/v2/products/', product, options)
 }
 
-export function createProducts(data) {
-	var products = {create:[]}
-	for (var product in data) {
-		products.create.push({
-			name: product.title,
-			regular_price: product.cost,
-			description: product.description,
-			short_description: product.description,
-			categories: [{id: product.category.term_id}],
-			images: [{src: product.imageUrl, position: 0}],
-			manage_stock: true,
-			stock_quantity: product.inventoryCount,
-			in_stock: true,
-		})
-	}
-	const options = {
-		auth: {
-			username: process.env.REACT_APP_WOOCOMMERCE_USERNAME,
-			password: process.env.REACT_APP_WOOCOMMERCE_PASSWORD
-		}
-	}
-	return axios.post(url + '/wp-json/wc/v2/products/batch', products, options)
-}
+// export function createProducts(data) {
+// 	var products = {create:[]}
+// 	for (var product in data) {
+// 		products.create.push({
+// 			name: product.title,
+// 			regular_price: product.cost,
+// 			description: product.description,
+// 			short_description: product.description,
+// 			categories: [{id: product.category.term_id}],
+// 			images: [{src: product.imageUrl, position: 0}],
+// 			manage_stock: true,
+// 			stock_quantity: product.inventoryCount,
+// 			in_stock: true,
+// 		})
+// 	}
+// 	const options = {
+// 		auth: {
+// 			username: process.env.REACT_APP_WOOCOMMERCE_USERNAME,
+// 			password: process.env.REACT_APP_WOOCOMMERCE_PASSWORD
+// 		}
+// 	}
+// 	return axios.post(url + '/wp-json/wc/v2/products/batch', products, options)
+// }
 
 export function updateProduct(data) {
 	const id = {id: data.imageId, position: 0}

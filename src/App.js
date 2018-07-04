@@ -24,6 +24,7 @@ class App extends Component {
       selectedProduct: null
     }
 
+    this.handleBack = this.handleBack.bind(this)
     this.handleAuthResponse = this.handleAuthResponse.bind(this)
     this.handleCategorySubmit = this.handleCategorySubmit.bind(this)
     this.handleProductSubmit = this.handleProductSubmit.bind(this)
@@ -95,6 +96,10 @@ class App extends Component {
       localStorage.setItem('user', JSON.stringify(user))
       this.processAuth(response)
     }
+  }
+
+  handleBack() {
+    this.setState({ selectedProduct: null })
   }
 
   handleCategorySubmit(category) {
@@ -189,6 +194,7 @@ class App extends Component {
                 user={user}
                 auth={auth ? auth : null}
                 product={selectedProduct}
+                onBack={this.handleBack}
                 onSubmit={this.handleProductSubmit}
                 category={category} />
           )} />
@@ -199,6 +205,7 @@ class App extends Component {
                 product={selectedProduct}
                 user={user}
                 auth={auth ? auth : null}
+                onBack={this.handleBack}
                 onSubmit={this.handleProductSubmit}
                 category={category} />
           )} />

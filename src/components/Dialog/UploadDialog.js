@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-// import { uploadMedia } from '../../services/WordPress'
 
 import OptionsDialog from './OptionsDialog'
 import AlbumDialog from './AlbumDialog'
@@ -25,7 +24,7 @@ class UploadDialog extends Component {
   handleOptionsDialogClose(value) {
     if (value === undefined) {
       this.props.onClose(value)
-    } else if (value === 'Upload from Device') {
+    } else if (value === 'Suba de Dispositivo') {
       this.inputElement.click()
       this.setState({ currentDialog: null })
 		} else {
@@ -41,36 +40,22 @@ class UploadDialog extends Component {
 
   handleAlbumDialogClose(value) {
     this.props.onClose(value)
-	}
-
-  handleImageDialogClose(value) {
-		this.props.onClose(value)
   }
   
   handleImageChanged(event) {
-		// if (event.target.files && event.target.files[0]) {
-		// 	let reader = new FileReader();
-		// 	reader.onload = (e) => {
-    //     console.log(e.target.result)
-		// 	}
-		// 	reader.readAsDataURL(event.target.files[0]);
-    // }
-    
-    // uploadMedia(product.imageFile)
-		// .then(res => {
-		// 	console.log(res)
-		// 	product.imageUrl = res.data.source_url
-		// 	createProduct(product)
-		// 	.then(res => {
-		// 		console.log(res)
-		// 	})
-		// 	.catch(err => {
-		// 		console.log(err)
-		// 	})
-		// })
-		// .catch(err => {
-		// 	console.log(err)
-		// })
+		if (event.target.files && event.target.files[0]) {
+      const imageFile = event.target.files[0]
+			let reader = new FileReader();
+			reader.onload = (e) => {
+        this.props.onClose({
+          imageFile: imageFile,
+          imageUrl: e.target.result
+        })
+			}
+			reader.readAsDataURL(event.target.files[0]);
+    } else {
+      this.props.onClose(null)
+    }
 	}
 
   render() {
