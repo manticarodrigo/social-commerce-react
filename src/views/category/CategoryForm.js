@@ -12,9 +12,9 @@ import { createCategory } from '../../services/WordPress'
 
 const style = {
 	saveButton: {
-		width: 'calc(100% - 2em)',
+		width: 'calc(100% - 1em)',
 		height:'50px',
-		margin: '1em',
+		margin: '0.5em',
 		position: 'fixed',
 		bottom: '0',
 		left: '0'
@@ -24,6 +24,10 @@ const style = {
 class CategoryForm extends Component {
 	constructor(props) {
 		super(props)
+		
+		const { user } = this.props
+		if (!user) this.props.history.replace('/')
+
 		this.state = {
 			id: user && user.profile.id ? user.profile.id : '',
 			businessName: '',
@@ -38,13 +42,15 @@ class CategoryForm extends Component {
 			uploadDialogOpen: false
 		}
 
+		this.handleBack = this.handleBack.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleInputChange = this.handleInputChange.bind(this)
 		this.handleUploadDialogOpen = this.handleUploadDialogOpen.bind(this)
 		this.handleUploadDialogClose = this.handleUploadDialogClose.bind(this)
+	}
 
-		const { user } = this.props
-		if (!user) this.props.history.replace('/')
+	handleBack() {
+		this.props.history.replace('/tienda')
 	}
 	
 	handleUploadDialogOpen() {
@@ -77,7 +83,7 @@ class CategoryForm extends Component {
 			.then(res => {
 				console.log(res)
 				if (res.data && res.data.term_id !== null) {
-					this.props.handleSubmit(res.data)
+					this.props.onSubmit(res.data)
 				}
 			})
 			.catch(err => {
@@ -99,12 +105,14 @@ class CategoryForm extends Component {
 	}
   
 	render() {
-		const { user } = this.props
+		const { user, editing } = this.props
 		const { uploadDialogOpen } = this.state
 	  return (
 			<div>
-				<NavBar title='Crear Tienda' />
-				<div className='Content' style={{paddingBottom: 'calc(50px + 2em'}}>
+				<NavBar
+					title={editing ? 'Edita Tienda' : 'Crea Tienda'}
+					onBack={editing ? this.handleBack : null}/>
+				<div className='Content' style={{paddingBottom: 'calc(50px + 3em'}}>
 					{uploadDialogOpen && (
 						<UploadDialog
 							token={user.token}
@@ -180,7 +188,7 @@ class CategoryForm extends Component {
 							onChange={this.handleInputChange} />
 					</form>
 					<Button onClick={this.handleSubmit} style={style.saveButton} size='large' variant='contained' color='primary'>
-						Continua
+						{editing ? 'Guarda' : 'Agrega'} Tienda
 					</Button>
 				</div>
 			</div>

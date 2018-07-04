@@ -20,7 +20,7 @@ const styles = {
   },
   menuButton: {
     marginLeft: -12,
-    marginRight: 20,
+    marginRight: 0,
   },
 }
 
@@ -31,14 +31,16 @@ class NavBar extends React.Component {
       user: true,
       anchorEl: null,
     }
-    this.handleChange = this.handleChange.bind(this)
+    this.handleBack = this.handleBack.bind(this)
     this.handleMenu = this.handleMenu.bind(this)
     this.handleClose = this.handleClose.bind(this)
+    this.handleShareCategory = this.handleShareCategory.bind(this)
+    this.handleEditCategory = this.handleEditCategory.bind(this)
     this.handleLogout = this.handleLogout.bind(this)
   }
 
-  handleChange(event, checked) {
-    this.setState({ user: checked })
+  handleBack() {
+    this.props.onBack()
   }
 
   handleMenu(event) {
@@ -49,21 +51,38 @@ class NavBar extends React.Component {
     this.setState({ anchorEl: null })
   }
 
+  handleEditCategory() {
+    this.handleClose()
+    this.props.history.replace('/tienda/edita')
+  }
+
+  handleShareCategory() {
+    this.handleClose()
+    this.props.history.replace('/comparte')
+  }
+
   handleLogout() {
+    this.handleClose()
     localStorage.clear()
     this.props.history.replace('/ingresa')
   }
 
   render() {
-    const { classes, title } = this.props
+    const { classes, title, onBack } = this.props
     const { user, anchorEl } = this.state
     const open = Boolean(anchorEl)
     return (
       <div className={classes.root}>
         <AppBar position='fixed'>
           <Toolbar>
-            <IconButton className={classes.menuButton} color='inherit' aria-label='Menu'>
-              <ArrowBackIcon />
+            <IconButton
+              className={classes.menuButton}
+              color='inherit'
+              aria-label='Menu'>
+              {onBack && (
+                <ArrowBackIcon
+                  onClick={this.handleBack} />
+              )}
             </IconButton>
             <Typography variant='title' color='inherit' className={classes.flex}>
               {title}
@@ -92,7 +111,8 @@ class NavBar extends React.Component {
                   open={open}
                   onClose={this.handleClose}
                 >
-                  <MenuItem onClick={this.handleClose}>Editar Tienda</MenuItem>
+                  <MenuItem onClick={this.handleShareCategory}>Compartír Tienda</MenuItem>
+                  <MenuItem onClick={this.handleEditCategory}>Editar Tienda</MenuItem>
                   <MenuItem onClick={this.handleLogout}>Cerrar sesión</MenuItem>
                 </Menu>
               </div>

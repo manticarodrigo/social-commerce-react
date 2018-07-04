@@ -1,3 +1,8 @@
+.ContentWrapper {
+  width: 100%;
+  height: 100%;
+}
+
 .ApproveButton {
   width: calc(100% - 2em);
   height: 50px;

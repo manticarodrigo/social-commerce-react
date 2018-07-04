@@ -12,9 +12,9 @@ import { createProduct } from '../../services/WordPress'
 
 const style = {
 	saveButton: {
-		width: 'calc(100% - 2em)',
+		width: 'calc(100% - 1em)',
 		height:'50px',
-		margin: '1em',
+		margin: '0.5em',
 		position: 'fixed',
 		bottom: '0',
 		left: '0'
@@ -24,23 +24,30 @@ const style = {
 class ProductForm extends Component {
 	constructor(props) {
 		super(props)
+
+		const { user, category, product } = this.props
+		if (!user) this.props.history.replace('/')
+
 	  this.state = {
-			title: '',
-			description: '',
-			cost: '',
-			inventoryCount: '',
-			imageUrl: '',
+			title: product ? product.name : '',
+			description: product ? product.description.replace('<p>', '').replace('</p>', '') : '',
+			cost: product ? product.price : '',
+			inventoryCount: product ? product.stock_quantity : '',
+			imageUrl: product ? product.images[0].src : '',
 			imageFile: null,
 			uploadDialogOpen: false,
 			category: category
-	  }
+		}
+		
+		this.handleBack = this.handleBack.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleInputChange = this.handleInputChange.bind(this)
 		this.handleUploadDialogOpen = this.handleUploadDialogOpen.bind(this)
 		this.handleUploadDialogClose = this.handleUploadDialogClose.bind(this)
+	}
 
-		const { user, category } = this.props
-		if (!user) this.props.history.replace('/')
+	handleBack() {
+		this.props.history.replace('/tienda')
 	}
 
 	handleUploadDialogOpen() {
@@ -70,7 +77,7 @@ class ProductForm extends Component {
 			createProduct(data)
 				.then(res => {
 					console.log(res)
-					this.props.handleSubmit()
+					this.props.onSubmit()
 				})
 				.catch(err => {
 					console.log(err)
@@ -101,12 +108,14 @@ class ProductForm extends Component {
 	}
   
 	render() {
-		const { user } = this.props
+		const { user, product } = this.props
 		const { uploadDialogOpen } = this.state
 	  return (
 			<div>
-				<NavBar title='Crear Productos' />
-				<div className='Content' style={{paddingBottom: 'calc(50px + 2em'}}>
+				<NavBar
+					title={product ? 'Edita Producto' :'Crea Producto'}
+					onBack={this.handleBack}/>
+				<div className='Content' style={{paddingBottom: 'calc(50px + 3em'}}>
 					{uploadDialogOpen && (
 						<UploadDialog
 							token={user.token}
@@ -166,7 +175,7 @@ class ProductForm extends Component {
 							onChange={this.handleInputChange} />
 					</form>
 					<Button onClick={this.handleSubmit} style={style.saveButton} size='large' variant='contained' color='primary'>
-						Agrega Producto
+						{product ? 'Guarda' : 'Agrega'} Producto
 					</Button>
 				</div>
 			</div>

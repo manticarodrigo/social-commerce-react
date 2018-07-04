@@ -8,7 +8,7 @@ import Login from './views/Login/Login'
 import Dashboard from './views/Dashboard/Dashboard'
 import CategoryForm from './views/Category/CategoryForm'
 import ProductForm from './views/Product/ProductForm'
-import Catalog from './views/Catalog/Catalog'
+import Share from './views/Share/Share'
 
 import { facebookLogin, fetchCategories, fetchProducts } from './services/WordPress'
 
@@ -20,11 +20,16 @@ class App extends Component {
       user: null,
       auth: null,
       category: null,
-      products: null
+      products: null,
+      selectedProduct: null
     }
-    this.handleCategorySent = this.handleCategorySent.bind(this)
-    this.handleProductsSent = this.handleProductsSent.bind(this)
+
     this.handleAuthResponse = this.handleAuthResponse.bind(this)
+    this.handleCategoryCreate = this.handleCategoryCreate.bind(this)
+    this.handleProductCreate = this.handleProductCreate.bind(this)
+    this.handleCategoryUpdate = this.handleCategoryUpdate.bind(this)
+    this.handleProductUpdate = this.handleProductUpdate.bind(this)
+    this.handleProductSelected = this.handleProductSelected.bind(this)
 
     const response = JSON.parse(localStorage.getItem('user'))
     if (response) {
@@ -38,7 +43,7 @@ class App extends Component {
     facebookLogin(response.token.accessToken)
       .then(res => {
         console.log(res)
-        if (res.status === 200) {
+        if (res.data.cookie) {
           const auth = res.data
           fetchCategories(auth)
             .then(res => {
@@ -58,7 +63,7 @@ class App extends Component {
                     products: products
                   })
                   const { incomingPath } = this.state
-                  if (incomingPath == '/ingresa' || incomingPath == '/') {
+                  if (incomingPath === '/ingresa' || incomingPath === '/') {
                     this.props.history.replace('/tienda')
                   } else {
                     this.props.history.replace(this.state.incomingPath)
@@ -71,6 +76,9 @@ class App extends Component {
             .catch(err => {
               console.log(err)
             })
+        } else {
+          localStorage.clear()
+          this.props.history.replace('/ingresa')
         }
       })
       .catch(err => {
@@ -90,18 +98,34 @@ class App extends Component {
     }
   }
 
-  handleCategorySent(category) {
+  handleCategoryCreate(category) {
     this.setState({ category: category })
-    this.props.history.replace('/product/new')
+    this.props.history.replace('/producto/crea')
   }
 
-  handleProductsSent() {
-    this.setState({ products: true })
-    this.props.history.replace('/catalog')
+  handleProductCreate(product) {
+    // this.setState({ products: true })
+    this.props.history.replace('/comparte')
+  }
+
+  handleCategoryUpdate(category) {
+    this.setState({ category: category })
+    this.props.history.replace('/tienda')
+  }
+
+  handleProductUpdate(product) {
+    // this.setState({ products: true })
+    this.props.history.replace('/tienda')
+  }
+
+  handleProductSelected(product) {
+    console.log(product)
+    this.setState({ selectedProduct: product })
+    this.props.history.replace('/producto/edita')
   }
 
   render() {
-    const { user, auth, category, products } = this.state
+    const { user, auth, category, products, selectedProduct } = this.state
     return (
       <div className='App'>
         <Switch>
@@ -119,7 +143,8 @@ class App extends Component {
                 user={user}
                 auth={auth}
                 category={category}
-                products={products} />
+                products={products}
+                onSelect={this.handleProductSelected} />
           )} />
           <Route
             exact path='/tienda/crea'
@@ -127,7 +152,16 @@ class App extends Component {
               <CategoryForm
                 user={user}
                 auth={auth ? auth : null}
-                handleSubmit={this.handleCategorySent} />
+                onSubmit={this.handleCategoryCreate} />
+          )} />
+          <Route
+            exact path='/tienda/edita'
+            render={() => (
+              <CategoryForm
+                editing={true}
+                user={user}
+                auth={auth ? auth : null}
+                onSubmit={this.handleCategoryUpdate} />
           )} />
           <Route
             exact path='/producto/crea'
@@ -135,13 +169,24 @@ class App extends Component {
               <ProductForm
                 user={user}
                 auth={auth ? auth : null}
-                handleSubmit={this.handleProductsSent}
+                product={selectedProduct}
+                onSubmit={this.handleProductCreate}
                 category={category} />
           )} />
           <Route
-            exact path='/catalogo'
+            exact path='/producto/edita'
             render={() => (
-              <Catalog
+              <ProductForm
+                product={selectedProduct}
+                user={user}
+                auth={auth ? auth : null}
+                onSubmit={this.handleProductUpdate}
+                category={category} />
+          )} />
+          <Route
+            exact path='/comparte'
+            render={() => (
+              <Share
                 category={category} />
           )} />
           <Route component={Error} />

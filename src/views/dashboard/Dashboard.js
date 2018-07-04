@@ -27,7 +27,9 @@ class Dashboard extends Component {
 		this.state = {
 			dense: false,
 		}
+
 		this.handleAddProduct = this.handleAddProduct.bind(this)
+		this.handleProductSelected = this.handleProductSelected.bind(this)
 
 		const { user, category, products } = this.props
 		if (!user) {
@@ -42,9 +44,13 @@ class Dashboard extends Component {
 	handleAddProduct() {
 		this.props.history.replace('/producto/crea')
 	}
+
+	handleProductSelected(product) {
+		this.props.onSelect(product)
+	}
   
 	render() {
-		const { user, category, products } = this.props
+		const { category, products } = this.props
 		const { dense } = this.state
 	  return (
 			<div>
@@ -52,7 +58,9 @@ class Dashboard extends Component {
 				<div className='Content'>
 					<List dense={dense}>
 						{products && products.map(product => (
-							<ListItem key={product.id}>
+							<ListItem
+								key={product.id}
+								onClick={() => this.handleProductSelected(product)}>
 								<ListItemAvatar>
 									<Avatar>
 										<CardGiftcard />
