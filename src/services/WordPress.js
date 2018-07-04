@@ -96,6 +96,16 @@ export function createProducts(data) {
 	return axios.post(url + '/wp-json/wc/v2/products/batch', products, options)
 }
 
+export function fetchProducts(categoryId) {
+	const options = {
+		auth: {
+			username: process.env.REACT_APP_WOOCOMMERCE_USERNAME,
+			password: process.env.REACT_APP_WOOCOMMERCE_PASSWORD
+		}
+	}
+	return axios.get(url + '/wp-json/wc/v2/products/?category=' + categoryId, options)
+}
+
 export function uploadMedia(file) {
 	const stamp = Date.now()
 	var formData = new FormData()

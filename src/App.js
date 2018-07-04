@@ -9,7 +9,7 @@ import CategoryForm from './views/Category/CategoryForm'
 import ProductForm from './views/Product/ProductForm'
 import Catalog from './views/Catalog/Catalog'
 
-import { facebookLogin, fetchCategories } from './services/WordPress'
+import { facebookLogin, fetchCategories, fetchProducts } from './services/WordPress'
 
 class App extends Component {
   constructor(props) {
@@ -39,13 +39,22 @@ class App extends Component {
               const categories = res.data.filter(category => {
                 return category.owner_id === auth.wp_user_id.toString()
               })
-              this.setState({
-                user: response,
-                auth: res.data,
-                category: categories[0]
-              })
-              console.log(categories)
-              this.props.history.replace('/')
+              const category = categories[0]
+              fetchProducts(category.term_id)
+                .then(res => {
+                  console.log(res)
+                  const products = res.data
+                  this.setState({
+                    user: response,
+                    auth: res.data,
+                    category: category,
+                    products: products
+                  })
+                  this.props.history.replace('/')
+                })
+                .catch(err => {
+                  console.log(err)
+                })
             })
             .catch(err => {
               console.log(err)
