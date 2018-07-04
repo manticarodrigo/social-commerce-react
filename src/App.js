@@ -3,6 +3,7 @@ import { Route, Switch, withRouter } from 'react-router-dom'
 import './App.css'
 
 import Error from './views/Error/Error'
+import Loading from './views/Loading/Loading'
 import Login from './views/Login/Login'
 import Dashboard from './views/Dashboard/Dashboard'
 import CategoryForm from './views/Category/CategoryForm'
@@ -14,9 +15,8 @@ import { facebookLogin, fetchCategories, fetchProducts } from './services/WordPr
 class App extends Component {
   constructor(props) {
     super(props)
-    const response = localStorage.getItem('response')
-    if (response) this.processAuth(JSON.parse(response))
     this.state = {
+      incomingPath: this.props.location.pathname,
       user: null,
       auth: null,
       category: null,
@@ -25,6 +25,13 @@ class App extends Component {
     this.handleCategorySent = this.handleCategorySent.bind(this)
     this.handleProductsSent = this.handleProductsSent.bind(this)
     this.handleAuthResponse = this.handleAuthResponse.bind(this)
+
+    const response = JSON.parse(localStorage.getItem('response'))
+    if (response) {
+      this.processAuth(response)
+    } else {
+      this.props.history.replace('/ingresa')
+    }
   }
 
   processAuth(response) {
@@ -50,7 +57,12 @@ class App extends Component {
                     category: category,
                     products: products
                   })
-                  this.props.history.replace('/')
+                  const { incomingPath } = this.state
+                  if (incomingPath == '/ingresa' || incomingPath == '/') {
+                    this.props.history.replace('/tienda')
+                  } else {
+                    this.props.history.replace(this.state.incomingPath)
+                  }
                 })
                 .catch(err => {
                   console.log(err)
@@ -89,8 +101,15 @@ class App extends Component {
     return (
       <div className='App'>
         <Switch>
-        <Route
-            exact path='/'
+          <Route exact path='/' component={Loading} />
+          <Route
+            exact path='/ingresa'
+            render={() => (
+              <Login
+                onResponse={this.handleAuthResponse} />
+            )} />
+          <Route
+            exact path='/tienda'
             render={() => (
               <Dashboard
                 user={user}
@@ -99,13 +118,7 @@ class App extends Component {
                 products={products} />
           )} />
           <Route
-            exact path='/login'
-            render={() => (
-              <Login
-                onResponse={this.handleAuthResponse} />
-            )} />
-          <Route
-            exact path='/category/new'
+            exact path='/tienda/crea'
             render={() => (
               <CategoryForm
                 user={user}
@@ -113,7 +126,7 @@ class App extends Component {
                 handleSubmit={this.handleCategorySent} />
           )} />
           <Route
-            exact path='/product/new'
+            exact path='/producto/crea'
             render={() => (
               <ProductForm
                 user={user}
@@ -122,7 +135,7 @@ class App extends Component {
                 category={category} />
           )} />
           <Route
-            exact path='/catalog'
+            exact path='/catalogo'
             render={() => (
               <Catalog
                 category={category} />

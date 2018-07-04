@@ -27,19 +27,20 @@ class Dashboard extends Component {
 		this.state = {
 			dense: false,
 		}
+		this.handleAddProduct = this.handleAddProduct.bind(this)
+
 		const { user, category, products } = this.props
 		if (!user) {
-			this.props.history.replace('/login')
+			this.props.history.replace('/')
 		} else if (!category) {
-			this.props.history.replace('/category/new')
+			this.props.history.replace('/tienda/crea')
 		} else if (!products) {
-			this.props.history.replace('/product/new')
+			this.props.history.replace('/producto/crea')
 		}
-		this.handleAddProduct = this.handleAddProduct.bind(this)
 	}
 
 	handleAddProduct() {
-		this.props.history.replace('/product/new')
+		this.props.history.replace('/producto/crea')
 	}
   
 	render() {

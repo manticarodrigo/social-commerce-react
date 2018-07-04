@@ -24,8 +24,6 @@ const style = {
 class CategoryForm extends Component {
 	constructor(props) {
 		super(props)
-		const { user } = this.props
-		if (!user) this.props.history.replace('/login')
 		this.state = {
 			id: user && user.profile.id ? user.profile.id : '',
 			businessName: '',
@@ -44,6 +42,9 @@ class CategoryForm extends Component {
 		this.handleInputChange = this.handleInputChange.bind(this)
 		this.handleUploadDialogOpen = this.handleUploadDialogOpen.bind(this)
 		this.handleUploadDialogClose = this.handleUploadDialogClose.bind(this)
+
+		const { user } = this.props
+		if (!user) this.props.history.replace('/')
 	}
 	
 	handleUploadDialogOpen() {
@@ -102,8 +103,8 @@ class CategoryForm extends Component {
 		const { uploadDialogOpen } = this.state
 	  return (
 			<div>
-				<NavBar title='Crear Categoría' />
-				<div className='Content'>
+				<NavBar title='Crear Tienda' />
+				<div className='Content' style={{paddingBottom: 'calc(50px + 2em'}}>
 					{uploadDialogOpen && (
 						<UploadDialog
 							token={user.token}

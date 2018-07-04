@@ -1,4 +1,5 @@
 import React from 'react'
+import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
@@ -24,22 +25,35 @@ const styles = {
 }
 
 class NavBar extends React.Component {
-  state = {
-    user: true,
-    anchorEl: null,
+  constructor(props) {
+    super(props)
+    this.state = {
+      user: true,
+      anchorEl: null,
+    }
+    this.handleChange = this.handleChange.bind(this)
+    this.handleMenu = this.handleMenu.bind(this)
+    this.handleClose = this.handleClose.bind(this)
+    this.handleLogout = this.handleLogout.bind(this)
   }
 
-  handleChange = (event, checked) => {
+  handleChange(event, checked) {
     this.setState({ user: checked })
   }
 
-  handleMenu = event => {
+  handleMenu(event) {
     this.setState({ anchorEl: event.currentTarget })
   }
 
-  handleClose = () => {
+  handleClose() {
     this.setState({ anchorEl: null })
   }
+
+  handleLogout() {
+    localStorage.clear()
+    this.props.history.replace('/ingresa')
+  }
+
   render() {
     const { classes, title } = this.props
     const { user, anchorEl } = this.state
@@ -78,8 +92,8 @@ class NavBar extends React.Component {
                   open={open}
                   onClose={this.handleClose}
                 >
-                  <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-                  <MenuItem onClick={this.handleClose}>My account</MenuItem>
+                  <MenuItem onClick={this.handleClose}>Editar Tienda</MenuItem>
+                  <MenuItem onClick={this.handleLogout}>Cerrar sesión</MenuItem>
                 </Menu>
               </div>
             )}
@@ -94,4 +108,4 @@ NavBar.propTypes = {
   classes: PropTypes.object.isRequired,
 }
 
-export default withStyles(styles)(NavBar)
+export default withStyles(styles)(withRouter(NavBar))

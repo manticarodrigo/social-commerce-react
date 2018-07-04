@@ -24,8 +24,6 @@ const style = {
 class ProductForm extends Component {
 	constructor(props) {
 		super(props)
-		const { user, category } = this.props
-		if (!user) this.props.history.replace('/login')
 	  this.state = {
 			title: '',
 			description: '',
@@ -40,6 +38,9 @@ class ProductForm extends Component {
 		this.handleInputChange = this.handleInputChange.bind(this)
 		this.handleUploadDialogOpen = this.handleUploadDialogOpen.bind(this)
 		this.handleUploadDialogClose = this.handleUploadDialogClose.bind(this)
+
+		const { user, category } = this.props
+		if (!user) this.props.history.replace('/')
 	}
 
 	handleUploadDialogOpen() {
@@ -105,7 +106,7 @@ class ProductForm extends Component {
 	  return (
 			<div>
 				<NavBar title='Crear Productos' />
-				<div className='Content'>
+				<div className='Content' style={{paddingBottom: 'calc(50px + 2em'}}>
 					{uploadDialogOpen && (
 						<UploadDialog
 							token={user.token}
