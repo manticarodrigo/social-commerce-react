@@ -96,6 +96,16 @@ export function createProducts(data) {
 	return axios.post(url + '/wp-json/wc/v2/products/batch', products, options)
 }
 
+export function deleteProduct(productId) {
+	const options = {
+		auth: {
+			username: process.env.REACT_APP_WOOCOMMERCE_USERNAME,
+			password: process.env.REACT_APP_WOOCOMMERCE_PASSWORD
+		}
+	}
+	return axios.delete(url + '/wp-json/wc/v2/products/' + productId, options)
+}
+
 export function fetchProducts(categoryId) {
 	const options = {
 		auth: {

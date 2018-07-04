@@ -28,7 +28,8 @@ class Dashboard extends Component {
 			dense: false,
 		}
 
-		this.handleAddProduct = this.handleAddProduct.bind(this)
+		this.handleProductAdd = this.handleProductAdd.bind(this)
+		this.handleProductDelete = this.handleProductDelete.bind(this)
 		this.handleProductSelected = this.handleProductSelected.bind(this)
 
 		const { user, category, products } = this.props
@@ -41,8 +42,12 @@ class Dashboard extends Component {
 		}
 	}
 
-	handleAddProduct() {
+	handleProductAdd() {
 		this.props.history.replace('/producto/crea')
+	}
+
+	handleProductDelete(product) {
+		this.props.onDelete(product)
 	}
 
 	handleProductSelected(product) {
@@ -75,7 +80,9 @@ class Dashboard extends Component {
 									}
 								/>
 								<ListItemSecondaryAction>
-									<IconButton aria-label='Delete'>
+									<IconButton
+									aria-label='Delete'
+									onClick={() => this.handleProductDelete(product)}>
 										<DeleteIcon />
 									</IconButton>
 								</ListItemSecondaryAction>
@@ -87,7 +94,7 @@ class Dashboard extends Component {
 						color='primary'
 						aria-label='add'
 						style={style.fab}
-						onClick={this.handleAddProduct}>
+						onClick={this.handleProductAdd}>
 						<AddIcon />
 					</Button>
 				</div>

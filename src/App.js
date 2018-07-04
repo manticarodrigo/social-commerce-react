@@ -10,7 +10,7 @@ import CategoryForm from './views/Category/CategoryForm'
 import ProductForm from './views/Product/ProductForm'
 import Share from './views/Share/Share'
 
-import { facebookLogin, fetchCategories, fetchProducts } from './services/WordPress'
+import { facebookLogin, fetchCategories, fetchProducts, deleteProduct } from './services/WordPress'
 
 class App extends Component {
   constructor(props) {
@@ -25,11 +25,10 @@ class App extends Component {
     }
 
     this.handleAuthResponse = this.handleAuthResponse.bind(this)
-    this.handleCategoryCreate = this.handleCategoryCreate.bind(this)
-    this.handleProductCreate = this.handleProductCreate.bind(this)
-    this.handleCategoryUpdate = this.handleCategoryUpdate.bind(this)
-    this.handleProductUpdate = this.handleProductUpdate.bind(this)
+    this.handleCategorySubmit = this.handleCategorySubmit.bind(this)
+    this.handleProductSubmit = this.handleProductSubmit.bind(this)
     this.handleProductSelected = this.handleProductSelected.bind(this)
+    this.handleProductDelete = this.handleProductDelete.bind(this)
 
     const response = JSON.parse(localStorage.getItem('user'))
     if (response) {
@@ -98,30 +97,49 @@ class App extends Component {
     }
   }
 
-  handleCategoryCreate(category) {
+  handleCategorySubmit(category) {
     this.setState({ category: category })
     this.props.history.replace('/producto/crea')
   }
 
-  handleProductCreate(product) {
-    // this.setState({ products: true })
-    this.props.history.replace('/comparte')
-  }
-
-  handleCategoryUpdate(category) {
-    this.setState({ category: category })
-    this.props.history.replace('/tienda')
-  }
-
-  handleProductUpdate(product) {
-    // this.setState({ products: true })
-    this.props.history.replace('/tienda')
+  handleProductSubmit() {
+    const { category } = this.state
+    fetchProducts(category.term_id)
+      .then(res => {
+        console.log(res)
+        const products = res.data
+        this.setState({ products: products })
+        this.props.history.replace('/comparte')
+      })
+      .catch(err => {
+        console.log(err)
+        this.props.history.replace('/comparte')
+      })
   }
 
   handleProductSelected(product) {
-    console.log(product)
     this.setState({ selectedProduct: product })
     this.props.history.replace('/producto/edita')
+  }
+
+  handleProductDelete(product) {
+    const { category } = this.state
+    deleteProduct(product.id)
+      .then(res => {
+        console.log(res)
+        fetchProducts(category.term_id)
+          .then(res => {
+            console.log(res)
+            const products = res.data
+            this.setState({ products: products })
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   render() {
@@ -144,7 +162,8 @@ class App extends Component {
                 auth={auth}
                 category={category}
                 products={products}
-                onSelect={this.handleProductSelected} />
+                onSelect={this.handleProductSelected}
+                onDelete={this.handleProductDelete} />
           )} />
           <Route
             exact path='/tienda/crea'
@@ -152,7 +171,7 @@ class App extends Component {
               <CategoryForm
                 user={user}
                 auth={auth ? auth : null}
-                onSubmit={this.handleCategoryCreate} />
+                onSubmit={this.handleCategorySubmit} />
           )} />
           <Route
             exact path='/tienda/edita'
@@ -161,7 +180,7 @@ class App extends Component {
                 editing={true}
                 user={user}
                 auth={auth ? auth : null}
-                onSubmit={this.handleCategoryUpdate} />
+                onSubmit={this.handleCategorySubmit} />
           )} />
           <Route
             exact path='/producto/crea'
@@ -170,7 +189,7 @@ class App extends Component {
                 user={user}
                 auth={auth ? auth : null}
                 product={selectedProduct}
-                onSubmit={this.handleProductCreate}
+                onSubmit={this.handleProductSubmit}
                 category={category} />
           )} />
           <Route
@@ -180,7 +199,7 @@ class App extends Component {
                 product={selectedProduct}
                 user={user}
                 auth={auth ? auth : null}
-                onSubmit={this.handleProductUpdate}
+                onSubmit={this.handleProductSubmit}
                 category={category} />
           )} />
           <Route
