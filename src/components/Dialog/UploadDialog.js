@@ -7,7 +7,7 @@ import AlbumDialog from './AlbumDialog'
 class UploadDialog extends Component {
   constructor(props) {
     super(props)
-    const options = ['Upload from Facebook', 'Upload from Device']
+    const options = ['Suba de Facebook', 'Suba de Dispositivo']
     const optionsDialog = (
       <OptionsDialog
         options={options}

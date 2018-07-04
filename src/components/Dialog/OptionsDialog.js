@@ -24,7 +24,7 @@ class OptionsDialog extends Component {
     const { options } = this.state
     return (
       <Dialog onClose={this.handleClose} aria-labelledby="options-dialog-title" {...other}>
-        <DialogTitle id="options-dialog-title">Upload Image</DialogTitle>
+        <DialogTitle id="options-dialog-title">Suba imagen</DialogTitle>
         <div>
           <List>
             {options.map(option => (
