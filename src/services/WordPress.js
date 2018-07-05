@@ -3,7 +3,11 @@ import axios from 'axios'
 const url = process.env.REACT_APP_BACKEND_URL
 
 export function facebookLogin(accessToken) {
-	return axios.get(url + '/?json=user.fb_connect&access_token=' + accessToken + '&insecure=cool')
+	let base_url = url + '/?json=user.fb_connect&access_token=' + accessToken;
+	if (process.env.REACT_APP_ENV !== 'production') {
+		base_url += '&insecure=cool';
+	}
+	return axios.get(base_url);
 }
 
 export function createCategory(auth, data) {
@@ -41,14 +45,17 @@ export function updateUser(auth, data) {
 }
 
 export function updateUserMeta(auth, data) {
-	const endpoint = ('/?json=user.update_user_meta_vars/?cookie='+ auth.cookie
-										+ '&phone=' + data.phone
-										+ '&dni=' + data.dni
-										+ '&ruc=' + data.ruc
-										+ '&bankAccount=' + data.bankAccount
-										+ '&logisticProvider=' + data.logisticProvider
-									)
-	return axios.get(url + endpoint+ '?insecure=cool')
+	let base_url = (url + '/?json=user.update_user_meta_vars/?cookie='+ auth.cookie
+		+ '&phone=' + data.phone
+		+ '&dni=' + data.dni
+		+ '&ruc=' + data.ruc
+		+ '&bankAccount=' + data.bankAccount
+		+ '&logisticProvider=' + data.logisticProvider);
+	
+	if (process.env.REACT_APP_ENV !== 'production') {
+		base_url += '&insecure=cool';
+	}
+	return axios.get(base_url)
 }
 
 export function createProduct(data) {
