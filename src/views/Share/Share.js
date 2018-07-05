@@ -55,22 +55,22 @@ class Share extends Component {
 						<div style={{textAlign: 'center'}}>
 							<WhatsappShareButton
 								url={category.term_link}
-								title={'Tienda ' + category.term_name}
+								title={'Tienda ' + category.name}
 								children={<WhatsappIcon size={32} round={true} />} />
 							<FacebookShareButton
 								url={category.term_link}
-								quote={'Tienda ' + category.term_name}
+								quote={'Tienda ' + category.name}
 								hashtag={category.term_name}
 								children={<FacebookIcon size={32} round={true} />} />
 							<TwitterShareButton
 								url={category.term_link}
-								title={'Tienda ' + category.term_name}
+								title={'Tienda ' + category.name}
 								hashtags={[category.term_name]}
 								children={<TwitterIcon size={32} round={true} />} />
 							<EmailShareButton
 								url={category.term_link}
-								subject={'Tienda ' + category.term_name}
-								body={'Conoce la tienda ' + category.term_name + ' visitando la pagina ' + + category.term_link}
+								subject={'Tienda ' + category.name}
+								body={'Conoce la tienda ' + category.name + ' visitando la pagina ' + + category.term_link}
 								children={<EmailIcon size={32} round={true} />} />
 						</div>
 						<div className='IframeContainer'>
