@@ -8,7 +8,7 @@ import NavBar from '../../components/NavBar/NavBar'
 
 import UploadDialog from '../../components/Dialog/UploadDialog'
 
-import { uploadMedia, createCategory } from '../../services/WordPress'
+import { uploadMedia, createCategory, updateCategory} from '../../services/WordPress'
 
 const style = {
 	saveButton: {
@@ -61,7 +61,7 @@ class CategoryForm extends Component {
 		})
   }
 
-  handleUploadDialogClose(value) {
+  	handleUploadDialogClose(value) {
 		const { imageId } = this.state
 		if (typeof(value) === 'object') {
 			this.setState({
@@ -83,7 +83,8 @@ class CategoryForm extends Component {
 		event.preventDefault()
 		const data = this.state
 		const { businessName, businessLogo, imageFile, name, email, phone, dni } = this.state
-		const { auth } = this.props
+		const { auth, category } = this.props
+
 		if (
 			businessName !== '' &&
 			businessLogo !== '' &&
@@ -92,41 +93,39 @@ class CategoryForm extends Component {
 			phone !== '' &&
 			dni !== ''
 		) {
+			const fn = category ? updateCategory : createCategory; 
 			if (imageFile) {
 				uploadMedia(imageFile)
+				.then(res => {
+					console.log(res)
+					data.imageId = res.data.id
+					fn(auth, data)
 					.then(res => {
 						console.log(res)
-						data.imageId = res.data.id
-						createCategory(auth, data)
-							.then(res => {
-								console.log(res)
-								if (res.data && res.data.term_id !== null) {
-									this.props.onSubmit(res.data)
-								}
-							})
-							.catch(err => {
-								console.log(err)
-							})
-					})
-					.catch(err => {
-						console.log(err)
-					})
-			} else {
-				createCategory(auth, data)
-					.then(res => {
-						console.log(res)
-						if (res.data && res.data.term_id !== null) {
+						if (res.data && res.data.id !== null) {
 							this.props.onSubmit(res.data)
 						}
 					})
 					.catch(err => {
 						console.log(err)
 					})
+				})
+				.catch(err => {
+					console.log(err)
+				})
+			} else {
+				fn(auth, data)
+				.then(res => {
+					console.log(res)
+					if (res.data && res.data.id !== null) {
+						this.props.onSubmit(res.data)
+					}
+				})
+				.catch(err => {
+					console.log(err)
+				})
 			}
-		} else {
-			alert('Favor llenar campos requeridos.')
 		}
-		
   }
   
 	handleInputChange(event) {

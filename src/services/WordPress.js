@@ -12,51 +12,55 @@ export function facebookLogin(accessToken) {
 
 export function createCategory(auth, data) {
 	const category = {
-		ownerId: auth.wp_user_id,
-		businessName: data.businessName,
-		businessLogo: data.businessLogo,
+		name: data.businessName,
+		owner_id: auth.wp_user_id,
+		image: {
+			src: data.businessLogo
+		},
 		dni: data.dni,
 		ruc: data.ruc,
 		phone: data.phone,
-		bankAccount: data.bankAccount,
-		logisticProvider: data.logisticProvider
+		bank_account: data.bankAccount,
+		logistic_provider: data.logisticProvider
 	}
-	return axios.post(url + '/wp-json/socialcommerce/v1/categories/create/', category)
+	return axios.post(url + '/wp-json/wc/custom/products/categories/', category)
+}
+
+export function updateCategory(auth, data) {
+	const category = {
+		name: data.businessName,
+		owner_id: auth.wp_user_id,
+		image: {
+			src: data.businessLogo
+		},
+		dni: data.dni,
+		ruc: data.ruc,
+		phone: data.phone,
+		bank_account: data.bankAccount,
+		logistic_provider: data.logisticProvider
+	}
+	return axios.put(url + '/wp-json/wc/custom/products/categories/', category)
 }
 
 export function fetchCategories(auth) {
-	// const ownerId = auth.wp_user_id
-	return axios.get(url + '/wp-json/socialcommerce/v1/categories/')
+	const ownerId = auth.wp_user_id;
+	return axios.get(`${url}/wp-json/wc/custom/products/categories/?owner_id=${ownerId}`);
 }
 
-export function updateUser(auth, data) {
-	const user = {
-		name: data.name,
-		email: data.email,
-		meta: {
-			phone: data.phone,
-			dni: data.dni,
-			ruc: data.ruc,
-			bankAccount: data.bankAccount,
-			logisticProvider: data.logisticProvider
-		}
-	}
-	return axios.post(url + '/wp-json/wp/v2/users/' + auth.wp_user_id, user)
-}
-
-export function updateUserMeta(auth, data) {
-	let base_url = (url + '/?json=user.update_user_meta_vars/?cookie='+ auth.cookie
-		+ '&phone=' + data.phone
-		+ '&dni=' + data.dni
-		+ '&ruc=' + data.ruc
-		+ '&bankAccount=' + data.bankAccount
-		+ '&logisticProvider=' + data.logisticProvider);
-	
-	if (process.env.REACT_APP_ENV !== 'production') {
-		base_url += '&insecure=cool';
-	}
-	return axios.get(base_url)
-}
+// export function updateUser(auth, data) {
+// 	const user = {
+// 		name: data.name,
+// 		email: data.email,
+// 		meta: {
+// 			phone: data.phone,
+// 			dni: data.dni,
+// 			ruc: data.ruc,
+// 			bankAccount: data.bankAccount,
+// 			logisticProvider: data.logisticProvider
+// 		}
+// 	}
+// 	return axios.post(url + '/wp-json/wp/v2/users/' + auth.wp_user_id, user)
+// }
 
 export function createProduct(data) {
 	const id = {id: data.imageId, position: 0}

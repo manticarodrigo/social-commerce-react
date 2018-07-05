@@ -48,10 +48,7 @@ class App extends Component {
           fetchCategories(auth)
             .then(res => {
               console.log(res)
-              const categories = res.data.filter(category => {
-                return category.owner_id === auth.wp_user_id.toString()
-              })
-              const category = categories[0]
+              const category = res.data[0]
               fetchProducts(category.term_id)
                 .then(res => {
                   console.log(res)
