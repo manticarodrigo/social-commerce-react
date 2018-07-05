@@ -3,13 +3,17 @@ import { withRouter } from 'react-router-dom'
 import SocialButton from '../../components/SocialButton/SocialButton'
 import './Login.css'
 
+import TermsDialog from '../../components/Dialog/TermsDialog'
+
 class Login extends Component {
 	constructor(props) {
     super(props)
     this.state = {
       login: true,
-      secondary: false,
+      termsDialog: null
     }
+
+    this.handleTerms = this.handleTerms.bind(this)
     this.handleResponse = this.handleResponse.bind(this)
   }
   
@@ -17,13 +21,23 @@ class Login extends Component {
     this.setState({login: !this.state.login})
   }
 
+  handleTerms() {
+    const termsDialog = (
+      <TermsDialog
+        onClose={() => this.setState({ termsDialog: null })} />
+    )
+    this.setState({ termsDialog: termsDialog })
+  }
+
   handleResponse(response) {
     this.props.onResponse(response)
   }
   
 	render() {
+    const { termsDialog } = this.state
 	  return (
 			<div className='Login'>
+        {termsDialog}
         <div>
           <h1 style={{color: '#fff'}}>
             Social Commerce
@@ -45,8 +59,8 @@ class Login extends Component {
             >
             {this.state.login ? 'Ingresa' : 'Registra'} con Google
           </SocialButton>
-          <p style={{color: '#fff'}}><a href='#' onClick={this.toggleLogin.bind(this)}>{!this.state.login ? 'Ingresa' : 'Registra'}</a></p>
-          <p style={{color: '#fff', fontSize: '14px'}}>Al ingresar esta indicando que ha leido<br />y acepta nuestros <a href="#">Terminos y Condiciones</a>.</p>
+          <p style={{color: '#fff'}}><a onClick={this.toggleLogin.bind(this)}>{!this.state.login ? 'Ingresa' : 'Registra'}</a></p>
+          <p style={{color: '#fff', fontSize: '14px'}}>Al ingresar esta indicando que ha leido<br />y acepta nuestros <a onClick={this.handleTerms}>Terminos y Condiciones</a>.</p>
         </div>
       </div>
 	  )
