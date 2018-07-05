@@ -43,20 +43,19 @@ class Login extends Component {
             Social Commerce
           </h1>
           <SocialButton
-            provider="facebook"
+            provider='facebook'
             appId={process.env.REACT_APP_FACEBOOK_APP_ID}
-            scope="user_photos"
+            scope='user_photos'
             onLoginSuccess={this.handleResponse}
             onLoginFailure={this.handleResponse}>
             {this.state.login ? 'Ingresa' : 'Registra'} con Facebook
           </SocialButton>
           <br />
           <SocialButton
-            provider="google"
-            // appId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
-            // onLoginSuccess={this.responseGoogle.bind(this)}
-            // onLoginFailure={this.responseGoogle.bind(this)}
-            >
+            provider='google'
+            appId={process.env.REACT_APP_GOOGLE_APP_ID}
+            onLoginSuccess={this.handleResponse}
+            onLoginFailure={this.handleResponse}>
             {this.state.login ? 'Ingresa' : 'Registra'} con Google
           </SocialButton>
           <p style={{color: '#fff'}}><a onClick={this.toggleLogin.bind(this)}>{!this.state.login ? 'Ingresa' : 'Registra'}</a></p>
