@@ -58,7 +58,7 @@ class App extends Component {
                   const products = res.data
                   this.setState({
                     user: response,
-                    auth: res.data,
+                    auth: auth,
                     category: category,
                     products: products
                   })
@@ -71,10 +71,14 @@ class App extends Component {
                 })
                 .catch(err => {
                   console.log(err)
+                  this.setState({ user: response, auth: auth })
+                  this.props.history.replace('/tienda')
                 })
             })
             .catch(err => {
               console.log(err)
+              this.setState({ user: response, auth: auth })
+              this.props.history.replace('/tienda')
             })
         } else {
           localStorage.clear()

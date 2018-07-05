@@ -118,6 +118,26 @@ class ProductForm extends Component {
 					.catch(err => {
 						console.log(err)
 					})
+			} else {
+				if (product) {
+					updateProduct(data)
+					.then(res => {
+						console.log(res)
+						this.props.onSubmit()
+					})
+					.catch(err => {
+						console.log(err)
+					})
+				} else {
+					createProduct(data)
+						.then(res => {
+							console.log(res)
+							this.props.onSubmit()
+						})
+						.catch(err => {
+							console.log(err)
+						})
+				}
 			}
 		} else {
 			alert('Favor llenar campos requeridos.')
