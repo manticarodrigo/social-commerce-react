@@ -40,6 +40,7 @@ class App extends Component {
   }
 
   processAuth(response) {
+    this.props.history.replace('/')
     facebookLogin(response.token.accessToken)
       .then(res => {
         console.log(res)

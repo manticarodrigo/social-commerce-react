@@ -41,7 +41,7 @@ class Dashboard extends Component {
 
 		const { user, category, products } = this.props
 		if (!user) {
-			this.props.history.replace('/ingresa')
+			this.props.history.replace('/')
 		} else if (!category) {
 			this.props.history.replace('/tienda/crea')
 		} else if (!products) {

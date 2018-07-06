@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import green from '@material-ui/core/colors/green'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import FileUpload from '@material-ui/icons/FileUpload'
@@ -11,14 +13,25 @@ import UploadDialog from '../../components/Dialog/UploadDialog'
 import { uploadMedia, createProduct, updateProduct } from '../../services/WordPress'
 
 const style = {
+	saveButtonWrapper: {
+		position: 'fixed',
+		bottom: '0',
+		left: '0',
+		width: '100%'
+	},
 	saveButton: {
 		width: 'calc(100% - 1em)',
 		height:'50px',
-		margin: '0.5em',
-		position: 'fixed',
-		bottom: '0',
-		left: '0'
-	}
+		margin: '0.5em'
+	},
+	buttonProgress: {
+    color: green[500],
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  }
 }
 
 class ProductForm extends Component {
@@ -38,7 +51,8 @@ class ProductForm extends Component {
 			imageId: product ? product.images[0].id : null,
 			imageFile: null,
 			uploadDialogOpen: false,
-			category: category
+			category: category,
+			loading: false
 		}
 		
 		this.handleBack = this.handleBack.bind(this)
@@ -78,6 +92,7 @@ class ProductForm extends Component {
 	}
 	
   handleSubmit(event) {
+		this.setState({ loading: true })
 		event.preventDefault()
 		const data = this.state
 		const { title, description, cost, inventoryCount, imageUrl, imageFile } = this.state
@@ -89,57 +104,38 @@ class ProductForm extends Component {
 			imageUrl !== ''
 		) {
 			const { product } = this.props
+			const callback = product ? updateProduct : createProduct
 			if (imageFile) {
 				uploadMedia(imageFile)
 					.then(res => {
 						console.log(res)
-						if (product) {
-							product.imageId = res.data.id
-							updateProduct(data)
+						data.imageId = res.data.id
+						callback(data)
 							.then(res => {
 								console.log(res)
+								this.setState({ loading: false })
 								this.props.onSubmit()
 							})
 							.catch(err => {
 								console.log(err)
 							})
-						} else {
-							data.imageId = res.data.id
-							createProduct(data)
-								.then(res => {
-									console.log(res)
-									this.props.onSubmit()
-								})
-								.catch(err => {
-									console.log(err)
-								})
-						}
 					})
 					.catch(err => {
 						console.log(err)
 					})
 			} else {
-				if (product) {
-					updateProduct(data)
+				callback(data)
 					.then(res => {
 						console.log(res)
+						this.setState({ loading: false })
 						this.props.onSubmit()
 					})
 					.catch(err => {
 						console.log(err)
 					})
-				} else {
-					createProduct(data)
-						.then(res => {
-							console.log(res)
-							this.props.onSubmit()
-						})
-						.catch(err => {
-							console.log(err)
-						})
-				}
 			}
 		} else {
+			this.setState({ loading: false })
 			alert('Favor llenar campos requeridos.')
 		}
   }
@@ -166,7 +162,7 @@ class ProductForm extends Component {
   
 	render() {
 		const { user, product } = this.props
-		const { uploadDialogOpen } = this.state
+		const { uploadDialogOpen, loading } = this.state
 	  return (
 			<div>
 				<NavBar
@@ -231,9 +227,19 @@ class ProductForm extends Component {
 							value={this.state.inventoryCount}
 							onChange={this.handleInputChange} />
 					</form>
-					<Button onClick={this.handleSubmit} style={style.saveButton} size='large' variant='contained' color='primary'>
-						{product ? 'Guarda' : 'Agrega'} Producto
-					</Button>
+					<div style={style.saveButtonWrapper}>
+						<Button
+							size='large'
+							variant='contained'
+							color='primary'
+							style={style.saveButton}
+							disabled={loading}
+							onClick={this.handleSubmit}
+						>
+							{product ? 'Guarda' : 'Agrega'} Producto
+						</Button>
+						{loading && <CircularProgress size={24} style={style.buttonProgress} />}
+					</div>
 				</div>
 			</div>
 	  )

@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import green from '@material-ui/core/colors/green'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import FileUpload from '@material-ui/icons/FileUpload'
@@ -11,14 +13,25 @@ import UploadDialog from '../../components/Dialog/UploadDialog'
 import { uploadMedia, createCategory, updateCategory} from '../../services/WordPress'
 
 const style = {
+	saveButtonWrapper: {
+		position: 'fixed',
+		bottom: '0',
+		left: '0',
+		width: '100%'
+	},
 	saveButton: {
 		width: 'calc(100% - 1em)',
 		height:'50px',
-		margin: '0.5em',
-		position: 'fixed',
-		bottom: '0',
-		left: '0'
-	}
+		margin: '0.5em'
+	},
+	buttonProgress: {
+    color: green[500],
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  }
 }
 
 class CategoryForm extends Component {
@@ -42,7 +55,8 @@ class CategoryForm extends Component {
 			ruc: category ? category.ruc : '',
 			bankAccount: category ? category.bank_account : '',
 			logisticProvider: category ? category.logistic_provider : '',
-			uploadDialogOpen: false
+			uploadDialogOpen: false,
+			loading: false
 		}
 
 		this.handleBack = this.handleBack.bind(this)
@@ -81,6 +95,7 @@ class CategoryForm extends Component {
 	}
 	
   handleSubmit(event) {
+		this.setState({ loading: true })
 		event.preventDefault()
 		const data = this.state
 		const { businessName, businessLogo, imageFile, name, email, phone, dni } = this.state
@@ -94,7 +109,7 @@ class CategoryForm extends Component {
 			phone !== '' &&
 			dni !== ''
 		) {
-			const callback = category ? updateCategory : createCategory;
+			const callback = category ? updateCategory : createCategory
 			if (imageFile) {
 				uploadMedia(imageFile)
 				.then(res => {
@@ -104,6 +119,7 @@ class CategoryForm extends Component {
 					.then(res => {
 						console.log(res)
 						if (res.data && res.data.id !== null) {
+							this.setState({ loading: false })
 							this.props.onSubmit(res.data)
 						}
 					})
@@ -119,6 +135,7 @@ class CategoryForm extends Component {
 				.then(res => {
 					console.log(res)
 					if (res.data && res.data.id !== null) {
+						this.setState({ loading: false })
 						this.props.onSubmit(res.data)
 					}
 				})
@@ -126,6 +143,9 @@ class CategoryForm extends Component {
 					console.log(err)
 				})
 			}
+		} else {
+			this.setState({ loading: false })
+			alert('Favor llenar campos requeridos.')
 		}
   }
   
@@ -140,7 +160,7 @@ class CategoryForm extends Component {
   
 	render() {
 		const { user, category } = this.props
-		const { uploadDialogOpen } = this.state
+		const { uploadDialogOpen, loading } = this.state
 	  return (
 			<div>
 				<NavBar
@@ -222,9 +242,19 @@ class CategoryForm extends Component {
 							value={this.state.bankAccount}
 							onChange={this.handleInputChange} />
 					</form>
-					<Button onClick={this.handleSubmit} style={style.saveButton} size='large' variant='contained' color='primary'>
-						{category ? 'Guarda' : 'Agrega'} Tienda
-					</Button>
+					<div style={style.saveButtonWrapper}>
+						<Button
+							size='large'
+							variant='contained'
+							color='primary'
+							style={style.saveButton}
+							disabled={loading}
+							onClick={this.handleSubmit}
+						>
+							{category ? 'Guarda' : 'Agrega'} Tienda
+						</Button>
+						{loading && <CircularProgress size={24} style={style.buttonProgress} />}
+					</div>
 				</div>
 			</div>
 	  )
