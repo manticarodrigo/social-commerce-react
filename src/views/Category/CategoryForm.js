@@ -29,7 +29,8 @@ class CategoryForm extends Component {
 		if (!user) this.props.history.replace('/')
 
 		this.state = {
-			id: user && user.profile.id ? user.profile.id : '',
+			id: category ? category.id : false,
+			ownerId: user && user.profile.id ? user.profile.id : '',
 			businessName: category ? category.name : '',
 			businessLogo: category && category.image ? category.image.src : '',
 			imageId: category && category.image ? category.image.id : null,
@@ -93,13 +94,13 @@ class CategoryForm extends Component {
 			phone !== '' &&
 			dni !== ''
 		) {
-			const fn = category ? updateCategory : createCategory; 
+			const callback = category ? updateCategory : createCategory;
 			if (imageFile) {
 				uploadMedia(imageFile)
 				.then(res => {
 					console.log(res)
 					data.imageId = res.data.id
-					fn(auth, data)
+					callback(auth, data)
 					.then(res => {
 						console.log(res)
 						if (res.data && res.data.id !== null) {
@@ -114,7 +115,7 @@ class CategoryForm extends Component {
 					console.log(err)
 				})
 			} else {
-				fn(auth, data)
+				callback(auth, data)
 				.then(res => {
 					console.log(res)
 					if (res.data && res.data.id !== null) {

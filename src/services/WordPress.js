@@ -39,7 +39,7 @@ export function updateCategory(auth, data) {
 		bank_account: data.bankAccount,
 		logistic_provider: data.logisticProvider
 	}
-	return axios.put(url + '/wp-json/wc/custom/products/categories/', category)
+	return axios.put(`${url}/wp-json/wc/custom/products/categories/${data.id}`, category)
 }
 
 export function fetchCategories(auth) {
@@ -70,7 +70,7 @@ export function createProduct(data) {
 		regular_price: data.cost,
 		description: data.description,
 		short_description: data.description,
-		categories: [{id: data.category.term_id}],
+		categories: [{id: data.category.id}],
 		images: [data.imageId ? id : src],
 		manage_stock: true,
 		stock_quantity: data.inventoryCount,
@@ -93,7 +93,7 @@ export function createProduct(data) {
 // 			regular_price: product.cost,
 // 			description: product.description,
 // 			short_description: product.description,
-// 			categories: [{id: product.category.term_id}],
+// 			categories: [{id: product.category.id}],
 // 			images: [{src: product.imageUrl, position: 0}],
 // 			manage_stock: true,
 // 			stock_quantity: product.inventoryCount,
@@ -117,7 +117,7 @@ export function updateProduct(data) {
 		regular_price: data.cost,
 		description: data.description,
 		short_description: data.description,
-		categories: [{id: data.category.term_id}],
+		categories: [{id: data.category.id}],
 		images: [data.imageId ? id : src],
 		manage_stock: true,
 		stock_quantity: data.inventoryCount,

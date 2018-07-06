@@ -49,7 +49,7 @@ class App extends Component {
             .then(res => {
               console.log(res)
               const category = res.data[0]
-              fetchProducts(category.term_id)
+              fetchProducts(category.id)
                 .then(res => {
                   console.log(res)
                   const products = res.data
@@ -110,7 +110,7 @@ class App extends Component {
 
   handleProductSubmit() {
     const { category } = this.state
-    fetchProducts(category.term_id)
+    fetchProducts(category.id)
       .then(res => {
         console.log(res)
         const products = res.data
@@ -133,7 +133,7 @@ class App extends Component {
     deleteProduct(product.id)
       .then(res => {
         console.log(res)
-        fetchProducts(category.term_id)
+        fetchProducts(category.id)
           .then(res => {
             console.log(res)
             const products = res.data
