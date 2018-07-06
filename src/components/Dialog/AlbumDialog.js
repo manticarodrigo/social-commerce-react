@@ -61,7 +61,7 @@ class AlbumDialog extends Component {
         <TextField
           fullWidth
           margin='none'
-          label='Search albums'
+          label='Busqueda de albums'
           name='searchInput'
           value={searchInput}
           onChange={this.handleInputChange}
@@ -86,7 +86,7 @@ class AlbumDialog extends Component {
                     alt={img.name != null ? img.name : img.source}
                     onClick={() => this.handleListItemClick(img.source)} />
                   <GridListTileBar
-                    title={img.name != null ? img.name : 'Untitled'}
+                    title={img.name != null ? img.name : 'Sin titulo'}
                     subtitle={<span>{album.name}</span>}
                   />
                 </GridListTile>

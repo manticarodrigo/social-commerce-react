@@ -104,8 +104,9 @@ class App extends Component {
   }
 
   handleCategorySubmit(category) {
+    const { products } = this.state
     this.setState({ category: category })
-    this.props.history.replace('/producto/crea')
+    this.props.history.replace(products ? '/tienda' : '/producto/crea')
   }
 
   handleProductSubmit() {
