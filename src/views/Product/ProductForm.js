@@ -166,7 +166,7 @@ class ProductForm extends Component {
 	  return (
 			<div>
 				<NavBar
-					title={product ? 'Edita Producto' :'Crea Producto'}
+					title={product ? 'Editar Producto' :'Crear Producto'}
 					onBack={this.handleBack}/>
 				<div className='Content' style={{paddingBottom: 'calc(50px + 3em'}}>
 					{uploadDialogOpen && (
@@ -198,7 +198,7 @@ class ProductForm extends Component {
 							required
 							fullWidth
 							margin='normal'
-							label='Titulo'
+							label='Titulo (Nombre)'
 							name='title'
 							value={this.state.title}
 							onChange={this.handleInputChange} />
@@ -208,6 +208,9 @@ class ProductForm extends Component {
 							margin='normal'
 							label='Descripción'
 							name='description'
+							multiline={true}
+							rows={2}
+							rowsMax={5}
 							value={this.state.description}
 							onChange={this.handleInputChange} />
 						<TextField
@@ -216,12 +219,14 @@ class ProductForm extends Component {
 							margin='normal'
 							label='Costo'
 							name='cost'
+							type='number'
 							value={this.state.cost}
 							onChange={this.handleInputChange} />
 						<TextField
 							required
 							fullWidth
 							margin='normal'
+							type='number'
 							label='Cantidad de Inventario'
 							name='inventoryCount'
 							value={this.state.inventoryCount}

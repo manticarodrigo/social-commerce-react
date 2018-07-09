@@ -165,7 +165,7 @@ class CategoryForm extends Component {
 			<div>
 				<NavBar
 					noCategory={!category}
-					title={category ? 'Edita Tienda' : 'Crea Tienda'}
+					title={category ? 'Edita tu tienda' : 'Crea tu tienda'}
 					onBack={category ? this.handleBack : null}/>
 				<div className='Content' style={{paddingBottom: 'calc(50px + 3em'}}>
 					{uploadDialogOpen && (
@@ -190,7 +190,7 @@ class CategoryForm extends Component {
 								required
 								style={{width: 'calc(100% - 104px'}}
 								margin='normal'
-								label='Negocio'
+								label='Nombre del negocio'
 								name='businessName'
 								value={this.state.businessName}
 								onChange={this.handleInputChange} />
@@ -199,7 +199,7 @@ class CategoryForm extends Component {
 							required
 							fullWidth
 							margin='normal'
-							label='Nombre'
+							label='Tu Nombre y apellido'
 							name='name'
 							value={this.state.name}
 							onChange={this.handleInputChange} />
@@ -207,7 +207,7 @@ class CategoryForm extends Component {
 							required
 							fullWidth
 							margin='normal'
-							label='Email'
+							label='Tu Email'
 							name='email'
 							value={this.state.email}
 							onChange={this.handleInputChange} />
@@ -237,7 +237,7 @@ class CategoryForm extends Component {
 						<TextField
 							fullWidth
 							margin='normal'
-							label='Cuenta de Banco'
+							label='Número de cuenta de Banco'
 							name='bankAccount'
 							value={this.state.bankAccount}
 							onChange={this.handleInputChange} />
@@ -251,7 +251,7 @@ class CategoryForm extends Component {
 							disabled={loading}
 							onClick={this.handleSubmit}
 						>
-							{category ? 'Guarda' : 'Agrega'} Tienda
+							{category ? 'Guardar' : 'Agregar'} Tienda
 						</Button>
 						{loading && <CircularProgress size={24} style={style.buttonProgress} />}
 					</div>

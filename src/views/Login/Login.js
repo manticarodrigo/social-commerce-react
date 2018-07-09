@@ -40,7 +40,7 @@ class Login extends Component {
         {termsDialog}
         <div>
           <h1 style={{color: '#fff'}}>
-            Social Commerce
+            <span>Tu tienda</span><br></br><span>Peritagua.com</span>
           </h1>
           <SocialButton
             provider='facebook'
@@ -48,17 +48,18 @@ class Login extends Component {
             scope='user_photos'
             onLoginSuccess={this.handleResponse}
             onLoginFailure={this.handleResponse}>
-            {this.state.login ? 'Ingresa' : 'Registra'} con Facebook
+            {this.state.login ? 'Ingresar' : 'Registrarme'} con Facebook
           </SocialButton>
           <br />
           <SocialButton
             provider='google'
             appId={process.env.REACT_APP_GOOGLE_APP_ID}
-            onLoginSuccess={this.handleResponse}
-            onLoginFailure={this.handleResponse}>
+            // onLoginSuccess={this.handleResponse}
+            // onLoginFailure={this.handleResponse}
+            onClick={() => alert('Not implemented')}>
             {this.state.login ? 'Ingresa' : 'Registra'} con Google
           </SocialButton>
-          <p style={{color: '#fff'}}><a onClick={this.toggleLogin.bind(this)}>{!this.state.login ? 'Ingresa' : 'Registra'}</a></p>
+          <p style={{color: '#fff'}}><a onClick={this.toggleLogin.bind(this)}>{!this.state.login ? 'Ingresar' : 'Registrarme'}</a></p>
           <p style={{color: '#fff', fontSize: '14px'}}>Al ingresar esta indicando que ha leido<br />y acepta nuestros <a onClick={this.handleTerms}>Terminos y Condiciones</a>.</p>
         </div>
       </div>
