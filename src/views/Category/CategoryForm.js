@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import green from '@material-ui/core/colors/green'
 import TextField from '@material-ui/core/TextField'
@@ -39,7 +38,7 @@ class CategoryForm extends Component {
 		super(props)
 		
 		const { user, category } = this.props
-		if (!user) this.props.history.replace('/')
+		if (!user) this.props.onBack()
 
 		this.state = {
 			id: category ? category.id : false,
@@ -67,7 +66,7 @@ class CategoryForm extends Component {
 	}
 
 	handleBack() {
-		this.props.history.replace('/tienda')
+		this.props.onBack()
 	}
 	
 	handleUploadDialogOpen() {
@@ -261,4 +260,4 @@ class CategoryForm extends Component {
 	}
 }
 
-export default withRouter(CategoryForm)
+export default CategoryForm

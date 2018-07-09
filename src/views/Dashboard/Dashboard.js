@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
@@ -17,6 +16,12 @@ import DeleteDialog from '../../components/Dialog/DeleteDialog'
 
 const style = {
 	avatar: {
+		borderRadius: '0px',
+		width: '60px',
+		height: '60px',
+	},
+	img: {
+		minWidth: '60px',
 		width: '60px',
 		height: '60px',
 		objectFit: 'cover'
@@ -27,6 +32,7 @@ const style = {
 		right: '1em'
 	}
 }
+
 class Dashboard extends Component {
 	constructor(props) {
 		super(props)
@@ -41,16 +47,16 @@ class Dashboard extends Component {
 
 		const { user, category, products } = this.props
 		if (!user) {
-			this.props.history.replace('/')
+			this.props.onLogin()
 		} else if (!category) {
-			this.props.history.replace('/tienda/crea')
+			this.props.onRegister()
 		} else if (!products) {
-			this.props.history.replace('/producto/crea')
+			this.props.history.onAdd()
 		}
 	}
 
 	handleProductAdd() {
-		this.props.history.replace('/producto/crea')
+		this.props.onAdd()
 	}
 
 	handleProductDelete(product) {
@@ -83,9 +89,9 @@ class Dashboard extends Component {
 								<ListItemAvatar>
 									<Avatar style={style.avatar}>
 										{product.images ? (
-											<img style={style.avatar} src={product.images[0].src} alt={product.id} />
+											<img style={style.img} src={product.images[0].src} alt={product.id} />
 										) : (
-											<CardGiftcard />
+											<CardGiftcard style={style.img} />
 										)}
 									</Avatar>
 								</ListItemAvatar>
@@ -121,4 +127,4 @@ class Dashboard extends Component {
 	}
 }
 
-export default withRouter(Dashboard)
+export default Dashboard

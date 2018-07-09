@@ -7,7 +7,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
-import AccountCircle from '@material-ui/icons/AccountCircle'
+import MoreVert from '@material-ui/icons/MoreVert'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 
@@ -53,18 +53,18 @@ class NavBar extends React.Component {
 
   handleEditCategory() {
     this.handleClose()
-    this.props.history.replace('/tienda/edita')
+    this.props.history.replace('/perfíl')
   }
 
   handleShareCategory() {
     this.handleClose()
-    this.props.history.replace('/comparte')
+    this.props.history.replace('/compartír')
   }
 
   handleLogout() {
     this.handleClose()
     localStorage.clear()
-    this.props.history.replace('/ingresa')
+    this.props.history.replace('/ingresar')
   }
 
   render() {
@@ -78,10 +78,11 @@ class NavBar extends React.Component {
             <IconButton
               className={classes.menuButton}
               color='inherit'
-              aria-label='Menu'>
+              aria-label='Menu'
+              disabled={!onBack}
+              onClick={this.handleBack}>
               {onBack && (
-                <ArrowBackIcon
-                  onClick={this.handleBack} />
+                <ArrowBackIcon />
               )}
             </IconButton>
             <Typography variant='title' color='inherit' className={classes.flex}>
@@ -95,7 +96,7 @@ class NavBar extends React.Component {
                   onClick={this.handleMenu}
                   color='inherit'
                 >
-                  <AccountCircle />
+                  <MoreVert />
                 </IconButton>
                 <Menu
                   id='menu-appbar'

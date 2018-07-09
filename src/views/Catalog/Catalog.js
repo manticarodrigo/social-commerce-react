@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
 import NavBar from '../../components/NavBar/NavBar'
 
-import './Share.css'
+import './Catalog.css'
 
 import {
 	FacebookShareButton,
@@ -26,21 +25,21 @@ const style = {
 		border: 'none'
 	}
 }
-class Share extends Component {
+class Catalog extends Component {
 	constructor(props) {
 		super(props)
 		const { category } = this.props
-		if (!category) this.props.history.replace('/')
-
+		if (!category) this.props.onBack()
 		this.handleBack = this.handleBack.bind(this)
 	}
 
 	handleBack() {
-		this.props.history.replace('/tienda')
+		this.props.onBack()
 	}
 
 	toggleApproved() {
-		this.setState({approved: !this.state.approved})
+		const { approved } = this.state
+		this.setState({ approved: !approved })
 	}
   
 	render() {
@@ -83,4 +82,4 @@ class Share extends Component {
 	}
 }
 
-export default withRouter(Share)
+export default Catalog
