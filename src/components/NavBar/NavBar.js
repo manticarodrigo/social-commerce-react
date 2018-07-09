@@ -58,7 +58,7 @@ class NavBar extends React.Component {
 
   handleShareCategory() {
     this.handleClose()
-    this.props.history.replace('/compartír')
+    this.props.history.replace('/catálogo')
   }
 
   handleLogout() {

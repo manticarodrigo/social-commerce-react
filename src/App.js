@@ -89,7 +89,7 @@ class App extends Component {
             .catch(err => {
               console.log(err)
               this.setState({ loading: false, user: response, auth: auth })
-              this.props.history.replace('/')
+              this.props.history.replace('/perfíl')
             })
         } else {
           localStorage.clear()
@@ -126,8 +126,12 @@ class App extends Component {
       } else {
         // Go back an index
         const index = selectedIndex ? selectedIndex + 1 : 1
-        this.setState({ selectedProduct: products[index], selectedIndex: index })
-        this.props.history.replace('/producto')
+        if (index > products.length - 1) {
+          this.props.history.replace('/perfíl')
+        } else {
+          this.setState({ selectedProduct: products[index], selectedIndex: index })
+          this.props.history.replace('/producto')
+        }
       }
     } else {
       this.props.history.replace('/')
@@ -143,9 +147,9 @@ class App extends Component {
   }
 
   handleCategorySubmit(category) {
-    const { products } = this.state
-    this.setState({ category: category })
-    this.props.history.replace(products ? '/' : '/producto')
+    const { products, selectedProduct } = this.state
+    this.setState({ category: category, selectedIndex: null })
+    this.props.history.replace(selectedProduct ? '/producto' : '/')
   }
 
   handleProductSubmit() {

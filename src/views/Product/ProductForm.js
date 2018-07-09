@@ -71,7 +71,7 @@ class ProductForm extends Component {
 	static getDerivedStateFromProps(props, state) {
 		const { category, product } = props
 		const { id } = state
-		console.log(props)
+		console.log(product)
 		console.log(id)
 		if (!product && id !== '') {
 			return {
