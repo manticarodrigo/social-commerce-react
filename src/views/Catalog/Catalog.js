@@ -1,18 +1,8 @@
 import React, { Component } from 'react'
 import NavBar from '../../components/NavBar/NavBar'
+import Button from '@material-ui/core/Button'
 
 import './Catalog.css'
-
-import {
-	FacebookShareButton,
-	FacebookIcon,
-	TwitterShareButton,
-	TwitterIcon,
-	WhatsappShareButton,
-	WhatsappIcon,
-	EmailShareButton,
-	EmailIcon
-} from 'react-share'
 
 const style = {
 	fullSize: {
@@ -31,13 +21,14 @@ class Catalog extends Component {
 		const { category } = this.props
 		if (!category) this.props.onBack()
 		this.handleBack = this.handleBack.bind(this)
+		this.handleApprove = this.handleApprove.bind(this)
 	}
 
 	handleBack() {
 		this.props.onBack()
 	}
 
-	toggleApproved() {
+	handleApprove() {
 		const { approved } = this.state
 		this.setState({ approved: !approved })
 	}
@@ -47,31 +38,20 @@ class Catalog extends Component {
 	  return (
 			<div style={style.fullSize}>
 				<NavBar
-					title='Compartír Tienda'
+					title='Tu Tienda'
 					onBack={this.handleBack}/>
 				{category && (
 					<div className='ContentWrapper'>
-						<div style={{textAlign: 'center'}}>
-							<WhatsappShareButton
-								url={category.term_link}
-								title={'Tienda ' + category.name}
-								children={<WhatsappIcon size={32} round={true} />} />
-							<FacebookShareButton
-								url={category.term_link}
-								quote={'Tienda ' + category.name}
-								hashtag={category.term_name}
-								children={<FacebookIcon size={32} round={true} />} />
-							<TwitterShareButton
-								url={category.term_link}
-								title={'Tienda ' + category.name}
-								hashtags={[category.term_name]}
-								children={<TwitterIcon size={32} round={true} />} />
-							<EmailShareButton
-								url={category.term_link}
-								subject={'Tienda ' + category.name}
-								body={'Conoce la tienda ' + category.name + ' visitando la pagina ' + + category.term_link}
-								children={<EmailIcon size={32} round={true} />} />
-						</div>
+						{!category.approved && (
+							<Button
+								size='large'
+								variant='contained'
+								color='primary'
+								className='ApproveButton'
+								onClick={this.handleApprove}>
+								Aprobár
+							</Button>
+						)}
 						<div className='IframeContainer'>
 							<iframe title='catalog-preview' style={style.iframe} src={category.term_link} />
 						</div>

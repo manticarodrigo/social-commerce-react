@@ -10,9 +10,11 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
+import ShareIcon from '@material-ui/icons/Share'
 
 import NavBar from '../../components/NavBar/NavBar'
 import DeleteDialog from '../../components/Dialog/DeleteDialog'
+import ShareDialog from '../../components/Dialog/ShareDialog'
 
 const style = {
 	avatar: {
@@ -26,7 +28,12 @@ const style = {
 		height: '60px',
 		objectFit: 'cover'
 	},
-	fab: {
+	shareFab: {
+		position: 'fixed',
+		bottom: '1em',
+		right: '4em'
+	},
+	addFab: {
 		position: 'fixed',
 		bottom: '1em',
 		right: '1em'
@@ -38,23 +45,23 @@ class Dashboard extends Component {
 		super(props)
 		this.state = {
 			dense: false,
-			deleteDialog: null
+			deleteDialog: null,
+			shareDialog: null
 		}
-
-		this.handleProductAdd = this.handleProductAdd.bind(this)
+		this.handleShare = this.handleShare.bind(this)
 		this.handleProductDelete = this.handleProductDelete.bind(this)
 		this.handleProductSelected = this.handleProductSelected.bind(this)
-
-		const { category, products } = this.props
-		if (!category) {
-			this.props.onRegister()
-		} else if (!products) {
-			this.props.history.onAdd()
-		}
 	}
 
-	handleProductAdd() {
-		this.props.onAdd()
+	handleShare() {
+		const { category } = this.props
+		const shareDialog = (
+			<ShareDialog
+				category={category}
+				onClose={() => this.setState({ deleteDialog: null })}
+				onConfirm={() => this.setState({ deleteDialog: null })} />
+		)
+		this.setState({ shareDialog: shareDialog})
 	}
 
 	handleProductDelete(product) {
@@ -73,10 +80,11 @@ class Dashboard extends Component {
   
 	render() {
 		const { category, products } = this.props
-		const { dense, deleteDialog } = this.state
+		const { dense, deleteDialog, shareDialog } = this.state
 	  return (
 			<div>
 				{deleteDialog}
+				{shareDialog}
 				<NavBar title={category ? category.name : 'Tu Tienda'} />
 				<div className='Content'>
 					<List dense={dense}>
@@ -113,10 +121,18 @@ class Dashboard extends Component {
 					</List>
 					<Button
 						variant='fab'
+						color='secondary'
+						aria-label='add'
+						style={style.shareFab}
+						onClick={this.handleShare}>
+						<ShareIcon />
+					</Button>
+					<Button
+						variant='fab'
 						color='primary'
 						aria-label='add'
-						style={style.fab}
-						onClick={this.handleProductAdd}>
+						style={style.addFab}
+						onClick={this.props.onAdd}>
 						<AddIcon />
 					</Button>
 				</div>

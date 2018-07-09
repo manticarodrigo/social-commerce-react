@@ -35,7 +35,6 @@ class App extends Component {
     }
     // Bind function scopes
     this.handleBack = this.handleBack.bind(this)
-    this.handleRegister = this.handleRegister.bind(this)
     this.handleShare = this.handleShare.bind(this)
     this.handleAuthResponse = this.handleAuthResponse.bind(this)
     this.handleCategorySubmit = this.handleCategorySubmit.bind(this)
@@ -119,7 +118,7 @@ class App extends Component {
   handleBack() {
     const { pathname, category, products, selectedIndex } = this.state
     console.log(this.state)
-    if (pathname === '/producto') {
+    if (category && !category.approved) {
       if (!Array.isArray(products) || !products.length) {
         // Array does not exist, is not an array, or is empty
         this.props.history.replace('/perfíl')
@@ -136,10 +135,6 @@ class App extends Component {
     } else {
       this.props.history.replace('/')
     }
-  }
-
-  handleRegister() {
-    // this.props.history.replace('/perfíl')
   }
 
   handleShare() {
@@ -220,8 +215,7 @@ class App extends Component {
                 products={products}
                 onSelect={this.handleProductSelected}
                 onAdd={this.handleProductAdd}
-                onDelete={this.handleProductDelete}
-                onRegister={this.handleRegister} />
+                onDelete={this.handleProductDelete} />
           )} />
           <Route
             exact path='/perfíl'

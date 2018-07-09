@@ -115,7 +115,7 @@ class NavBar extends React.Component {
                   <MenuItem
                     style={{display: noCategory ? 'none' : 'block'}}
                     onClick={this.handleShareCategory}>
-                    Compartír Tienda
+                    Ver Tienda
                   </MenuItem>
                   <MenuItem
                     style={{display: noCategory ? 'none' : 'block'}}

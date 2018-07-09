@@ -10,15 +10,6 @@
   margin: 1em !important;
 }
 
-.SocialMediaShareButton,
-.SocialMediaShareButton div {
-  display: inline-block;
-}
-
-.SocialMediaShareButton div {
-  padding: 0.5em;
-}
-
 .IframeContainer {
   width: 100%;
   height: 100%;
