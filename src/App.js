@@ -35,6 +35,7 @@ class App extends Component {
     // Bind function scopes
     this.handleBack = this.handleBack.bind(this)
     this.handleLogin = this.handleLogin.bind(this)
+    this.handleRegister = this.handleRegister.bind(this)
     this.handleAuthResponse = this.handleAuthResponse.bind(this)
     this.handleCategorySubmit = this.handleCategorySubmit.bind(this)
     this.handleProductSubmit = this.handleProductSubmit.bind(this)
@@ -119,6 +120,10 @@ class App extends Component {
     this.props.history.replace('/ingresar')
   }
 
+  handleRegister() {
+    this.props.history.replace('/perfíl')
+  }
+
   handleCategorySubmit(category) {
     const { products } = this.state
     this.setState({ category: category })
@@ -195,7 +200,8 @@ class App extends Component {
                 onSelect={this.handleProductSelected}
                 onAdd={this.handleProductAdd}
                 onDelete={this.handleProductDelete}
-                onLogin={this.handleLogin} />
+                onLogin={this.handleLogin}
+                onRegister={this.handleRegister} />
           )} />
           <Route
             exact path='/perfíl'

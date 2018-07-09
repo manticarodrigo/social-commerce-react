@@ -199,6 +199,7 @@ class ProductForm extends Component {
 							label='Titulo'
 							name='title'
 							value={this.state.title}
+							type='text'
 							onChange={this.handleInputChange} />
 						<TextField
 							required
@@ -207,6 +208,7 @@ class ProductForm extends Component {
 							label='Descripción'
 							name='description'
 							value={this.state.description}
+							type='textarea'
 							onChange={this.handleInputChange} />
 						<TextField
 							required
@@ -215,6 +217,7 @@ class ProductForm extends Component {
 							label='Costo'
 							name='cost'
 							value={this.state.cost}
+							type='number'
 							onChange={this.handleInputChange} />
 						<TextField
 							required
@@ -223,6 +226,7 @@ class ProductForm extends Component {
 							label='Cantidad de Inventario'
 							name='inventoryCount'
 							value={this.state.inventoryCount}
+							type='number'
 							onChange={this.handleInputChange} />
 					</form>
 					<div style={style.saveButtonWrapper}>
@@ -234,7 +238,7 @@ class ProductForm extends Component {
 							disabled={loading}
 							onClick={this.handleSubmit}
 						>
-							{product ? 'Guarda' : 'Agrega'} Producto
+							{product ? 'Guarda' : 'Crea'} Producto
 						</Button>
 						{loading && <CircularProgress size={24} style={style.buttonProgress} />}
 					</div>

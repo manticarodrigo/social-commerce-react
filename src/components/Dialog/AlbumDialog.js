@@ -64,6 +64,7 @@ class AlbumDialog extends Component {
           label='Busqueda de albums'
           name='searchInput'
           value={searchInput}
+          type='search'
           onChange={this.handleInputChange}
           InputProps={{
             startAdornment: (

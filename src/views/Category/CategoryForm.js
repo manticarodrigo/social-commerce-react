@@ -164,7 +164,7 @@ class CategoryForm extends Component {
 			<div>
 				<NavBar
 					noCategory={!category}
-					title={category ? 'Edita Tienda' : 'Crea Tienda'}
+					title={category ? 'Edita Tu Tienda' : 'Crea Tu Tienda'}
 					onBack={category ? this.handleBack : null}/>
 				<div className='Content' style={{paddingBottom: 'calc(50px + 3em'}}>
 					{uploadDialogOpen && (
@@ -192,6 +192,7 @@ class CategoryForm extends Component {
 								label='Negocio'
 								name='businessName'
 								value={this.state.businessName}
+								type='text'
 								onChange={this.handleInputChange} />
 						</div>
 						<TextField
@@ -201,6 +202,7 @@ class CategoryForm extends Component {
 							label='Nombre'
 							name='name'
 							value={this.state.name}
+							type='text'
 							onChange={this.handleInputChange} />
 						<TextField
 							required
@@ -209,6 +211,7 @@ class CategoryForm extends Component {
 							label='Email'
 							name='email'
 							value={this.state.email}
+							type='email'
 							onChange={this.handleInputChange} />
 						<TextField
 							required
@@ -217,6 +220,7 @@ class CategoryForm extends Component {
 							label='Telefono'
 							name='phone'
 							value={this.state.phone}
+							type='number'
 							onChange={this.handleInputChange} />
 						<TextField
 							required
@@ -225,6 +229,7 @@ class CategoryForm extends Component {
 							label='DNI'
 							name='dni'
 							value={this.state.dni}
+							type='number'
 							onChange={this.handleInputChange} />
 						<TextField
 							fullWidth
@@ -232,6 +237,7 @@ class CategoryForm extends Component {
 							label='RUC'
 							name='ruc'
 							value={this.state.ruc}
+							type='number'
 							onChange={this.handleInputChange} />
 						<TextField
 							fullWidth
@@ -250,7 +256,7 @@ class CategoryForm extends Component {
 							disabled={loading}
 							onClick={this.handleSubmit}
 						>
-							{category ? 'Guarda' : 'Agrega'} Tienda
+							{category ? 'Guarda' : 'Crea'} Tienda
 						</Button>
 						{loading && <CircularProgress size={24} style={style.buttonProgress} />}
 					</div>
