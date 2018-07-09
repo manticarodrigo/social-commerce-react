@@ -30,7 +30,7 @@ class DeleteDialog extends React.Component {
         aria-labelledby='delete-dialog-title'
         aria-describedby='delete-dialog-description'
       >
-        <DialogTitle id='delete-dialog-title'>{'Eliminar Producto'}</DialogTitle>
+        <DialogTitle id='delete-dialog-title'>Elimina Producto</DialogTitle>
         <DialogContent>
           <DialogContentText id='delete-dialog-description'>
             ¿Desea eliminar el producto {product.name}?

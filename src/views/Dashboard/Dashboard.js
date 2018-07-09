@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
@@ -11,46 +10,58 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
+import ShareIcon from '@material-ui/icons/Share'
 
 import NavBar from '../../components/NavBar/NavBar'
 import DeleteDialog from '../../components/Dialog/DeleteDialog'
+import ShareDialog from '../../components/Dialog/ShareDialog'
 
 const style = {
 	avatar: {
+		borderRadius: '0px',
+		width: '60px',
+		height: '60px',
+	},
+	img: {
+		minWidth: '60px',
 		width: '60px',
 		height: '60px',
 		objectFit: 'cover'
 	},
-	fab: {
+	shareFab: {
+		position: 'fixed',
+		bottom: '1em',
+		right: '4em'
+	},
+	addFab: {
 		position: 'fixed',
 		bottom: '1em',
 		right: '1em'
 	}
 }
+
 class Dashboard extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
 			dense: false,
-			deleteDialog: null
+			deleteDialog: null,
+			shareDialog: null
 		}
-
-		this.handleProductAdd = this.handleProductAdd.bind(this)
+		this.handleShare = this.handleShare.bind(this)
 		this.handleProductDelete = this.handleProductDelete.bind(this)
 		this.handleProductSelected = this.handleProductSelected.bind(this)
-
-		const { user, category, products } = this.props
-		if (!user) {
-			this.props.history.replace('/')
-		} else if (!category) {
-			this.props.history.replace('/tienda/crea')
-		} else if (!products) {
-			this.props.history.replace('/producto/crea')
-		}
 	}
 
-	handleProductAdd() {
-		this.props.history.replace('/producto/crea')
+	handleShare() {
+		const { category } = this.props
+		const shareDialog = (
+			<ShareDialog
+				category={category}
+				onClose={() => this.setState({ deleteDialog: null })}
+				onConfirm={() => this.setState({ deleteDialog: null })} />
+		)
+		this.setState({ shareDialog: shareDialog})
 	}
 
 	handleProductDelete(product) {
@@ -69,10 +80,11 @@ class Dashboard extends Component {
   
 	render() {
 		const { category, products } = this.props
-		const { dense, deleteDialog } = this.state
+		const { dense, deleteDialog, shareDialog } = this.state
 	  return (
 			<div>
 				{deleteDialog}
+				{shareDialog}
 				<NavBar title={category ? category.name : 'Tu Tienda'} />
 				<div className='Content'>
 					<List dense={dense}>
@@ -83,9 +95,9 @@ class Dashboard extends Component {
 								<ListItemAvatar>
 									<Avatar style={style.avatar}>
 										{product.images ? (
-											<img style={style.avatar} src={product.images[0].src} alt={product.id} />
+											<img style={style.img} src={product.images[0].src} alt={product.id} />
 										) : (
-											<CardGiftcard />
+											<CardGiftcard style={style.img} />
 										)}
 									</Avatar>
 								</ListItemAvatar>
@@ -109,10 +121,18 @@ class Dashboard extends Component {
 					</List>
 					<Button
 						variant='fab'
+						color='secondary'
+						aria-label='add'
+						style={style.shareFab}
+						onClick={this.handleShare}>
+						<ShareIcon />
+					</Button>
+					<Button
+						variant='fab'
 						color='primary'
 						aria-label='add'
-						style={style.fab}
-						onClick={this.handleProductAdd}>
+						style={style.addFab}
+						onClick={this.props.onAdd}>
 						<AddIcon />
 					</Button>
 				</div>
@@ -121,4 +141,4 @@ class Dashboard extends Component {
 	}
 }
 
-export default withRouter(Dashboard)
+export default Dashboard

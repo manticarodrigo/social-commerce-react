@@ -8,79 +8,95 @@ import Login from './views/Login/Login'
 import Dashboard from './views/Dashboard/Dashboard'
 import CategoryForm from './views/Category/CategoryForm'
 import ProductForm from './views/Product/ProductForm'
-import Share from './views/Share/Share'
+import Catalog from './views/Catalog/Catalog'
 
-import { facebookLogin, fetchCategories, fetchProducts, deleteProduct } from './services/WordPress'
+import { facebookLogin, fetchCategories, fetchProducts, deleteProduct, updateCategory } from './services/WordPress'
 
 class App extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      incomingPath: this.props.location.pathname,
-      user: null,
-      auth: null,
-      category: null,
-      products: null,
-      selectedProduct: null
-    }
-
-    this.handleBack = this.handleBack.bind(this)
-    this.handleAuthResponse = this.handleAuthResponse.bind(this)
-    this.handleCategorySubmit = this.handleCategorySubmit.bind(this)
-    this.handleProductSubmit = this.handleProductSubmit.bind(this)
-    this.handleProductSelected = this.handleProductSelected.bind(this)
-    this.handleProductDelete = this.handleProductDelete.bind(this)
-
+    // Check for current user
     const response = JSON.parse(localStorage.getItem('user'))
     if (response) {
       this.processAuth(response)
     } else {
-      this.props.history.replace('/ingresa')
+      this.props.history.replace('/ingresar')
     }
+    // Set initial app state
+    this.state = {
+      loading: response ? true : false,
+      pathname: this.props.location.pathname,
+      user: null,
+      auth: null,
+      category: null,
+      products: null,
+      selectedProduct: null,
+      selectedIndex: null
+    }
+    // Bind function scopes
+    this.handleBack = this.handleBack.bind(this)
+    this.handleShare = this.handleShare.bind(this)
+    this.handleAuthResponse = this.handleAuthResponse.bind(this)
+    this.handleCategorySubmit = this.handleCategorySubmit.bind(this)
+    this.handleProductSubmit = this.handleProductSubmit.bind(this)
+    this.handleProductSelected = this.handleProductSelected.bind(this)
+    this.handleProductAdd = this.handleProductAdd.bind(this)
+    this.handleProductDelete = this.handleProductDelete.bind(this)
+    this.handleApprove = this.handleApprove.bind(this)
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    return { pathname: props.location.pathname }
   }
 
   processAuth(response) {
-    this.props.history.replace('/')
+    // Use fb sdk response for wp auth
     facebookLogin(response.token.accessToken)
       .then(res => {
         console.log(res)
         if (res.data.cookie) {
           const auth = res.data
+          // Check for existing categories for owner_id
           fetchCategories(auth)
             .then(res => {
               console.log(res)
               const category = res.data[0]
+              // Check for existing products for category
               fetchProducts(category.id)
                 .then(res => {
                   console.log(res)
                   const products = res.data
                   this.setState({
+                    loading: false,
                     user: response,
                     auth: auth,
                     category: category,
-                    products: products
+                    products: products,
+                    selectedProduct: products[0],
+                    selectedIndex: 0
                   })
-                  const { incomingPath } = this.state
-                  if (incomingPath === '/ingresa' || incomingPath === '/') {
-                    this.props.history.replace('/tienda')
+                  const { pathname } = this.state
+                  if (pathname === '/ingresar' || pathname === '/') {
+                    this.props.history.replace(category.approved ? '/' : '/producto')
                   } else {
-                    this.props.history.replace(this.state.incomingPath)
+                    this.props.history.replace(pathname)
                   }
                 })
                 .catch(err => {
                   console.log(err)
-                  this.setState({ user: response, auth: auth })
-                  this.props.history.replace('/tienda')
+                  this.setState({ loading: false, user: response, auth: auth })
+                  this.props.history.replace('/')
                 })
             })
             .catch(err => {
               console.log(err)
-              this.setState({ user: response, auth: auth })
-              this.props.history.replace('/tienda')
+              this.setState({ loading: false, user: response, auth: auth })
+              this.props.history.replace('/perfíl')
             })
         } else {
           localStorage.clear()
-          this.props.history.replace('/ingresa')
+          this.setState({ loading: false })
+          this.props.history.replace('/ingresar')
         }
       })
       .catch(err => {
@@ -89,6 +105,7 @@ class App extends Component {
   }
 
   handleAuthResponse(response) {
+    // Facebook login callback
     console.log(response)
     if (response.profile) {
       const user = {
@@ -96,18 +113,60 @@ class App extends Component {
         token: response._token
       }
       localStorage.setItem('user', JSON.stringify(user))
+      this.setState({ loading: true })
       this.processAuth(response)
     }
   }
 
   handleBack() {
-    this.setState({ selectedProduct: null })
+    const { pathname, category, products, selectedProduct, selectedIndex } = this.state
+    console.log(this.state)
+    if (category && !category.approved) {
+      if (!Array.isArray(products) || !products.length) {
+        // Array does not exist, is not an array, or is empty
+        this.props.history.replace('/perfíl')
+      } else {
+        // Go back an index
+        const index = selectedIndex ? selectedIndex + 1 : selectedProduct ? products.map(e => { return e.name }).indexOf(selectedProduct.name) + 1 : 0
+        console.log(index)
+        console.log(selectedIndex)
+        if (index > products.length - 1) {
+          this.props.history.replace('/perfíl')
+        } else {
+          this.setState({ selectedProduct: products[index], selectedIndex: index })
+          this.props.history.replace('/producto')
+        }
+      }
+    } else {
+      this.props.history.replace('/')
+    }
+  }
+
+  handleShare() {
+    this.props.history.replace('/catálogo')
+  }
+
+  handleApprove() {
+    const { auth, category } = this.state
+    category.approved = true
+    updateCategory(auth, category)
+      .then(res => {
+        console.log(res)
+        this.props.history.replace('/')
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   handleCategorySubmit(category) {
-    const { products } = this.state
-    this.setState({ category: category })
-    this.props.history.replace(products ? '/tienda' : '/producto/crea')
+    const { products, selectedProduct } = this.state
+    this.setState({ category: category, selectedIndex: null })
+    if (category.approved) {
+      this.props.history.replace('/')
+    } else {
+      this.props.history.replace('/producto')
+    }
   }
 
   handleProductSubmit() {
@@ -117,17 +176,23 @@ class App extends Component {
         console.log(res)
         const products = res.data
         this.setState({ products: products })
-        this.props.history.replace('/comparte')
       })
       .catch(err => {
         console.log(err)
-        this.props.history.replace('/comparte')
       })
   }
 
   handleProductSelected(product) {
-    this.setState({ selectedProduct: product })
-    this.props.history.replace('/producto/edita')
+    const { products } = this.state
+    const index = products.map(e => { return e.name }).indexOf(product.name)
+    this.setState({ selectedProduct: product, selectedIndex: index })
+    this.props.history.replace('/producto')
+  }
+
+  handleProductAdd() {
+    console.log(this.state)
+    this.setState({ selectedProduct: null })
+    this.props.history.replace('/producto')
   }
 
   handleProductDelete(product) {
@@ -151,72 +216,59 @@ class App extends Component {
   }
 
   render() {
-    const { user, auth, category, products, selectedProduct } = this.state
+    const { loading, user, auth, category, products, selectedProduct } = this.state
     return (
       <div className='App'>
+        {loading && (
+          <Loading />
+        )}
         <Switch>
-          <Route exact path='/' component={Loading} />
           <Route
-            exact path='/ingresa'
+            exact path='/ingresar'
             render={() => (
               <Login
                 onResponse={this.handleAuthResponse} />
             )} />
           <Route
-            exact path='/tienda'
+            exact path='/'
             render={() => (
               <Dashboard
-                user={user}
-                auth={auth}
                 category={category}
                 products={products}
                 onSelect={this.handleProductSelected}
+                onAdd={this.handleProductAdd}
                 onDelete={this.handleProductDelete} />
           )} />
           <Route
-            exact path='/tienda/crea'
-            render={() => (
-              <CategoryForm
-                user={user}
-                auth={auth ? auth : null}
-                onSubmit={this.handleCategorySubmit} />
-          )} />
-          <Route
-            exact path='/tienda/edita'
+            exact path='/perfíl'
             render={() => (
               <CategoryForm
                 category={category}
                 user={user}
                 auth={auth ? auth : null}
+                onBack={this.handleBack}
                 onSubmit={this.handleCategorySubmit} />
           )} />
           <Route
-            exact path='/producto/crea'
-            render={() => (
-              <ProductForm
-                user={user}
-                auth={auth ? auth : null}
-                product={selectedProduct}
-                onBack={this.handleBack}
-                onSubmit={this.handleProductSubmit}
-                category={category} />
-          )} />
-          <Route
-            exact path='/producto/edita'
+            exact path='/producto'
             render={() => (
               <ProductForm
                 product={selectedProduct}
                 user={user}
-                auth={auth ? auth : null}
-                onBack={this.handleBack}
+                auth={auth}
+                onAdd={this.handleProductAdd}
                 onSubmit={this.handleProductSubmit}
+                onBack={this.handleBack}
+                onDone={this.handleShare}
                 category={category} />
           )} />
           <Route
-            exact path='/comparte'
+            exact path='/catálogo'
             render={() => (
-              <Share
-                category={category} />
+              <Catalog
+                category={category}
+                onApprove={this.handleApprove}
+                onBack={this.handleBack} />
           )} />
           <Route component={Error} />
         </Switch>

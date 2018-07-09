@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import green from '@material-ui/core/colors/green'
 import TextField from '@material-ui/core/TextField'
@@ -39,7 +38,7 @@ class CategoryForm extends Component {
 		super(props)
 		
 		const { user, category } = this.props
-		if (!user) this.props.history.replace('/')
+		if (!user) this.props.onBack()
 
 		this.state = {
 			id: category ? category.id : false,
@@ -67,7 +66,7 @@ class CategoryForm extends Component {
 	}
 
 	handleBack() {
-		this.props.history.replace('/tienda')
+		this.props.onBack()
 	}
 	
 	handleUploadDialogOpen() {
@@ -165,7 +164,7 @@ class CategoryForm extends Component {
 			<div>
 				<NavBar
 					noCategory={!category}
-					title={category ? 'Edita tu tienda' : 'Crea tu tienda'}
+					title={category ? 'Edita tu Tienda' : 'Crea tu Tienda'}
 					onBack={category ? this.handleBack : null}/>
 				<div className='Content' style={{paddingBottom: 'calc(50px + 3em'}}>
 					{uploadDialogOpen && (
@@ -193,6 +192,7 @@ class CategoryForm extends Component {
 								label='Nombre del negocio'
 								name='businessName'
 								value={this.state.businessName}
+								type='text'
 								onChange={this.handleInputChange} />
 						</div>
 						<TextField
@@ -202,6 +202,7 @@ class CategoryForm extends Component {
 							label='Tu Nombre y apellido'
 							name='name'
 							value={this.state.name}
+							type='text'
 							onChange={this.handleInputChange} />
 						<TextField
 							required
@@ -210,6 +211,7 @@ class CategoryForm extends Component {
 							label='Tu Email'
 							name='email'
 							value={this.state.email}
+							type='email'
 							onChange={this.handleInputChange} />
 						<TextField
 							required
@@ -218,6 +220,7 @@ class CategoryForm extends Component {
 							label='Telefono'
 							name='phone'
 							value={this.state.phone}
+							type='number'
 							onChange={this.handleInputChange} />
 						<TextField
 							required
@@ -226,6 +229,7 @@ class CategoryForm extends Component {
 							label='DNI'
 							name='dni'
 							value={this.state.dni}
+							type='number'
 							onChange={this.handleInputChange} />
 						<TextField
 							fullWidth
@@ -233,6 +237,7 @@ class CategoryForm extends Component {
 							label='RUC'
 							name='ruc'
 							value={this.state.ruc}
+							type='number'
 							onChange={this.handleInputChange} />
 						<TextField
 							fullWidth
@@ -261,4 +266,4 @@ class CategoryForm extends Component {
 	}
 }
 
-export default withRouter(CategoryForm)
+export default CategoryForm
