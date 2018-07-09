@@ -119,7 +119,7 @@ class App extends Component {
   }
 
   handleBack() {
-    const { pathname, category, products, selectedIndex } = this.state
+    const { pathname, category, products, selectedProduct, selectedIndex } = this.state
     console.log(this.state)
     if (category && !category.approved) {
       if (!Array.isArray(products) || !products.length) {
@@ -127,7 +127,9 @@ class App extends Component {
         this.props.history.replace('/perfíl')
       } else {
         // Go back an index
-        const index = selectedIndex ? selectedIndex + 1 : 1
+        const index = selectedIndex ? selectedIndex + 1 : selectedProduct ? products.map(e => { return e.name }).indexOf(selectedProduct.name) + 1 : 0
+        console.log(index)
+        console.log(selectedIndex)
         if (index > products.length - 1) {
           this.props.history.replace('/perfíl')
         } else {
@@ -160,7 +162,11 @@ class App extends Component {
   handleCategorySubmit(category) {
     const { products, selectedProduct } = this.state
     this.setState({ category: category, selectedIndex: null })
-    this.props.history.replace(selectedProduct ? '/producto' : '/')
+    if (category.approved) {
+      this.props.history.replace('/')
+    } else {
+      this.props.history.replace('/producto')
+    }
   }
 
   handleProductSubmit() {
@@ -178,7 +184,7 @@ class App extends Component {
 
   handleProductSelected(product) {
     const { products } = this.state
-    const index = products.map(e => { return e.name }).indexOf(product.name);
+    const index = products.map(e => { return e.name }).indexOf(product.name)
     this.setState({ selectedProduct: product, selectedIndex: index })
     this.props.history.replace('/producto')
   }
