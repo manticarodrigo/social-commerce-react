@@ -20,17 +20,6 @@ class Catalog extends Component {
 		super(props)
 		const { category } = this.props
 		if (!category) this.props.onBack()
-		this.handleBack = this.handleBack.bind(this)
-		this.handleApprove = this.handleApprove.bind(this)
-	}
-
-	handleBack() {
-		this.props.onBack()
-	}
-
-	handleApprove() {
-		const { approved } = this.state
-		this.setState({ approved: !approved })
 	}
   
 	render() {
@@ -39,7 +28,7 @@ class Catalog extends Component {
 			<div style={style.fullSize}>
 				<NavBar
 					title='Tu Tienda'
-					onBack={this.handleBack}/>
+					onBack={this.props.onBack}/>
 				{category && (
 					<div className='ContentWrapper'>
 						{!category.approved && (
@@ -48,7 +37,7 @@ class Catalog extends Component {
 								variant='contained'
 								color='primary'
 								className='ApproveButton'
-								onClick={this.handleApprove}>
+								onClick={this.props.onApprove}>
 								Aprobár
 							</Button>
 						)}

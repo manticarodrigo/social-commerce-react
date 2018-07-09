@@ -28,6 +28,7 @@ export function createCategory(auth, data) {
 export function updateCategory(auth, data) {
 	const image = data.imageId ? {id: data.imageId} : {src: data.businessLogo};
 	const category = {
+		approved: data.approved,
 		name: data.businessName,
 		owner_id: auth.wp_user_id,
 		image,

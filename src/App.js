@@ -10,7 +10,7 @@ import CategoryForm from './views/Category/CategoryForm'
 import ProductForm from './views/Product/ProductForm'
 import Catalog from './views/Catalog/Catalog'
 
-import { facebookLogin, fetchCategories, fetchProducts, deleteProduct } from './services/WordPress'
+import { facebookLogin, fetchCategories, fetchProducts, deleteProduct, updateCategory } from './services/WordPress'
 
 class App extends Component {
   constructor(props) {
@@ -42,6 +42,7 @@ class App extends Component {
     this.handleProductSelected = this.handleProductSelected.bind(this)
     this.handleProductAdd = this.handleProductAdd.bind(this)
     this.handleProductDelete = this.handleProductDelete.bind(this)
+    this.handleApprove = this.handleApprove.bind(this)
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -70,11 +71,13 @@ class App extends Component {
                     user: response,
                     auth: auth,
                     category: category,
-                    products: products
+                    products: products,
+                    selectedProduct: products[0],
+                    selectedIndex: 0
                   })
                   const { pathname } = this.state
                   if (pathname === '/ingresar' || pathname === '/') {
-                    this.props.history.replace('/')
+                    this.props.history.replace(category.approved ? '/' : '/producto')
                   } else {
                     this.props.history.replace(pathname)
                   }
@@ -139,6 +142,19 @@ class App extends Component {
 
   handleShare() {
     this.props.history.replace('/catálogo')
+  }
+
+  handleApprove() {
+    const { auth, category } = this.state
+    category.approved = true
+    updateCategory(auth, category)
+      .then(res => {
+        console.log(res)
+        this.props.history.replace('/')
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   handleCategorySubmit(category) {
@@ -245,6 +261,7 @@ class App extends Component {
             render={() => (
               <Catalog
                 category={category}
+                onApprove={this.handleApprove}
                 onBack={this.handleBack} />
           )} />
           <Route component={Error} />
