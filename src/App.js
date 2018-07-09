@@ -25,23 +25,28 @@ class App extends Component {
     // Set initial app state
     this.state = {
       loading: response ? true : false,
-      path: this.props.location.pathname,
+      pathname: this.props.location.pathname,
       user: null,
       auth: null,
       category: null,
       products: null,
-      selectedProduct: null
+      selectedProduct: null,
+      selectedIndex: null
     }
     // Bind function scopes
     this.handleBack = this.handleBack.bind(this)
-    this.handleLogin = this.handleLogin.bind(this)
     this.handleRegister = this.handleRegister.bind(this)
+    this.handleShare = this.handleShare.bind(this)
     this.handleAuthResponse = this.handleAuthResponse.bind(this)
     this.handleCategorySubmit = this.handleCategorySubmit.bind(this)
     this.handleProductSubmit = this.handleProductSubmit.bind(this)
     this.handleProductSelected = this.handleProductSelected.bind(this)
     this.handleProductAdd = this.handleProductAdd.bind(this)
     this.handleProductDelete = this.handleProductDelete.bind(this)
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    return { pathname: props.location.pathname }
   }
 
   processAuth(response) {
@@ -68,11 +73,11 @@ class App extends Component {
                     category: category,
                     products: products
                   })
-                  const { path } = this.state
-                  if (path === '/ingresar' || path === '/') {
+                  const { pathname } = this.state
+                  if (pathname === '/ingresar' || pathname === '/') {
                     this.props.history.replace('/')
                   } else {
-                    this.props.history.replace(this.state.path)
+                    this.props.history.replace(pathname)
                   }
                 })
                 .catch(err => {
@@ -112,16 +117,29 @@ class App extends Component {
   }
 
   handleBack() {
-    this.setState({ selectedProduct: null })
-    this.props.history.replace('/')
-  }
-
-  handleLogin() {
-    this.props.history.replace('/ingresar')
+    const { pathname, category, products, selectedIndex } = this.state
+    console.log(this.state)
+    if (pathname === '/producto') {
+      if (!Array.isArray(products) || !products.length) {
+        // Array does not exist, is not an array, or is empty
+        this.props.history.replace('/perfíl')
+      } else {
+        // Go back an index
+        const index = selectedIndex ? selectedIndex + 1 : 1
+        this.setState({ selectedProduct: products[index], selectedIndex: index })
+        this.props.history.replace('/producto')
+      }
+    } else {
+      this.props.history.replace('/')
+    }
   }
 
   handleRegister() {
-    this.props.history.replace('/perfíl')
+    // this.props.history.replace('/perfíl')
+  }
+
+  handleShare() {
+    this.props.history.replace('/catálogo')
   }
 
   handleCategorySubmit(category) {
@@ -137,20 +155,21 @@ class App extends Component {
         console.log(res)
         const products = res.data
         this.setState({ products: products })
-        this.props.history.replace('/catálogo')
       })
       .catch(err => {
         console.log(err)
-        this.props.history.replace('/catálogo')
       })
   }
 
   handleProductSelected(product) {
-    this.setState({ selectedProduct: product })
+    const { products } = this.state
+    const index = products.map(e => { return e.name }).indexOf(product.name);
+    this.setState({ selectedProduct: product, selectedIndex: index })
     this.props.history.replace('/producto')
   }
 
   handleProductAdd() {
+    console.log(this.state)
     this.setState({ selectedProduct: null })
     this.props.history.replace('/producto')
   }
@@ -193,14 +212,11 @@ class App extends Component {
             exact path='/'
             render={() => (
               <Dashboard
-                user={user}
-                auth={auth}
                 category={category}
                 products={products}
                 onSelect={this.handleProductSelected}
                 onAdd={this.handleProductAdd}
                 onDelete={this.handleProductDelete}
-                onLogin={this.handleLogin}
                 onRegister={this.handleRegister} />
           )} />
           <Route
@@ -220,8 +236,10 @@ class App extends Component {
                 product={selectedProduct}
                 user={user}
                 auth={auth}
-                onBack={this.handleBack}
+                onAdd={this.handleProductAdd}
                 onSubmit={this.handleProductSubmit}
+                onBack={this.handleBack}
+                onDone={this.handleShare}
                 category={category} />
           )} />
           <Route

@@ -45,10 +45,8 @@ class Dashboard extends Component {
 		this.handleProductDelete = this.handleProductDelete.bind(this)
 		this.handleProductSelected = this.handleProductSelected.bind(this)
 
-		const { user, category, products } = this.props
-		if (!user) {
-			this.props.onLogin()
-		} else if (!category) {
+		const { category, products } = this.props
+		if (!category) {
 			this.props.onRegister()
 		} else if (!products) {
 			this.props.history.onAdd()

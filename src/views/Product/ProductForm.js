@@ -23,6 +23,12 @@ const style = {
 		height:'50px',
 		margin: '0.5em'
 	},
+	otherButton: {
+		display: 'inline',
+		width: 'calc(50% - 1em)',
+		height:'50px',
+		margin: '0.5em'
+	},
 	buttonProgress: {
     color: green[500],
     position: 'absolute',
@@ -40,7 +46,7 @@ class ProductForm extends Component {
 		const { user, category, product } = this.props
 		if (!user) this.props.onBack()
 
-	  this.state = {
+		this.state = {
 			id: product ? product.id : '',
 			title: product ? product.name : '',
 			description: product ? product.description.replace('<p>', '').replace('</p>', '') : '',
@@ -51,18 +57,58 @@ class ProductForm extends Component {
 			imageFile: null,
 			uploadDialogOpen: false,
 			category: category,
-			loading: false
+			loading: false,
+			saved: false
 		}
-		
-		this.handleBack = this.handleBack.bind(this)
+
+		this.handleAdd = this.handleAdd.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleInputChange = this.handleInputChange.bind(this)
 		this.handleUploadDialogOpen = this.handleUploadDialogOpen.bind(this)
 		this.handleUploadDialogClose = this.handleUploadDialogClose.bind(this)
 	}
 
-	handleBack() {
-		this.props.onBack()
+	static getDerivedStateFromProps(props, state) {
+		const { category, product } = props
+		const { id } = state
+		console.log(props)
+		console.log(id)
+		if (!product && id !== '') {
+			return {
+				id: '',
+				title: '',
+				description: '',
+				cost: '',
+				inventoryCount: '',
+				imageUrl: '',
+				imageId: null,
+				imageFile: null,
+				uploadDialogOpen: false,
+				category: category,
+				loading: false,
+				saved: false
+			}
+		} else if (product && product.id !== id) {
+			return {
+				id: product.id,
+				title: product.name,
+				description: product.description.replace('<p>', '').replace('</p>', ''),
+				cost: product.price,
+				inventoryCount: product.stock_quantity,
+				imageUrl: product.images[0].src,
+				imageId: product.images[0].id,
+				imageFile: null,
+				uploadDialogOpen: false,
+				category: category,
+				loading: false,
+				saved: false
+			}
+		}
+		return null
+  }
+
+	handleAdd() {
+		this.props.onAdd()
 	}
 
 	handleUploadDialogOpen() {
@@ -111,7 +157,7 @@ class ProductForm extends Component {
 						callback(data)
 							.then(res => {
 								console.log(res)
-								this.setState({ loading: false })
+								this.setState({ loading: false, saved: true })
 								this.props.onSubmit()
 							})
 							.catch(err => {
@@ -125,7 +171,7 @@ class ProductForm extends Component {
 				callback(data)
 					.then(res => {
 						console.log(res)
-						this.setState({ loading: false })
+						this.setState({ loading: false, saved: true })
 						this.props.onSubmit()
 					})
 					.catch(err => {
@@ -146,26 +192,15 @@ class ProductForm extends Component {
 			[name]: value
 		})
 	}
-
-	handleImageChanged(event) {
-		if (event.target.files && event.target.files[0]) {
-			this.setState({imageFile: event.target.files[0]})
-			let reader = new FileReader();
-			reader.onload = (e) => {
-				this.setState({imageUrl: e.target.result})
-			}
-			reader.readAsDataURL(event.target.files[0])
-		}
-	}
   
 	render() {
 		const { user, product } = this.props
-		const { uploadDialogOpen, loading } = this.state
+		const { uploadDialogOpen, loading, saved } = this.state
 	  return (
 			<div>
 				<NavBar
 					title={product ? 'Edita Producto' :'Crea Producto'}
-					onBack={this.handleBack}/>
+					onBack={this.props.onBack}/>
 				<div className='Content' style={{paddingBottom: 'calc(50px + 3em'}}>
 					{uploadDialogOpen && (
 						<UploadDialog
@@ -185,12 +220,6 @@ class ProductForm extends Component {
 								<FileUpload style={{display: this.state.imageUrl === '' ? 'block' : 'none'}} />
 								<img style={{display: this.state.imageUrl !== '' ? 'block' : 'none', width: '88px', height: '88px', objectFit: 'cover'}} src={this.state.imageUrl} alt={this.state.imageUrl} />
 							</Button>
-							<input
-									ref={input => this.inputElement = input}
-									onChange={this.handleImageChanged.bind(this)}
-									style={{display: 'none'}}
-									type='file'
-								/>
 						</div>
 						<TextField
 							required
@@ -229,19 +258,42 @@ class ProductForm extends Component {
 							type='number'
 							onChange={this.handleInputChange} />
 					</form>
-					<div style={style.saveButtonWrapper}>
-						<Button
-							size='large'
-							variant='contained'
-							color='primary'
-							style={style.saveButton}
-							disabled={loading}
-							onClick={this.handleSubmit}
-						>
-							{product ? 'Guarda' : 'Crea'} Producto
-						</Button>
-						{loading && <CircularProgress size={24} style={style.buttonProgress} />}
-					</div>
+					{saved ? (
+						<div style={style.saveButtonWrapper}>
+							<Button
+								size='large'
+								variant='contained'
+								color='primary'
+								style={style.otherButton}
+								onClick={this.handleAdd}
+							>
+								Agregar +
+							</Button>
+							<Button
+								size='large'
+								variant='contained'
+								color='primary'
+								style={style.otherButton}
+								onClick={this.props.onDone}
+							>
+								Finalizár
+							</Button>
+						</div>
+					) : (
+						<div style={style.saveButtonWrapper}>
+							<Button
+								size='large'
+								variant='contained'
+								color='primary'
+								style={style.saveButton}
+								disabled={loading}
+								onClick={this.handleSubmit}
+							>
+								{product ? 'Guarda' : 'Crea'} Producto
+							</Button>
+							{loading && <CircularProgress size={24} style={style.buttonProgress} />}
+						</div>
+					)}
 				</div>
 			</div>
 	  )
