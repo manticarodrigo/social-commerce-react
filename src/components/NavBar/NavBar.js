@@ -112,11 +112,20 @@ class NavBar extends React.Component {
                   open={open}
                   onClose={this.handleClose}
                 >
-                  <MenuItem onClick={this.handleShareCategory}>Compartír Tienda</MenuItem>
-                  {!noCategory && (
-                    <MenuItem onClick={this.handleEditCategory}>Editar Tienda</MenuItem>
-                  )}
-                  <MenuItem onClick={this.handleLogout}>Cerrar sesión</MenuItem>
+                  <MenuItem
+                    style={{display: noCategory ? 'none' : 'block'}}
+                    onClick={this.handleShareCategory}>
+                    Compartír Tienda
+                  </MenuItem>
+                  <MenuItem
+                    style={{display: noCategory ? 'none' : 'block'}}
+                    onClick={this.handleEditCategory}>
+                    Editar Tienda
+                  </MenuItem>
+                  <MenuItem
+                    onClick={this.handleLogout}>
+                    Cerrar sesión
+                  </MenuItem>
                 </Menu>
               </div>
             )}
