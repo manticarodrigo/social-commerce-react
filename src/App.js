@@ -24,6 +24,7 @@ import {
 class App extends Component {
   constructor(props) {
     super(props)
+    
     // Check for current user
     const response = JSON.parse(localStorage.getItem('user'))
     if (response) {
@@ -31,6 +32,7 @@ class App extends Component {
     } else {
       this.props.history.replace('/ingresar')
     }
+
     // Set initial app state
     this.state = {
       loading: response ? true : false,
@@ -42,6 +44,7 @@ class App extends Component {
       currentProduct: null,
       nextProduct: null
     }
+
     // Bind function scopes
     this.handleBack = this.handleBack.bind(this)
     this.handleForward = this.handleForward.bind(this)
@@ -266,14 +269,37 @@ class App extends Component {
       })
   }
 
+
+  backCase() {
+    const { pathname, category, products, nextProduct } = this.state
+    if (category && category.approved) {
+      return  pathname !== '/' ? true : false
+    } else if (pathname !== '/perfíl') {
+      return true
+    }
+    return false
+  }
+
+  forwardCase() {
+    const { pathname, category, products, nextProduct } = this.state
+    if (category && !category.approved) {
+      if (pathname === '/perfíl' && products) {
+        return true
+      } else if (pathname === '/producto' && nextProduct) {
+        return true
+      }
+    }
+    return false
+  }
+
   render() {
     const { loading, pathname, user, auth, category, products, currentProduct, nextProduct } = this.state
     return (
       <div className='App'>
         <NavBar
 					category={category}
-					onBack={category && category.approved && pathname !== '/' ? this.handleBack : null}
-					onForward={category && !category.approved && products ? this.handleForward : null}
+					onBack={this.backCase() ? this.handleBack : null}
+					onForward={this.forwardCase() ? this.handleForward : null}
           onDelete={this.handleCategoryDelete}/>
         {loading && (
           <Loading />
