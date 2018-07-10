@@ -12,6 +12,8 @@ import CategoryForm from './views/Category/CategoryForm'
 import ProductForm from './views/Product/ProductForm'
 import Catalog from './views/Catalog/Catalog'
 
+import DeleteDialog from './components/Dialog/DeleteDialog'
+
 import {
   facebookLogin,
   fetchCategories,
@@ -42,7 +44,8 @@ class App extends Component {
       category: null,
       products: null,
       currentProduct: null,
-      nextProduct: null
+      nextProduct: null,
+      deleteCategoryDialog: null
     }
 
     // Bind function scopes
@@ -210,6 +213,16 @@ class App extends Component {
 
   handleCategoryDelete() {
     const { category } = this.state
+    const deleteCategoryDialog = (
+			<DeleteDialog
+				category={category}
+				onClose={() => this.setState({ deleteCategoryDialog: null })}
+        onConfirm={() => this.finishCategoryDelete(category)} />
+		)
+		this.setState({ deleteCategoryDialog: deleteCategoryDialog})
+  }
+
+  finishCategoryDelete(category) {
     deleteCategory(category.id)
       .then(res => {
         console.log(res)
@@ -301,10 +314,12 @@ class App extends Component {
       category,
       products,
       currentProduct,
-      nextProduct
+      nextProduct,
+      deleteCategoryDialog
     } = this.state
     return (
       <div className='App'>
+        {deleteCategoryDialog}
         {pathname !== '/ingresar' && (
           <NavBar
             category={category}
