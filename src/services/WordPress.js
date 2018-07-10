@@ -42,13 +42,10 @@ export function updateCategory(auth, data) {
 }
 
 export function deleteCategory(categoryId) {
-	const options = {
-		auth: {
-			username: process.env.REACT_APP_WOOCOMMERCE_USERNAME,
-			password: process.env.REACT_APP_WOOCOMMERCE_PASSWORD
-		}
+	const data = {
+		force: true
 	}
-	return axios.delete(url + '/wp-json/wc/v2/products/categories/' + categoryId, options)
+	return axios.delete(url + '/wp-json/wc/v2/products/categories/' + categoryId, {data:{force: true }})
 }
 
 export function fetchCategories(auth) {

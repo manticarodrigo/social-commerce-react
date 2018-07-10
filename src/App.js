@@ -48,6 +48,7 @@ class App extends Component {
     this.handleShare = this.handleShare.bind(this)
     this.handleAuthResponse = this.handleAuthResponse.bind(this)
     this.handleCategorySubmit = this.handleCategorySubmit.bind(this)
+    this.handleCategoryDelete = this.handleCategoryDelete.bind(this)
     this.handleProductSubmit = this.handleProductSubmit.bind(this)
     this.handleProductSelected = this.handleProductSelected.bind(this)
     this.handleProductAdd = this.handleProductAdd.bind(this)
@@ -215,6 +216,7 @@ class App extends Component {
           currentProduct: null,
           nextProduct: null
         })
+        this.props.history.replace('/perfíl')
       })
       .catch(err => {
         console.log(err)
