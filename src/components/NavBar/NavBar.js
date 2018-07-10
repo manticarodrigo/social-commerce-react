@@ -25,11 +25,40 @@ const styles = {
   },
 }
 
+const locations = [
+  {
+    component: 'Login',
+    pathname: '/ingresar',
+    title: 'Ingresar'
+  },
+  {
+    component: 'Dashboard',
+    pathname: '/',
+    title: 'Administra tu Tienda'
+  },
+  {
+    component: 'Category',
+    pathname: '/perfíl',
+    title: 'Edita tu Tienda'
+  },
+  {
+    component: 'Product',
+    pathname: '/producto',
+    title: 'Edita tu Producto'
+  },
+  {
+    component: 'Catalog',
+    pathname: '/catálogo',
+    title: 'Ver tu Tienda'
+  }
+]
+
 class NavBar extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
+      pathname: props.location.pathname,
       user: true,
       anchorEl: null,
     }
@@ -39,6 +68,10 @@ class NavBar extends React.Component {
     this.handleShareCategory = this.handleShareCategory.bind(this)
     this.handleEditCategory = this.handleEditCategory.bind(this)
     this.handleLogout = this.handleLogout.bind(this)
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    return { pathname: props.location.pathname }
   }
 
   handleMenu(event) {
@@ -66,8 +99,9 @@ class NavBar extends React.Component {
   }
 
   render() {
-    const { classes, title, category, onBack, onForward } = this.props
-    const { user, anchorEl } = this.state
+    const { classes, category, onBack, onForward } = this.props
+    const { pathname, user, anchorEl } = this.state
+    const location = locations.filter(location => { return location.pathname === pathname })[0]
     const open = Boolean(anchorEl)
     return (
       <div className={classes.root}>
@@ -93,7 +127,7 @@ class NavBar extends React.Component {
               </IconButton>
             )}
             <Typography variant='title' color='inherit' className={classes.flex}>
-              {title}
+              {location.title}
             </Typography>
             {user && (
               <div>
@@ -128,6 +162,11 @@ class NavBar extends React.Component {
                     style={{display: category && category.approved ? 'block' : 'none'}}
                     onClick={this.handleEditCategory}>
                     Editar Tienda
+                  </MenuItem>
+                  <MenuItem
+                    style={{display: category && category.approved ? 'block' : 'none'}}
+                    onClick={this.props.onDelete}>
+                    Eliminár Tienda
                   </MenuItem>
                   <MenuItem
                     onClick={this.handleLogout}>

@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { Route, Switch, withRouter } from 'react-router-dom'
 import './App.css'
 
+import NavBar from './components/NavBar/NavBar'
+
 import Error from './views/Error/Error'
 import Loading from './views/Loading/Loading'
 import Login from './views/Login/Login'
@@ -10,7 +12,14 @@ import CategoryForm from './views/Category/CategoryForm'
 import ProductForm from './views/Product/ProductForm'
 import Catalog from './views/Catalog/Catalog'
 
-import { facebookLogin, fetchCategories, fetchProducts, deleteProduct, updateCategory } from './services/WordPress'
+import {
+  facebookLogin,
+  fetchCategories,
+  fetchProducts,
+  deleteProduct,
+  updateCategory,
+  deleteCategory
+} from './services/WordPress'
 
 class App extends Component {
   constructor(props) {
@@ -195,6 +204,23 @@ class App extends Component {
     }
   }
 
+  handleCategoryDelete() {
+    const { category } = this.state
+    deleteCategory(category.id)
+      .then(res => {
+        console.log(res)
+        this.setState({
+          category: null,
+          products: null,
+          currentProduct: null,
+          nextProduct: null
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
   handleProductSubmit() {
     const { category } = this.state
     fetchProducts(category.id)
@@ -239,66 +265,73 @@ class App extends Component {
   }
 
   render() {
-    const { loading, user, auth, category, products, currentProduct, nextProduct } = this.state
+    const { loading, pathname, user, auth, category, products, currentProduct, nextProduct } = this.state
     return (
       <div className='App'>
+        <NavBar
+					category={category}
+					onBack={category && category.approved && pathname !== '/' ? this.handleBack : null}
+					onForward={category && !category.approved && products ? this.handleForward : null}
+          onDelete={this.handleCategoryDelete}/>
         {loading && (
           <Loading />
         )}
-        <Switch>
-          <Route
-            exact path='/ingresar'
-            render={() => (
-              <Login
-                onResponse={this.handleAuthResponse} />
+        <div className='Content' >
+          <Switch>
+            <Route
+              exact path='/ingresar'
+              render={() => (
+                <Login
+                  onResponse={this.handleAuthResponse} />
+              )} />
+            <Route
+              exact path='/'
+              render={() => (
+                <Dashboard
+                  category={category}
+                  products={products}
+                  onSelect={this.handleProductSelected}
+                  onAdd={this.handleProductAdd}
+                  onDelete={this.handleProductDelete} />
             )} />
-          <Route
-            exact path='/'
-            render={() => (
-              <Dashboard
-                category={category}
-                products={products}
-                onSelect={this.handleProductSelected}
-                onAdd={this.handleProductAdd}
-                onDelete={this.handleProductDelete} />
-          )} />
-          <Route
-            exact path='/perfíl'
-            render={() => (
-              <CategoryForm
-                category={category}
-                products={products}
-                user={user}
-                auth={auth ? auth : null}
-                onBack={this.handleBack}
-                onForward={this.handleForward}
-                onSubmit={this.handleCategorySubmit} />
-          )} />
-          <Route
-            exact path='/producto'
-            render={() => (
-              <ProductForm
-                product={currentProduct}
-                nextProduct={nextProduct}
-                user={user}
-                auth={auth}
-                onAdd={this.handleProductAdd}
-                onSubmit={this.handleProductSubmit}
-                onBack={this.handleBack}
-                onForward={this.handleForward}
-                onDone={this.handleShare}
-                category={category} />
-          )} />
-          <Route
-            exact path='/catálogo'
-            render={() => (
-              <Catalog
-                category={category}
-                onApprove={this.handleApprove}
-                onBack={this.handleBack} />
-          )} />
-          <Route component={Error} />
-        </Switch>
+            <Route
+              exact path='/perfíl'
+              render={() => (
+                <CategoryForm
+                  category={category}
+                  products={products}
+                  user={user}
+                  auth={auth ? auth : null}
+                  onBack={this.handleBack}
+                  onForward={this.handleForward}
+                  onSubmit={this.handleCategorySubmit} />
+            )} />
+            <Route
+              exact path='/producto'
+              render={() => (
+                <ProductForm
+                  product={currentProduct}
+                  nextProduct={nextProduct}
+                  user={user}
+                  auth={auth}
+                  onAdd={this.handleProductAdd}
+                  onSubmit={this.handleProductSubmit}
+                  onBack={this.handleBack}
+                  onForward={this.handleForward}
+                  onDone={this.handleShare}
+                  category={category} />
+            )} />
+            <Route
+              exact path='/catálogo'
+              render={() => (
+                <Catalog
+                  category={category}
+                  onApprove={this.handleApprove}
+                  onBack={this.handleBack} />
+            )} />
+            <Route component={Error} />
+          </Switch>
+        </div>
       </div>
     )
   }

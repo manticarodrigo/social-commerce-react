@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import NavBar from '../../components/NavBar/NavBar'
 import Button from '@material-ui/core/Button'
 
 import './Catalog.css'
@@ -41,9 +40,6 @@ class Catalog extends Component {
 		const { category } = this.props
 	  return (
 			<div style={style.fullSize}>
-				<NavBar
-					title='Tu Tienda'
-					onBack={this.props.onBack}/>
 				{category && (
 					<div className='ContentWrapper'>
 						{!category.approved && (
