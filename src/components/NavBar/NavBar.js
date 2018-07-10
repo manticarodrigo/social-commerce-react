@@ -25,41 +25,12 @@ const styles = {
   },
 }
 
-const locations = [
-  {
-    component: 'Login',
-    pathname: '/ingresar',
-    title: 'Ingresar'
-  },
-  {
-    component: 'Dashboard',
-    pathname: '/',
-    title: 'Administra tu Tienda'
-  },
-  {
-    component: 'Category',
-    pathname: '/perfíl',
-    title: 'Edita tu Tienda'
-  },
-  {
-    component: 'Product',
-    pathname: '/producto',
-    title: 'Edita tu Producto'
-  },
-  {
-    component: 'Catalog',
-    pathname: '/catálogo',
-    title: 'Ver tu Tienda'
-  }
-]
-
 class NavBar extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
       pathname: props.location.pathname,
-      user: true,
       anchorEl: null,
     }
 
@@ -84,12 +55,12 @@ class NavBar extends React.Component {
 
   handleEditCategory() {
     this.handleClose()
-    this.props.history.replace('/perfíl')
+    this.props.history.replace('/perfil')
   }
 
   handleShareCategory() {
     this.handleClose()
-    this.props.history.replace('/catálogo')
+    this.props.history.replace('/catalogo')
   }
 
   handleLogout() {
@@ -98,10 +69,24 @@ class NavBar extends React.Component {
     this.props.history.replace('/ingresar')
   }
 
+  getLocationTitle() {
+    const { pathname } = this.state
+    const { category, product } = this.props
+    switch (pathname) {
+      case '/':
+        return category ? category.name : 'Tu Tienda'
+      case '/perfil':
+        return category ? 'Edita tu Tienda' : 'Crea tu Tienda'
+      case '/producto':
+        return product ? 'Edita tu Producto' : 'Crea tu Producto'
+      default:
+        'Tu Tienda'
+    }
+  }
+
   render() {
     const { classes, category, onBack, onForward } = this.props
-    const { pathname, user, anchorEl } = this.state
-    const location = locations.filter(location => { return location.pathname === pathname })[0]
+    const { anchorEl } = this.state
     const open = Boolean(anchorEl)
     return (
       <div className={classes.root}>
@@ -127,54 +112,50 @@ class NavBar extends React.Component {
               </IconButton>
             )}
             <Typography variant='title' color='inherit' className={classes.flex}>
-              {location.title}
+              {this.getLocationTitle()}
             </Typography>
-            {user && (
-              <div>
-                <IconButton
-                  aria-owns={open ? 'menu-appbar' : null}
-                  aria-haspopup='true'
-                  onClick={this.handleMenu}
-                  color='inherit'
-                >
-                  <MoreVert />
-                </IconButton>
-                <Menu
-                  id='menu-appbar'
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={open}
-                  onClose={this.handleClose}
-                >
-                  <MenuItem
-                    style={{display: category && category.approved ? 'block' : 'none'}}
-                    onClick={this.handleShareCategory}>
-                    Ver Tienda
-                  </MenuItem>
-                  <MenuItem
-                    style={{display: category && category.approved ? 'block' : 'none'}}
-                    onClick={this.handleEditCategory}>
-                    Editar Tienda
-                  </MenuItem>
-                  <MenuItem
-                    style={{display: category && category.approved ? 'block' : 'none'}}
-                    onClick={this.props.onDelete}>
-                    Eliminár Tienda
-                  </MenuItem>
-                  <MenuItem
-                    onClick={this.handleLogout}>
-                    Cerrar sesión
-                  </MenuItem>
-                </Menu>
-              </div>
-            )}
+            <IconButton
+              aria-owns={open ? 'menu-appbar' : null}
+              aria-haspopup='true'
+              onClick={this.handleMenu}
+              color='inherit'
+            >
+              <MoreVert />
+            </IconButton>
+            <Menu
+              id='menu-appbar'
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={open}
+              onClose={this.handleClose}
+            >
+              <MenuItem
+                style={{display: category && category.approved ? 'block' : 'none'}}
+                onClick={this.handleShareCategory}>
+                Ver Tienda
+              </MenuItem>
+              <MenuItem
+                style={{display: category && category.approved ? 'block' : 'none'}}
+                onClick={this.handleEditCategory}>
+                Editar Tienda
+              </MenuItem>
+              <MenuItem
+                style={{display: category && category.approved ? 'block' : 'none'}}
+                onClick={this.props.onDelete}>
+                Eliminár Tienda
+              </MenuItem>
+              <MenuItem
+                onClick={this.handleLogout}>
+                Cerrar sesión
+              </MenuItem>
+            </Menu>
           </Toolbar>
         </AppBar>
       </div>

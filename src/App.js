@@ -105,7 +105,7 @@ class App extends Component {
             .catch(err => {
               console.log(err)
               this.setState({ loading: false, user: response, auth: auth })
-              this.props.history.replace('/perfíl')
+              this.props.history.replace('/perfil')
             })
         } else {
           localStorage.clear()
@@ -151,12 +151,12 @@ class App extends Component {
     if (category && !category.approved) {
       if (!Array.isArray(products) || !products.length) {
         // Array does not exist, is not an array, or is empty
-        this.props.history.replace('/perfíl')
+        this.props.history.replace('/perfil')
       } else {
         // Go back an index
         if (currentProduct === products[products.length - 1]) {
           this.setState({ currentProduct: null, nextProduct: null })
-          this.props.history.replace('/perfíl')
+          this.props.history.replace('/perfil')
         } else {
           this.updateProductLocations('back')
           this.props.history.replace('/producto')
@@ -182,7 +182,7 @@ class App extends Component {
 
   handleShare() {
     this.setState({ currentProduct: null, nextProduct: null })
-    this.props.history.replace('/catálogo')
+    this.props.history.replace('/catalogo')
   }
 
   handleApprove() {
@@ -219,7 +219,7 @@ class App extends Component {
           currentProduct: null,
           nextProduct: null
         })
-        this.props.history.replace('/perfíl')
+        this.props.history.replace('/perfil')
       })
       .catch(err => {
         console.log(err)
@@ -274,7 +274,7 @@ class App extends Component {
     const { pathname, category, products, nextProduct } = this.state
     if (category && category.approved) {
       return  pathname !== '/' ? true : false
-    } else if (pathname !== '/perfíl') {
+    } else if (pathname !== '/perfil') {
       return true
     }
     return false
@@ -283,7 +283,7 @@ class App extends Component {
   forwardCase() {
     const { pathname, category, products, nextProduct } = this.state
     if (category && !category.approved) {
-      if (pathname === '/perfíl' && products) {
+      if (pathname === '/perfil' && products) {
         return true
       } else if (pathname === '/producto' && nextProduct) {
         return true
@@ -293,14 +293,26 @@ class App extends Component {
   }
 
   render() {
-    const { loading, pathname, user, auth, category, products, currentProduct, nextProduct } = this.state
+    const {
+      loading,
+      pathname,
+      user,
+      auth,
+      category,
+      products,
+      currentProduct,
+      nextProduct
+    } = this.state
     return (
       <div className='App'>
-        <NavBar
-					category={category}
-					onBack={this.backCase() ? this.handleBack : null}
-					onForward={this.forwardCase() ? this.handleForward : null}
-          onDelete={this.handleCategoryDelete}/>
+        {pathname !== '/ingresar' && (
+          <NavBar
+            category={category}
+            product={currentProduct}
+            onBack={this.backCase() ? this.handleBack : null}
+            onForward={this.forwardCase() ? this.handleForward : null}
+            onDelete={this.handleCategoryDelete}/>
+        )}
         {loading && (
           <Loading />
         )}
@@ -323,7 +335,7 @@ class App extends Component {
                   onDelete={this.handleProductDelete} />
             )} />
             <Route
-              exact path='/perfíl'
+              exact path='/perfil'
               render={() => (
                 <CategoryForm
                   category={category}
@@ -350,7 +362,7 @@ class App extends Component {
                   category={category} />
             )} />
             <Route
-              exact path='/catálogo'
+              exact path='/catalogo'
               render={() => (
                 <Catalog
                   category={category}
