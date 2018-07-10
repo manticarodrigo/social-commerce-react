@@ -18,7 +18,7 @@ const style = {
 	},
 	saveButton: {
 		width: 'calc(100% - 1em)',
-		height:'50px',
+		height:'30px',
 		margin: '0.5em'
 	},
 	buttonProgress: {
@@ -154,7 +154,7 @@ class CategoryForm extends Component {
 		const { user, category, products } = this.props
 		const { uploadDialogOpen, loading } = this.state
 	  return (
-			<div style={{paddingBottom: 'calc(50px + 3em'}}>
+			<div style={{paddingBottom: 'calc(30px + 2em'}}>
 				{uploadDialogOpen && (
 					<UploadDialog
 						token={user.token}

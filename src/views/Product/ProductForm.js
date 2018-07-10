@@ -10,7 +10,13 @@ import UploadDialog from '../../components/Dialog/UploadDialog'
 import { uploadMedia, createProduct, updateProduct } from '../../services/WordPress'
 
 const style = {
-	saveButtonWrapper: {
+	addButtonWrapper: {
+		position: 'fixed',
+		bottom: '45px',
+		left: '0',
+		width: '100%'
+	},
+	shareButtonWrapper: {
 		position: 'fixed',
 		bottom: '0',
 		left: '0',
@@ -18,13 +24,7 @@ const style = {
 	},
 	saveButton: {
 		width: 'calc(100% - 1em)',
-		height:'50px',
-		margin: '0.5em'
-	},
-	otherButton: {
-		display: 'inline',
-		width: 'calc(50% - 1em)',
-		height:'50px',
+		height:'30px',
 		margin: '0.5em'
 	},
 	buttonProgress: {
@@ -58,28 +58,10 @@ class ProductForm extends Component {
 			saved: false
 		}
 
-		this.handleAdd = this.handleAdd.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleInputChange = this.handleInputChange.bind(this)
 		this.handleUploadDialogOpen = this.handleUploadDialogOpen.bind(this)
 		this.handleUploadDialogClose = this.handleUploadDialogClose.bind(this)
-	}
-
-	handleAdd() {
-		this.props.onAdd()
-		this.setState({
-			id: '',
-			title: '',
-			description: '',
-			cost: '',
-			inventoryCount: '',
-			imageUrl: '',
-			imageId: null,
-			imageFile: null,
-			uploadDialogOpen: false,
-			loading: false,
-			saved: false
-		})
 	}
 
 	static getDerivedStateFromProps(props, state) {
@@ -127,9 +109,8 @@ class ProductForm extends Component {
 		}
 	}
 	
-  handleSubmit(event) {
+  handleSubmit(type) {
 		this.setState({ loading: true })
-		event.preventDefault()
 		const data = this.state
 		const { title, description, cost, inventoryCount, imageUrl, imageFile } = this.state
 		if (
@@ -150,8 +131,9 @@ class ProductForm extends Component {
 						callback(data)
 							.then(res => {
 								console.log(res)
-								this.setState({ loading: false, saved: true })
+								this.setState({ loading: false })
 								this.props.onSubmit()
+								this.finishSubmit(type)
 							})
 							.catch(err => {
 								console.log(err)
@@ -164,8 +146,9 @@ class ProductForm extends Component {
 				callback(data)
 					.then(res => {
 						console.log(res)
-						this.setState({ loading: false, saved: true })
+						this.setState({ loading: false })
 						this.props.onSubmit()
+						this.finishSubmit(type)
 					})
 					.catch(err => {
 						console.log(err)
@@ -175,7 +158,28 @@ class ProductForm extends Component {
 			this.setState({ loading: false })
 			alert('Favor llenar campos requeridos.')
 		}
-  }
+	}
+	
+	finishSubmit(type) {
+		if (type === 'add') {
+			this.props.onAdd()
+			this.setState({
+				id: '',
+				title: '',
+				description: '',
+				cost: '',
+				inventoryCount: '',
+				imageUrl: '',
+				imageId: null,
+				imageFile: null,
+				uploadDialogOpen: false,
+				loading: false,
+				saved: false
+			})
+		} else {
+			this.props.onDone()
+		}
+	}
   
 	handleInputChange(event) {
 	  const target = event.target;
@@ -187,10 +191,10 @@ class ProductForm extends Component {
 	}
   
 	render() {
-		const { user, category, product, nextProduct } = this.props
-		const { uploadDialogOpen, loading, saved } = this.state
+		const { user, product } = this.props
+		const { uploadDialogOpen, loading } = this.state
 	  return (
-			<div style={{paddingBottom: 'calc(50px + 3em'}}>
+			<div style={{paddingBottom: 'calc(75px + 2em'}}>
 				{uploadDialogOpen && (
 					<UploadDialog
 						token={user.token}
@@ -250,42 +254,32 @@ class ProductForm extends Component {
 						type='number'
 						onChange={this.handleInputChange} />
 				</form>
-				{saved ? (
-					<div style={style.saveButtonWrapper}>
-						<Button
-							size='large'
-							variant='contained'
-							color='primary'
-							style={style.otherButton}
-							onClick={this.handleAdd}
-						>
-							Agregar +
-						</Button>
-						<Button
-							size='large'
-							variant='contained'
-							color='primary'
-							style={style.otherButton}
-							onClick={this.props.onDone}
-						>
-							Finalizar
-						</Button>
-					</div>
-				) : (
-					<div style={style.saveButtonWrapper}>
-						<Button
-							size='large'
-							variant='contained'
-							color='primary'
-							style={style.saveButton}
-							disabled={loading}
-							onClick={this.handleSubmit}
-						>
-							{product ? 'Guarda' : 'Crea'} Producto
-						</Button>
-						{loading && <CircularProgress size={24} style={style.buttonProgress} />}
-					</div>
-				)}
+				<div style={style.addButtonWrapper}>
+					<Button
+						size='large'
+						variant='contained'
+						color='primary'
+						style={style.saveButton}
+						disabled={loading}
+						onClick={() => this.handleSubmit('add')}
+					>
+						{product ? 'Guardar' : 'Crear'} y Añadir Otro
+					</Button>
+					{loading && <CircularProgress size={24} style={style.buttonProgress} />}
+				</div>
+				<div style={style.shareButtonWrapper}>
+					<Button
+						size='large'
+						variant='contained'
+						color='primary'
+						style={style.saveButton}
+						disabled={loading}
+						onClick={() => this.handleSubmit('share')}
+					>
+						{product ? 'Guardar' : 'Crear'} y Compartir
+					</Button>
+					{loading && <CircularProgress size={24} style={style.buttonProgress} />}
+				</div>
 			</div>
 	  )
 	}
