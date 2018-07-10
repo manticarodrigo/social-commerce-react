@@ -47,7 +47,7 @@ class Login extends Component {
             scope='user_photos'
             onLoginSuccess={this.handleResponse}
             onLoginFailure={this.handleResponse}>
-            {this.state.login ? 'Ingresar' : 'Registrarme'} con Facebook
+            {this.state.login ? 'Ingresar' : 'Registrar'} con Facebook
           </SocialButton>
           <br />
           <SocialButton
@@ -56,9 +56,9 @@ class Login extends Component {
             // onLoginSuccess={this.handleResponse}
             // onLoginFailure={this.handleResponse}
             onClick={() => alert('Not implemented')}>
-            {this.state.login ? 'Ingresa' : 'Registra'} con Google
+            {this.state.login ? 'Ingresar' : 'Registrar'} con Google
           </SocialButton>
-          <p style={{color: '#fff'}}><a onClick={this.toggleLogin.bind(this)}>{!this.state.login ? 'Ingresar' : 'Registrarme'}</a></p>
+          <p style={{color: '#fff'}}><a onClick={this.toggleLogin.bind(this)}>{!this.state.login ? 'Ingresar' : 'Registrar'}</a></p>
           <p style={{color: '#fff', fontSize: '14px'}}>Al ingresar esta indicando que ha leido<br />y acepta nuestros <a onClick={this.handleTerms}>Terminos y Condiciones</a>.</p>
         </div>
       </div>

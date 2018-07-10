@@ -43,7 +43,7 @@ class ProductForm extends Component {
 	constructor(props) {
 		super(props)
 
-		const { user, category, product } = this.props
+		const { user, product } = this.props
 		if (!user) this.props.onBack()
 
 		this.state = {
@@ -56,7 +56,6 @@ class ProductForm extends Component {
 			imageId: product ? product.images[0].id : null,
 			imageFile: null,
 			uploadDialogOpen: false,
-			category: category,
 			loading: false,
 			saved: false
 		}
@@ -68,25 +67,27 @@ class ProductForm extends Component {
 		this.handleUploadDialogClose = this.handleUploadDialogClose.bind(this)
 	}
 
+	handleAdd() {
+		this.props.onAdd()
+		this.setState({
+			id: '',
+			title: '',
+			description: '',
+			cost: '',
+			inventoryCount: '',
+			imageUrl: '',
+			imageId: null,
+			imageFile: null,
+			uploadDialogOpen: false,
+			loading: false,
+			saved: false
+		})
+	}
+
 	static getDerivedStateFromProps(props, state) {
-		const { category, product } = props
+		const { product } = props
 		const { id } = state
-		if (!product && id !== '') {
-			return {
-				id: '',
-				title: '',
-				description: '',
-				cost: '',
-				inventoryCount: '',
-				imageUrl: '',
-				imageId: null,
-				imageFile: null,
-				uploadDialogOpen: false,
-				category: category,
-				loading: false,
-				saved: false
-			}
-		} else if (product && product.id !== id) {
+		if (product && product.id !== id) {
 			return {
 				id: product.id,
 				title: product.name,
@@ -97,17 +98,12 @@ class ProductForm extends Component {
 				imageId: product.images[0].id,
 				imageFile: null,
 				uploadDialogOpen: false,
-				category: category,
 				loading: false,
 				saved: false
 			}
 		}
 		return null
   }
-
-	handleAdd() {
-		this.props.onAdd()
-	}
 
 	handleUploadDialogOpen() {
     this.setState({
@@ -145,8 +141,9 @@ class ProductForm extends Component {
 			inventoryCount !== '' &&
 			imageUrl !== ''
 		) {
-			const { product } = this.props
+			const { product, category } = this.props
 			const callback = product ? updateProduct : createProduct
+			data.category = category
 			if (imageFile) {
 				uploadMedia(imageFile)
 					.then(res => {
@@ -192,13 +189,15 @@ class ProductForm extends Component {
 	}
   
 	render() {
-		const { user, product } = this.props
+		const { user, category, product, nextProduct } = this.props
 		const { uploadDialogOpen, loading, saved } = this.state
 	  return (
 			<div>
 				<NavBar
+					category={category}
 					title={product ? 'Editar Producto' :'Crear Producto'}
-					onBack={this.props.onBack}/>
+					onBack={this.props.onBack}
+					onForward={category && !category.approved && nextProduct ? this.props.onForward : null}/>
 				<div className='Content' style={{paddingBottom: 'calc(50px + 3em'}}>
 					{uploadDialogOpen && (
 						<UploadDialog
@@ -246,7 +245,6 @@ class ProductForm extends Component {
 							margin='normal'
 							label='Costo'
 							name='cost'
-							type='number'
 							value={this.state.cost}
 							type='number'
 							onChange={this.handleInputChange} />
@@ -254,7 +252,6 @@ class ProductForm extends Component {
 							required
 							fullWidth
 							margin='normal'
-							type='number'
 							label='Cantidad de Inventario'
 							name='inventoryCount'
 							value={this.state.inventoryCount}
@@ -279,7 +276,7 @@ class ProductForm extends Component {
 								style={style.otherButton}
 								onClick={this.props.onDone}
 							>
-								Finalizár
+								Finalizar
 							</Button>
 						</div>
 					) : (

@@ -58,15 +58,10 @@ class CategoryForm extends Component {
 			loading: false
 		}
 
-		this.handleBack = this.handleBack.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleInputChange = this.handleInputChange.bind(this)
 		this.handleUploadDialogOpen = this.handleUploadDialogOpen.bind(this)
 		this.handleUploadDialogClose = this.handleUploadDialogClose.bind(this)
-	}
-
-	handleBack() {
-		this.props.onBack()
 	}
 	
 	handleUploadDialogOpen() {
@@ -158,14 +153,15 @@ class CategoryForm extends Component {
 	}
   
 	render() {
-		const { user, category } = this.props
+		const { user, category, products } = this.props
 		const { uploadDialogOpen, loading } = this.state
 	  return (
 			<div>
 				<NavBar
-					noCategory={!category}
+					category={category}
 					title={category ? 'Edita tu Tienda' : 'Crea tu Tienda'}
-					onBack={category ? this.handleBack : null}/>
+					onBack={category && category.approved ? this.props.onBack : null}
+					onForward={category && !category.approved && products ? this.props.onForward : null}/>
 				<div className='Content' style={{paddingBottom: 'calc(50px + 3em'}}>
 					{uploadDialogOpen && (
 						<UploadDialog

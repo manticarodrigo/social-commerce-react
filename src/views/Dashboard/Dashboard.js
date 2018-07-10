@@ -85,7 +85,9 @@ class Dashboard extends Component {
 			<div>
 				{deleteDialog}
 				{shareDialog}
-				<NavBar title={category ? category.name : 'Tu Tienda'} />
+				<NavBar
+					category={category}
+					title={category ? category.name : 'Tu Tienda'} />
 				<div className='Content'>
 					<List dense={dense}>
 						{products && products.map(product => (

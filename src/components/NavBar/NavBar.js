@@ -7,6 +7,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
 import MoreVert from '@material-ui/icons/MoreVert'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
@@ -27,20 +28,17 @@ const styles = {
 class NavBar extends React.Component {
   constructor(props) {
     super(props)
+
     this.state = {
       user: true,
       anchorEl: null,
     }
-    this.handleBack = this.handleBack.bind(this)
+
     this.handleMenu = this.handleMenu.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.handleShareCategory = this.handleShareCategory.bind(this)
     this.handleEditCategory = this.handleEditCategory.bind(this)
     this.handleLogout = this.handleLogout.bind(this)
-  }
-
-  handleBack() {
-    this.props.onBack()
   }
 
   handleMenu(event) {
@@ -68,23 +66,32 @@ class NavBar extends React.Component {
   }
 
   render() {
-    const { classes, title, onBack, noCategory } = this.props
+    const { classes, title, category, onBack, onForward } = this.props
     const { user, anchorEl } = this.state
     const open = Boolean(anchorEl)
     return (
       <div className={classes.root}>
         <AppBar position='fixed'>
           <Toolbar>
-            <IconButton
-              className={classes.menuButton}
-              color='inherit'
-              aria-label='Menu'
-              disabled={!onBack}
-              onClick={this.handleBack}>
-              {onBack && (
-                <ArrowBackIcon />
-              )}
-            </IconButton>
+            {onBack && (
+              <IconButton
+                className={classes.menuButton}
+                color='inherit'
+                aria-label='Back'
+                disabled={!onBack}
+                onClick={this.props.onBack}>
+                  <ArrowBackIcon />
+              </IconButton>
+            )}
+            {onForward && (
+              <IconButton
+                className={classes.menuButton}
+                color='inherit'
+                aria-label='Forward'
+                onClick={this.props.onForward}>
+                  <ArrowForwardIcon />
+              </IconButton>
+            )}
             <Typography variant='title' color='inherit' className={classes.flex}>
               {title}
             </Typography>
@@ -113,12 +120,12 @@ class NavBar extends React.Component {
                   onClose={this.handleClose}
                 >
                   <MenuItem
-                    style={{display: noCategory ? 'none' : 'block'}}
+                    style={{display: category && category.approved ? 'block' : 'none'}}
                     onClick={this.handleShareCategory}>
                     Ver Tienda
                   </MenuItem>
                   <MenuItem
-                    style={{display: noCategory ? 'none' : 'block'}}
+                    style={{display: category && category.approved ? 'block' : 'none'}}
                     onClick={this.handleEditCategory}>
                     Editar Tienda
                   </MenuItem>

@@ -30,11 +30,12 @@ class App extends Component {
       auth: null,
       category: null,
       products: null,
-      selectedProduct: null,
-      selectedIndex: null
+      currentProduct: null,
+      nextProduct: null
     }
     // Bind function scopes
     this.handleBack = this.handleBack.bind(this)
+    this.handleForward = this.handleForward.bind(this)
     this.handleShare = this.handleShare.bind(this)
     this.handleAuthResponse = this.handleAuthResponse.bind(this)
     this.handleCategorySubmit = this.handleCategorySubmit.bind(this)
@@ -72,8 +73,8 @@ class App extends Component {
                     auth: auth,
                     category: category,
                     products: products,
-                    selectedProduct: products[0],
-                    selectedIndex: 0
+                    currentProduct: products[0],
+                    nextProduct: null
                   })
                   const { pathname } = this.state
                   if (pathname === '/ingresar' || pathname === '/') {
@@ -118,22 +119,33 @@ class App extends Component {
     }
   }
 
-  handleBack() {
-    const { pathname, category, products, selectedProduct, selectedIndex } = this.state
+  updateProductLocations(direction) {
+    const { products, currentProduct } = this.state
     console.log(this.state)
+    if (products && direction === 'back') {
+      const index = currentProduct ? products.map(e => { return e.name }).indexOf(currentProduct.name) + 1 : 0
+      this.setState({ currentProduct: products[index], nextProduct: products[index - 1] ? products[index - 1] : null })
+    } else if (products) {
+      const index = currentProduct ? products.map(e => { return e.name }).indexOf(currentProduct.name) - 1 : products.length - 1
+      this.setState({ currentProduct: products[index], nextProduct: products[index - 1] ? products[index - 1] : null })
+    } else {
+      this.setState({ currentProduct: null, nextProduct: null })
+    }
+  }
+
+  handleBack() {
+    const { category, products, currentProduct } = this.state
     if (category && !category.approved) {
       if (!Array.isArray(products) || !products.length) {
         // Array does not exist, is not an array, or is empty
         this.props.history.replace('/perfíl')
       } else {
         // Go back an index
-        const index = selectedIndex ? selectedIndex + 1 : selectedProduct ? products.map(e => { return e.name }).indexOf(selectedProduct.name) + 1 : 0
-        console.log(index)
-        console.log(selectedIndex)
-        if (index > products.length - 1) {
+        if (currentProduct === products[products.length - 1]) {
+          this.setState({ currentProduct: null, nextProduct: null })
           this.props.history.replace('/perfíl')
         } else {
-          this.setState({ selectedProduct: products[index], selectedIndex: index })
+          this.updateProductLocations('back')
           this.props.history.replace('/producto')
         }
       }
@@ -142,7 +154,21 @@ class App extends Component {
     }
   }
 
+  handleForward() {
+    const { products } = this.state
+    if (!Array.isArray(products) || !products.length) {
+      // Array does not exist, is not an array, or is empty
+      this.setState({ currentProduct: null, nextProduct: null })
+      this.props.history.replace('/producto')
+    } else {
+      // Go forward an index
+      this.updateProductLocations('forward')
+      this.props.history.replace('/producto')
+    }
+  }
+
   handleShare() {
+    this.setState({ currentProduct: null, nextProduct: null })
     this.props.history.replace('/catálogo')
   }
 
@@ -160,11 +186,11 @@ class App extends Component {
   }
 
   handleCategorySubmit(category) {
-    const { products, selectedProduct } = this.state
-    this.setState({ category: category, selectedIndex: null })
+    this.setState({ category: category })
     if (category.approved) {
       this.props.history.replace('/')
     } else {
+      this.updateProductLocations('forward')
       this.props.history.replace('/producto')
     }
   }
@@ -183,15 +209,12 @@ class App extends Component {
   }
 
   handleProductSelected(product) {
-    const { products } = this.state
-    const index = products.map(e => { return e.name }).indexOf(product.name)
-    this.setState({ selectedProduct: product, selectedIndex: index })
+    this.setState({ currentProduct: product })
     this.props.history.replace('/producto')
   }
 
   handleProductAdd() {
-    console.log(this.state)
-    this.setState({ selectedProduct: null })
+    this.setState({ currentProduct: null, nextProduct: null })
     this.props.history.replace('/producto')
   }
 
@@ -216,7 +239,7 @@ class App extends Component {
   }
 
   render() {
-    const { loading, user, auth, category, products, selectedProduct } = this.state
+    const { loading, user, auth, category, products, currentProduct, nextProduct } = this.state
     return (
       <div className='App'>
         {loading && (
@@ -244,21 +267,25 @@ class App extends Component {
             render={() => (
               <CategoryForm
                 category={category}
+                products={products}
                 user={user}
                 auth={auth ? auth : null}
                 onBack={this.handleBack}
+                onForward={this.handleForward}
                 onSubmit={this.handleCategorySubmit} />
           )} />
           <Route
             exact path='/producto'
             render={() => (
               <ProductForm
-                product={selectedProduct}
+                product={currentProduct}
+                nextProduct={nextProduct}
                 user={user}
                 auth={auth}
                 onAdd={this.handleProductAdd}
                 onSubmit={this.handleProductSubmit}
                 onBack={this.handleBack}
+                onForward={this.handleForward}
                 onDone={this.handleShare}
                 category={category} />
           )} />
