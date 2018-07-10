@@ -22,7 +22,7 @@ class DeleteDialog extends React.Component {
   }
 
   render() {
-    const { product } = this.props
+    const { product, category } = this.props
     return (
       <Dialog
         open={this.state.open}
@@ -30,10 +30,10 @@ class DeleteDialog extends React.Component {
         aria-labelledby='delete-dialog-title'
         aria-describedby='delete-dialog-description'
       >
-        <DialogTitle id='delete-dialog-title'>Elimina Producto</DialogTitle>
+        <DialogTitle id='delete-dialog-title'>Elimina {category ? 'Categoria' : product ? 'Producto' : null}</DialogTitle>
         <DialogContent>
           <DialogContentText id='delete-dialog-description'>
-            ¿Desea eliminar el producto {product.name}?
+            ¿Desea eliminar {category ? 'la categoria ' + category.name : product ? 'el producto ' + product.name : null}?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

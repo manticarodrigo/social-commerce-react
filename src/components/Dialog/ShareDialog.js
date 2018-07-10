@@ -54,7 +54,7 @@ class ShareDialog extends React.Component {
         <DialogTitle id='share-dialog-title'>Comparte Tu {category ? 'Tienda' : product ? 'Producto' : null}</DialogTitle>
         <DialogContent>
           <DialogContentText id='share-dialog-description'>
-            Selecciona una red en donde compartír tu {category ? 'tienda' : product ? 'producto' : null}.
+            Selecciona una red en donde compartír {category ? category.name : product ? product.name : null}.
           </DialogContentText>
           <div style={style.socialButtonDiv}>
             <WhatsappShareButton

@@ -5,8 +5,6 @@ import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import FileUpload from '@material-ui/icons/FileUpload'
 
-import NavBar from '../../components/NavBar/NavBar'
-
 import UploadDialog from '../../components/Dialog/UploadDialog'
 
 import { uploadMedia, createCategory, updateCategory} from '../../services/WordPress'
@@ -156,106 +154,99 @@ class CategoryForm extends Component {
 		const { user, category, products } = this.props
 		const { uploadDialogOpen, loading } = this.state
 	  return (
-			<div>
-				<NavBar
-					category={category}
-					title={category ? 'Edita tu Tienda' : 'Crea tu Tienda'}
-					onBack={category && category.approved ? this.props.onBack : null}
-					onForward={category && !category.approved && products ? this.props.onForward : null}/>
-				<div className='Content' style={{paddingBottom: 'calc(50px + 3em'}}>
-					{uploadDialogOpen && (
-						<UploadDialog
-							token={user.token}
-							onClose={this.handleUploadDialogClose} />
-					)}
-					<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
-						<div>
-							<Button
-								style={{width: '88px', height: '88px', margin: '0 16px 0 0'}}
-								variant='outlined'
-								component='label'
-								color='primary'
-								onClick={this.handleUploadDialogOpen}
-							>
-								{this.state.businessLogo === '' ? 'Logo' : null}
-								<FileUpload style={{display: this.state.businessLogo === '' ? 'block' : 'none'}} />
-								<img style={{display: this.state.businessLogo !== '' ? 'block' : 'none', width: '88px', height: '88px', objectFit: 'cover'}} src={this.state.businessLogo} alt={this.state.businessLogo} />
-							</Button>
-							<TextField
-								required
-								style={{width: 'calc(100% - 104px'}}
-								margin='normal'
-								label='Nombre del negocio'
-								name='businessName'
-								value={this.state.businessName}
-								type='text'
-								onChange={this.handleInputChange} />
-						</div>
+			<div style={{paddingBottom: 'calc(50px + 3em'}}>
+				{uploadDialogOpen && (
+					<UploadDialog
+						token={user.token}
+						onClose={this.handleUploadDialogClose} />
+				)}
+				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
+					<div>
+						<Button
+							style={{width: '88px', height: '88px', margin: '0 16px 0 0'}}
+							variant='outlined'
+							component='label'
+							color='primary'
+							onClick={this.handleUploadDialogOpen}
+						>
+							{this.state.businessLogo === '' ? 'Logo' : null}
+							<FileUpload style={{display: this.state.businessLogo === '' ? 'block' : 'none'}} />
+							<img style={{display: this.state.businessLogo !== '' ? 'block' : 'none', width: '88px', height: '88px', objectFit: 'cover'}} src={this.state.businessLogo} alt={this.state.businessLogo} />
+						</Button>
 						<TextField
 							required
-							fullWidth
+							style={{width: 'calc(100% - 104px'}}
 							margin='normal'
-							label='Tu Nombre y apellido'
-							name='name'
-							value={this.state.name}
+							label='Nombre del negocio'
+							name='businessName'
+							value={this.state.businessName}
 							type='text'
 							onChange={this.handleInputChange} />
-						<TextField
-							required
-							fullWidth
-							margin='normal'
-							label='Tu Email'
-							name='email'
-							value={this.state.email}
-							type='email'
-							onChange={this.handleInputChange} />
-						<TextField
-							required
-							fullWidth
-							margin='normal'
-							label='Telefono'
-							name='phone'
-							value={this.state.phone}
-							type='number'
-							onChange={this.handleInputChange} />
-						<TextField
-							required
-							fullWidth
-							margin='normal'
-							label='DNI'
-							name='dni'
-							value={this.state.dni}
-							type='number'
-							onChange={this.handleInputChange} />
-						<TextField
-							fullWidth
-							margin='normal'
-							label='RUC'
-							name='ruc'
-							value={this.state.ruc}
-							type='number'
-							onChange={this.handleInputChange} />
-						<TextField
-							fullWidth
-							margin='normal'
-							label='Número de cuenta de Banco'
-							name='bankAccount'
-							value={this.state.bankAccount}
-							onChange={this.handleInputChange} />
-					</form>
-					<div style={style.saveButtonWrapper}>
-						<Button
-							size='large'
-							variant='contained'
-							color='primary'
-							style={style.saveButton}
-							disabled={loading}
-							onClick={this.handleSubmit}
-						>
-							{category ? 'Guardar' : 'Agregar'} Tienda
-						</Button>
-						{loading && <CircularProgress size={24} style={style.buttonProgress} />}
 					</div>
+					<TextField
+						required
+						fullWidth
+						margin='normal'
+						label='Tu Nombre y apellido'
+						name='name'
+						value={this.state.name}
+						type='text'
+						onChange={this.handleInputChange} />
+					<TextField
+						required
+						fullWidth
+						margin='normal'
+						label='Tu Email'
+						name='email'
+						value={this.state.email}
+						type='email'
+						onChange={this.handleInputChange} />
+					<TextField
+						required
+						fullWidth
+						margin='normal'
+						label='Telefono'
+						name='phone'
+						value={this.state.phone}
+						type='number'
+						onChange={this.handleInputChange} />
+					<TextField
+						required
+						fullWidth
+						margin='normal'
+						label='DNI'
+						name='dni'
+						value={this.state.dni}
+						type='number'
+						onChange={this.handleInputChange} />
+					<TextField
+						fullWidth
+						margin='normal'
+						label='RUC'
+						name='ruc'
+						value={this.state.ruc}
+						type='number'
+						onChange={this.handleInputChange} />
+					<TextField
+						fullWidth
+						margin='normal'
+						label='Número de cuenta de Banco'
+						name='bankAccount'
+						value={this.state.bankAccount}
+						onChange={this.handleInputChange} />
+				</form>
+				<div style={style.saveButtonWrapper}>
+					<Button
+						size='large'
+						variant='contained'
+						color='primary'
+						style={style.saveButton}
+						disabled={loading}
+						onClick={this.handleSubmit}
+					>
+						{category ? 'Guardar' : 'Agregar'} Tienda
+					</Button>
+					{loading && <CircularProgress size={24} style={style.buttonProgress} />}
 				</div>
 			</div>
 	  )

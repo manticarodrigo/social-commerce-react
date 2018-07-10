@@ -5,8 +5,6 @@ import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import FileUpload from '@material-ui/icons/FileUpload'
 
-import NavBar from '../../components/NavBar/NavBar'
-
 import UploadDialog from '../../components/Dialog/UploadDialog'
 
 import { uploadMedia, createProduct, updateProduct } from '../../services/WordPress'
@@ -192,109 +190,102 @@ class ProductForm extends Component {
 		const { user, category, product, nextProduct } = this.props
 		const { uploadDialogOpen, loading, saved } = this.state
 	  return (
-			<div>
-				<NavBar
-					category={category}
-					title={product ? 'Editar Producto' :'Crear Producto'}
-					onBack={this.props.onBack}
-					onForward={category && !category.approved && nextProduct ? this.props.onForward : null}/>
-				<div className='Content' style={{paddingBottom: 'calc(50px + 3em'}}>
-					{uploadDialogOpen && (
-						<UploadDialog
-							token={user.token}
-							onClose={this.handleUploadDialogClose} />
-					)}
-					<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
-						<div>
-							<Button
-								style={{width: '88px', height: '88px', margin: '0 16px 0 0'}}
-								variant='outlined'
-								component='label'
-								color='primary'
-								onClick={this.handleUploadDialogOpen}
-							>
-								{this.state.imageUrl === '' ? 'Foto' : null}
-								<FileUpload style={{display: this.state.imageUrl === '' ? 'block' : 'none'}} />
-								<img style={{display: this.state.imageUrl !== '' ? 'block' : 'none', width: '88px', height: '88px', objectFit: 'cover'}} src={this.state.imageUrl} alt={this.state.imageUrl} />
-							</Button>
-						</div>
-						<TextField
-							required
-							fullWidth
-							margin='normal'
-							label='Titulo (Nombre)'
-							name='title'
-							value={this.state.title}
-							type='text'
-							onChange={this.handleInputChange} />
-						<TextField
-							required
-							fullWidth
-							margin='normal'
-							label='Descripción'
-							name='description'
-							multiline={true}
-							rows={2}
-							rowsMax={5}
-							value={this.state.description}
-							type='textarea'
-							onChange={this.handleInputChange} />
-						<TextField
-							required
-							fullWidth
-							margin='normal'
-							label='Costo'
-							name='cost'
-							value={this.state.cost}
-							type='number'
-							onChange={this.handleInputChange} />
-						<TextField
-							required
-							fullWidth
-							margin='normal'
-							label='Cantidad de Inventario'
-							name='inventoryCount'
-							value={this.state.inventoryCount}
-							type='number'
-							onChange={this.handleInputChange} />
-					</form>
-					{saved ? (
-						<div style={style.saveButtonWrapper}>
-							<Button
-								size='large'
-								variant='contained'
-								color='primary'
-								style={style.otherButton}
-								onClick={this.handleAdd}
-							>
-								Agregar +
-							</Button>
-							<Button
-								size='large'
-								variant='contained'
-								color='primary'
-								style={style.otherButton}
-								onClick={this.props.onDone}
-							>
-								Finalizar
-							</Button>
-						</div>
-					) : (
-						<div style={style.saveButtonWrapper}>
-							<Button
-								size='large'
-								variant='contained'
-								color='primary'
-								style={style.saveButton}
-								disabled={loading}
-								onClick={this.handleSubmit}
-							>
-								{product ? 'Guarda' : 'Crea'} Producto
-							</Button>
-							{loading && <CircularProgress size={24} style={style.buttonProgress} />}
-						</div>
-					)}
-				</div>
+			<div style={{paddingBottom: 'calc(50px + 3em'}}>
+				{uploadDialogOpen && (
+					<UploadDialog
+						token={user.token}
+						onClose={this.handleUploadDialogClose} />
+				)}
+				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
+					<div>
+						<Button
+							style={{width: '88px', height: '88px', margin: '0 16px 0 0'}}
+							variant='outlined'
+							component='label'
+							color='primary'
+							onClick={this.handleUploadDialogOpen}
+						>
+							{this.state.imageUrl === '' ? 'Foto' : null}
+							<FileUpload style={{display: this.state.imageUrl === '' ? 'block' : 'none'}} />
+							<img style={{display: this.state.imageUrl !== '' ? 'block' : 'none', width: '88px', height: '88px', objectFit: 'cover'}} src={this.state.imageUrl} alt={this.state.imageUrl} />
+						</Button>
+					</div>
+					<TextField
+						required
+						fullWidth
+						margin='normal'
+						label='Titulo (Nombre)'
+						name='title'
+						value={this.state.title}
+						type='text'
+						onChange={this.handleInputChange} />
+					<TextField
+						required
+						fullWidth
+						margin='normal'
+						label='Descripción'
+						name='description'
+						multiline={true}
+						rows={2}
+						rowsMax={5}
+						value={this.state.description}
+						type='textarea'
+						onChange={this.handleInputChange} />
+					<TextField
+						required
+						fullWidth
+						margin='normal'
+						label='Costo'
+						name='cost'
+						value={this.state.cost}
+						type='number'
+						onChange={this.handleInputChange} />
+					<TextField
+						required
+						fullWidth
+						margin='normal'
+						label='Cantidad de Inventario'
+						name='inventoryCount'
+						value={this.state.inventoryCount}
+						type='number'
+						onChange={this.handleInputChange} />
+				</form>
+				{saved ? (
+					<div style={style.saveButtonWrapper}>
+						<Button
+							size='large'
+							variant='contained'
+							color='primary'
+							style={style.otherButton}
+							onClick={this.handleAdd}
+						>
+							Agregar +
+						</Button>
+						<Button
+							size='large'
+							variant='contained'
+							color='primary'
+							style={style.otherButton}
+							onClick={this.props.onDone}
+						>
+							Finalizar
+						</Button>
+					</div>
+				) : (
+					<div style={style.saveButtonWrapper}>
+						<Button
+							size='large'
+							variant='contained'
+							color='primary'
+							style={style.saveButton}
+							disabled={loading}
+							onClick={this.handleSubmit}
+						>
+							{product ? 'Guarda' : 'Crea'} Producto
+						</Button>
+						{loading && <CircularProgress size={24} style={style.buttonProgress} />}
+					</div>
+				)}
 			</div>
 	  )
 	}

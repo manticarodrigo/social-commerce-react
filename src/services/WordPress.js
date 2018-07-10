@@ -41,6 +41,16 @@ export function updateCategory(auth, data) {
 	return axios.put(`${url}/wp-json/wc/custom/products/categories/${data.id}`, category)
 }
 
+export function deleteCategory(categoryId) {
+	const options = {
+		auth: {
+			username: process.env.REACT_APP_WOOCOMMERCE_USERNAME,
+			password: process.env.REACT_APP_WOOCOMMERCE_PASSWORD
+		}
+	}
+	return axios.delete(url + '/wp-json/wc/v2/products/categories/' + categoryId, options)
+}
+
 export function fetchCategories(auth) {
 	const ownerId = auth.wp_user_id;
 	return axios.get(`${url}/wp-json/wc/custom/products/categories/?owner_id=${ownerId}`);
@@ -83,30 +93,6 @@ export function createProduct(data) {
 	}
 	return axios.post(url + '/wp-json/wc/v2/products/', product, options)
 }
-
-// export function createProducts(data) {
-// 	var products = {create:[]}
-// 	for (var product in data) {
-// 		products.create.push({
-// 			name: product.title,
-// 			regular_price: product.cost,
-// 			description: product.description,
-// 			short_description: product.description,
-// 			categories: [{id: product.category.id}],
-// 			images: [{src: product.imageUrl, position: 0}],
-// 			manage_stock: true,
-// 			stock_quantity: product.inventoryCount,
-// 			in_stock: true,
-// 		})
-// 	}
-// 	const options = {
-// 		auth: {
-// 			username: process.env.REACT_APP_WOOCOMMERCE_USERNAME,
-// 			password: process.env.REACT_APP_WOOCOMMERCE_PASSWORD
-// 		}
-// 	}
-// 	return axios.post(url + '/wp-json/wc/v2/products/batch', products, options)
-// }
 
 export function updateProduct(data) {
 	const id = {id: data.imageId, position: 0}

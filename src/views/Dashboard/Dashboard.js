@@ -4,6 +4,10 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MoreVertIcon from '@material-ui/icons/MoreVert'
 import Avatar from '@material-ui/core/Avatar'
 import CardGiftcard from '@material-ui/icons/CardGiftcard'
 import DeleteIcon from '@material-ui/icons/Delete'
@@ -12,7 +16,8 @@ import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
 import ShareIcon from '@material-ui/icons/Share'
 
-import NavBar from '../../components/NavBar/NavBar'
+import './Dashboard.css'
+
 import DeleteDialog from '../../components/Dialog/DeleteDialog'
 import ShareDialog from '../../components/Dialog/ShareDialog'
 
@@ -46,13 +51,25 @@ class Dashboard extends Component {
 		this.state = {
 			dense: false,
 			deleteDialog: null,
-			shareDialog: null
+			shareDialog: null,
+			anchorEl: null
 		}
+
+		this.handleClick = this.handleClick.bind(this)
+		this.handleClose = this.handleClose.bind(this)
 		this.handleShare = this.handleShare.bind(this)
 		this.handleProductShare = this.handleProductShare.bind(this)
 		this.handleProductDelete = this.handleProductDelete.bind(this)
 		this.handleProductSelected = this.handleProductSelected.bind(this)
 	}
+
+	handleClick(event) {
+    this.setState({ anchorEl: event.currentTarget })
+  };
+
+  handleClose() {
+    this.setState({ anchorEl: null })
+  }
 
 	handleShare() {
 		const { category } = this.props
@@ -90,70 +107,94 @@ class Dashboard extends Component {
 	}
   
 	render() {
-		const { category, products } = this.props
-		const { dense, deleteDialog, shareDialog } = this.state
+		const { products } = this.props
+		const { dense, deleteDialog, shareDialog, anchorEl } = this.state
 	  return (
 			<div>
 				{deleteDialog}
 				{shareDialog}
-				<NavBar
-					category={category}
-					title={category ? category.name : 'Tu Tienda'} />
-				<div className='Content'>
-					<List dense={dense}>
-						{products && products.map(product => (
-							<ListItem
-								key={product.id}
-								onClick={() => this.handleProductSelected(product)}>
-								<ListItemAvatar>
-									<Avatar style={style.avatar}>
-										{product.images ? (
-											<img style={style.img} src={product.images[0].src} alt={product.id} />
-										) : (
-											<CardGiftcard style={style.img} />
-										)}
-									</Avatar>
-								</ListItemAvatar>
-								<ListItemText
-									primary={product.name}
-									secondary={
-										product.description
-											.replace('<p>', '')
-											.replace('</p>', '')
-									}
-								/>
-								<ListItemSecondaryAction>
-									<IconButton
-										aria-label='Share'
+				<List dense={dense}>
+					{products && products.map(product => (
+						<ListItem
+							key={product.id}
+							onClick={() => this.handleProductSelected(product)}>
+							<ListItemAvatar>
+								<Avatar style={style.avatar}>
+									{product.images ? (
+										<img style={style.img} src={product.images[0].src} alt={product.id} />
+									) : (
+										<CardGiftcard style={style.img} />
+									)}
+								</Avatar>
+							</ListItemAvatar>
+							<ListItemText
+								className='ProductInfo'
+								primary={product.name}
+								secondary={
+									product.description
+										.replace('<p>', '')
+										.replace('</p>', '')
+								}
+							/>
+							<ListItemSecondaryAction>
+								<IconButton
+									aria-label="More"
+									aria-owns={anchorEl ? 'long-menu' : null}
+									aria-haspopup="true"
+									onClick={this.handleClick}
+								>
+									<MoreVertIcon />
+								</IconButton>
+								<Menu
+									id="long-menu"
+									anchorEl={anchorEl}
+									open={Boolean(anchorEl)}
+									onClose={this.handleClose}
+									PaperProps={{
+										style: {
+											width: 200,
+										},
+									}}
+								>
+									<MenuItem
 										onClick={() => this.handleProductShare(product)}>
-										<ShareIcon />
-									</IconButton>
-									<IconButton
-										aria-label='Delete'
+										<ListItemIcon>
+											<ShareIcon />
+										</ListItemIcon>
+										<ListItemText>
+											Compartír
+										</ListItemText>
+									</MenuItem>
+									<MenuItem
 										onClick={() => this.handleProductDelete(product)}>
-										<DeleteIcon />
-									</IconButton>
-								</ListItemSecondaryAction>
-							</ListItem>
-						))}
-					</List>
-					<Button
-						variant='fab'
-						color='secondary'
-						aria-label='add'
-						style={style.shareFab}
-						onClick={this.handleShare}>
-						<ShareIcon />
-					</Button>
-					<Button
-						variant='fab'
-						color='primary'
-						aria-label='add'
-						style={style.addFab}
-						onClick={this.props.onAdd}>
-						<AddIcon />
-					</Button>
-				</div>
+										<ListItemIcon>
+											<DeleteIcon />
+										</ListItemIcon>
+										<ListItemText>
+											Eliminár
+										</ListItemText>
+									</MenuItem>
+								</Menu>
+							</ListItemSecondaryAction>
+						</ListItem>
+					))}
+				</List>
+				<Button
+					variant='fab'
+					color='secondary'
+					aria-label='add'
+					style={style.shareFab}
+					onClick={this.handleShare}>
+					<ShareIcon />
+				</Button>
+				<Button
+					variant='fab'
+					color='primary'
+					aria-label='add'
+					style={style.addFab}
+					onClick={this.props.onAdd}>
+					<AddIcon />
+				</Button>
 			</div>
 	  )
 	}
