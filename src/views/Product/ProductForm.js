@@ -234,7 +234,6 @@ class ProductForm extends Component {
 							label='Descripción'
 							name='description'
 							multiline={true}
-							rows={2}
 							rowsMax={5}
 							value={this.state.description}
 							type='textarea'
