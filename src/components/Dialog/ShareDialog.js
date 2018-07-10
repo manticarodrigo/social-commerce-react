@@ -43,7 +43,7 @@ class ShareDialog extends React.Component {
   }
 
   render() {
-    const { category } = this.props
+    const { category, product } = this.props
     return (
       <Dialog
         open={this.state.open}
@@ -51,34 +51,34 @@ class ShareDialog extends React.Component {
         aria-labelledby='share-dialog-title'
         aria-describedby='share-dialog-description'
       >
-        <DialogTitle id='share-dialog-title'>Comparte Tu Tienda</DialogTitle>
+        <DialogTitle id='share-dialog-title'>Comparte Tu {category ? 'Tienda' : product ? 'Producto' : null}</DialogTitle>
         <DialogContent>
           <DialogContentText id='share-dialog-description'>
-            Selecciona una red en donde compartír tu tienda.
+            Selecciona una red en donde compartír tu {category ? 'tienda' : product ? 'producto' : null}.
           </DialogContentText>
           <div style={style.socialButtonDiv}>
             <WhatsappShareButton
               style={style.socialButton}
-              url={category.term_link}
-              title={'Tienda ' + category.name}
+              url={category ? category.term_link : product ? product.permalink : null}
+              title={category ? 'Tienda ' + category.name : product ? 'Producto ' + product.name : null}
               children={<WhatsappIcon size={32} round={true} />} />
             <FacebookShareButton
               style={style.socialButton}
-              url={category.term_link}
-              quote={'Tienda ' + category.name}
-              hashtag={category.term_name}
+              url={category ? category.term_link : product ? product.permalink : null}
+              quote={category ? 'Tienda ' + category.name : product ? 'Producto ' + product.name : null}
+              hashtag={category ? category.term_name : product ? product.name : null}
               children={<FacebookIcon size={32} round={true} />} />
             <TwitterShareButton
               style={style.socialButton}
-              url={category.term_link}
-              title={'Tienda ' + category.name}
-              hashtags={[category.term_name]}
+              url={category ? category.term_link : product ? product.permalink : null}
+              title={category ? 'Tienda ' + category.name : product ? 'Producto ' + product.name : null}
+              hashtags={[category ? category.term_name : product ? product.name : null]}
               children={<TwitterIcon size={32} round={true} />} />
             <EmailShareButton
               style={style.socialButton}
-              url={category.term_link}
-              subject={'Tienda ' + category.name}
-              body={'Conoce la tienda ' + category.name + ' visitando la pagina ' + + category.term_link}
+              url={category ? category.term_link : product ? product.permalink : null}
+              subject={category ? 'Tienda ' + category.name : product? 'Producto ' + product.name : null}
+              body={category ? 'Conoce la tienda ' + category.name + ' visitando la pagina ' + category.term_link : product ? 'Conoce el producto ' + product.name + ' visitando la pagina ' + product.permalink : null}
               children={<EmailIcon size={32} round={true} />} />
           </div>
         </DialogContent>

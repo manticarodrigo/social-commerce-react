@@ -49,6 +49,7 @@ class Dashboard extends Component {
 			shareDialog: null
 		}
 		this.handleShare = this.handleShare.bind(this)
+		this.handleProductShare = this.handleProductShare.bind(this)
 		this.handleProductDelete = this.handleProductDelete.bind(this)
 		this.handleProductSelected = this.handleProductSelected.bind(this)
 	}
@@ -58,8 +59,18 @@ class Dashboard extends Component {
 		const shareDialog = (
 			<ShareDialog
 				category={category}
-				onClose={() => this.setState({ deleteDialog: null })}
-				onConfirm={() => this.setState({ deleteDialog: null })} />
+				onClose={() => this.setState({ shareDialog: null })}
+				onConfirm={() => this.setState({ shareDialog: null })} />
+		)
+		this.setState({ shareDialog: shareDialog})
+	}
+
+	handleProductShare(product) {
+		const shareDialog = (
+			<ShareDialog
+				product={product}
+				onClose={() => this.setState({ shareDialog: null })}
+				onConfirm={() => this.setState({ shareDialog: null })} />
 		)
 		this.setState({ shareDialog: shareDialog})
 	}
@@ -113,8 +124,13 @@ class Dashboard extends Component {
 								/>
 								<ListItemSecondaryAction>
 									<IconButton
-									aria-label='Delete'
-									onClick={() => this.handleProductDelete(product)}>
+										aria-label='Share'
+										onClick={() => this.handleProductShare(product)}>
+										<ShareIcon />
+									</IconButton>
+									<IconButton
+										aria-label='Delete'
+										onClick={() => this.handleProductDelete(product)}>
 										<DeleteIcon />
 									</IconButton>
 								</ListItemSecondaryAction>
