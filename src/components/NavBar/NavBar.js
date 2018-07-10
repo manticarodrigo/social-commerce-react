@@ -79,6 +79,8 @@ class NavBar extends React.Component {
         return category ? 'Edita tu Tienda' : 'Crea tu Tienda'
       case '/producto':
         return product ? 'Edita tu Producto' : 'Crea tu Producto'
+      case '/catalogo':
+        return 'Tu Tienda'
       default:
         'Tu Tienda'
     }
