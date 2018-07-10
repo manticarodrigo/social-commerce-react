@@ -26,7 +26,7 @@ export function createCategory(auth, data) {
 }
 
 export function updateCategory(auth, data) {
-	const image = data.imageId ? {id: data.imageId} : {src: data.businessLogo};
+	const image = data.imageId ? { id: data.imageId } : data.image ? { id :data.image.id } : { src: data.businessLogo };
 	const category = {
 		approved: data.approved,
 		name: data.businessName,
