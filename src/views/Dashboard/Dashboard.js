@@ -97,9 +97,14 @@ class Dashboard extends Component {
 			<DeleteDialog
 				product={product}
 				onClose={() => this.setState({ deleteDialog: null })}
-				onConfirm={() => this.props.onDelete(product)} />
+				onConfirm={() => this.finishProductDelete(product)} />
 		)
 		this.setState({ deleteDialog: deleteDialog})
+	}
+
+	finishProductDelete(product) {
+		this.setState({ deleteDialog: null })
+		this.props.onDelete(product)
 	}
 
 	handleProductSelected(product) {
