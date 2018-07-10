@@ -9,11 +9,6 @@ const style = {
 		width: '100%',
 		height: '100%'
 	},
-	iframe: {
-		width: '100%',
-		height: '100%',
-		border: 'none'
-	}
 }
 class Catalog extends Component {
 	constructor(props) {
