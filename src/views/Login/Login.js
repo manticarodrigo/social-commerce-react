@@ -39,9 +39,10 @@ class Login extends Component {
         {termsDialog}
         <div>
           <h1 style={{color: '#fff'}}>
-            <span>Tu tienda</span><br></br><span>Peritagua.com</span>
+            <span>HeyShopper</span>
           </h1>
           <SocialButton
+            type='facebook'
             provider='facebook'
             appId={process.env.REACT_APP_FACEBOOK_APP_ID}
             scope='user_photos'
@@ -51,6 +52,7 @@ class Login extends Component {
           </SocialButton>
           <br />
           <SocialButton
+            type='google'
             provider='google'
             appId={process.env.REACT_APP_GOOGLE_APP_ID}
             // onLoginSuccess={this.handleResponse}
@@ -58,8 +60,8 @@ class Login extends Component {
             onClick={() => alert('Not implemented')}>
             {this.state.login ? 'Ingresar' : 'Registrar'} con Google
           </SocialButton>
-          <p style={{color: '#fff'}}><a onClick={this.toggleLogin.bind(this)}>{!this.state.login ? 'Ingresar' : 'Registrar'}</a></p>
-          <p style={{color: '#fff', fontSize: '14px'}}>Al ingresar esta indicando que ha leido<br />y acepta nuestros <a onClick={this.handleTerms}>Terminos y Condiciones</a>.</p>
+          <p style={{color: '#fff', fontSize: '14px'}}><a onClick={this.toggleLogin.bind(this)}>{!this.state.login ? '¿Ya tienes cuenta? Ingresar acá.' : '¿No tienes cuenta? Registrar acá.'}</a></p>
+          <p style={{color: '#fff', fontSize: '13px'}}>Al ingresar esta indicando que ha leido<br />y acepta nuestros <a onClick={this.handleTerms}>Terminos y Condiciones</a>.</p>
         </div>
       </div>
 	  )
