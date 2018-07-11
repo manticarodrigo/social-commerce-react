@@ -13,7 +13,7 @@ const SocialButton = ({ children, triggerLogin, ...props }) => {
       onClick={triggerLogin}
       {...props}>
       <div className='Provider'>
-        {props.type === 'facebook' ? <Facebook /> : <Google />}
+        {type === 'facebook' ? <Facebook /> : <Google />}
       </div>
       { children }
     </Button>
