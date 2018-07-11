@@ -19,10 +19,11 @@
 }
 
 .ButtonProgress {
-  color: #00e500;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -12;
-  margin-left: -12;
+  top: calc(50% - 12px);
+  left: calc(50% - 12px);
+}
+
+.ButtonProgress svg {
+  color: #00cc00;
 }

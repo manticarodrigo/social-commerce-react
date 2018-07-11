@@ -27,7 +27,7 @@ class ProductForm extends Component {
 			imageFile: null,
 			uploadDialogOpen: false,
 			loading: false,
-			saved: false
+			adding: false
 		}
 
 		this.handleSubmit = this.handleSubmit.bind(this)
@@ -50,8 +50,8 @@ class ProductForm extends Component {
 				imageId: product.images[0].id,
 				imageFile: null,
 				uploadDialogOpen: false,
-				loading: false,
-				saved: false
+				loading: true,
+				adding: false
 			}
 		}
 		return null
@@ -82,7 +82,7 @@ class ProductForm extends Component {
 	}
 	
   handleSubmit(type) {
-		this.setState({ loading: true })
+		this.setState({ loading: true, adding: type === 'add' ? true : false })
 		const data = this.state
 		const { title, description, cost, inventoryCount, imageUrl, imageFile } = this.state
 		if (
@@ -147,7 +147,7 @@ class ProductForm extends Component {
 				imageFile: null,
 				uploadDialogOpen: false,
 				loading: false,
-				saved: false
+				adding: false
 			})
 		} else {
 			if (category && category.approved) {
@@ -169,7 +169,7 @@ class ProductForm extends Component {
   
 	render() {
 		const { user, product, category } = this.props
-		const { uploadDialogOpen, loading } = this.state
+		const { uploadDialogOpen, loading, adding } = this.state
 	  return (
 			<div style={{paddingBottom: 'calc(75px + 2em'}}>
 				{uploadDialogOpen && (
@@ -245,7 +245,7 @@ class ProductForm extends Component {
 					>
 						{product ? 'Guardar' : 'Crear'} y Añadir Otro
 					</Button>
-					{loading && <CircularProgress size={24} className='ButtonProgress' />}
+					{(loading && adding) && <CircularProgress size={24} className='ButtonProgress' />}
 				</div>
 				<div className='ShareButtonWrapper'>
 					<Button
@@ -258,7 +258,7 @@ class ProductForm extends Component {
 					>
 						{product ? 'Guardar' : 'Crear'} y {category && category.approved ? 'Finalizar' : 'Compartir'}
 					</Button>
-					{loading && <CircularProgress size={24} className='ButtonProgress' />}
+					{(loading && !adding) && <CircularProgress size={24} className='ButtonProgress' />}
 				</div>
 			</div>
 	  )
