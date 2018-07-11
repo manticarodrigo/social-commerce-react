@@ -39,6 +39,7 @@ class App extends Component {
     this.state = {
       loading: response ? true : false,
       pathname: this.props.location.pathname,
+      navBarTitle: null,
       user: null,
       auth: null,
       category: null,
@@ -49,6 +50,7 @@ class App extends Component {
     }
 
     // Bind function scopes
+    this.handleNavBarTitleUpdates = this.handleNavBarTitleUpdates.bind(this)
     this.handleBack = this.handleBack.bind(this)
     this.handleForward = this.handleForward.bind(this)
     this.handleShare = this.handleShare.bind(this)
@@ -305,10 +307,16 @@ class App extends Component {
     return false
   }
 
+  handleNavBarTitleUpdates(text) {
+    console.log(text)
+    this.setState({ navBarTitle: text })
+  }
+
   render() {
     const {
       loading,
       pathname,
+      navBarTitle,
       user,
       auth,
       category,
@@ -322,6 +330,7 @@ class App extends Component {
         {deleteCategoryDialog}
         {pathname !== '/ingresar' && (
           <NavBar
+            title={navBarTitle}
             category={category}
             product={currentProduct}
             onBack={this.backCase() ? this.handleBack : null}
@@ -353,6 +362,7 @@ class App extends Component {
               exact path='/perfil'
               render={() => (
                 <CategoryForm
+                  navBarTitle={this.handleNavBarTitleUpdates}
                   category={category}
                   products={products}
                   user={user}

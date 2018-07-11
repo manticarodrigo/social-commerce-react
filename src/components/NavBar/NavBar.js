@@ -76,7 +76,7 @@ class NavBar extends React.Component {
       case '/':
         return category ? category.name : 'Tu Tienda'
       case '/perfil':
-        return category ? 'Edita tu Tienda' : 'Crea tu Tienda'
+        return category ? 'Edita tu Tienda' : 'Registra tu Tienda'
       case '/producto':
         return product ? 'Edita tu Producto' : 'Crea tu Producto'
       case '/catalogo':
@@ -87,7 +87,7 @@ class NavBar extends React.Component {
   }
 
   render() {
-    const { classes, category, onBack, onForward } = this.props
+    const { classes, title, category, onBack, onForward } = this.props
     const { anchorEl } = this.state
     const open = Boolean(anchorEl)
     return (
@@ -114,7 +114,7 @@ class NavBar extends React.Component {
               </IconButton>
             )}
             <Typography variant='title' color='inherit' className={classes.flex}>
-              {this.getLocationTitle()}
+              {title && (title !== null && title !== '') ? title : this.getLocationTitle()}
             </Typography>
             <IconButton
               aria-owns={open ? 'menu-appbar' : null}

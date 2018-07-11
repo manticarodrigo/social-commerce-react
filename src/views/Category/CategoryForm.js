@@ -122,14 +122,15 @@ class CategoryForm extends Component {
 	handleInputChange(event) {
 	  const target = event.target
 	  const value = target.type === 'checkbox' ? target.checked : target.value	
-	  const name = target.name
+		const name = target.name
+		if (name === 'businessName') this.props.navBarTitle(this.props.category ? 'Edita ' + value : 'Registra ' + value)
 	  this.setState({
 			[name]: value
 	  })
 	}
   
 	render() {
-		const { user, category, products } = this.props
+		const { user, category } = this.props
 		const { uploadDialogOpen, loading } = this.state
 	  return (
 			<div style={{paddingBottom: 'calc(30px + 2em'}}>
