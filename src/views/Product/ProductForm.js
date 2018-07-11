@@ -50,7 +50,7 @@ class ProductForm extends Component {
 				imageId: product.images[0].id,
 				imageFile: null,
 				uploadDialogOpen: false,
-				loading: true,
+				loading: false,
 				adding: false
 			}
 		}
