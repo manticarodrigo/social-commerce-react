@@ -331,7 +331,7 @@ class App extends Component {
         {loading && (
           <Loading />
         )}
-        <div className='Content' >
+        <div className='Content'>
           <Switch>
             <Route
               exact path='/ingresar'
