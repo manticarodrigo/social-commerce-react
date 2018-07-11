@@ -1,41 +1,13 @@
 import React, { Component } from 'react'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import green from '@material-ui/core/colors/green'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import FileUpload from '@material-ui/icons/FileUpload'
+import './ProductForm.css'
 
 import UploadDialog from '../../components/Dialog/UploadDialog'
 
 import { uploadMedia, createProduct, updateProduct } from '../../services/WordPress'
-
-const style = {
-	addButtonWrapper: {
-		position: 'fixed',
-		bottom: '45px',
-		left: '0',
-		width: '100%'
-	},
-	shareButtonWrapper: {
-		position: 'fixed',
-		bottom: '0',
-		left: '0',
-		width: '100%'
-	},
-	saveButton: {
-		width: 'calc(100% - 1em)',
-		height:'30px',
-		margin: '0.5em'
-	},
-	buttonProgress: {
-    color: green[500],
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    marginTop: -12,
-    marginLeft: -12,
-  }
-}
 
 class ProductForm extends Component {
 	constructor(props) {
@@ -161,6 +133,7 @@ class ProductForm extends Component {
 	}
 	
 	finishSubmit(type) {
+		const { category } = this.props
 		if (type === 'add') {
 			this.props.onAdd()
 			this.setState({
@@ -177,7 +150,11 @@ class ProductForm extends Component {
 				saved: false
 			})
 		} else {
-			this.props.onDone()
+			if (category && category.approved) {
+				this.props.onBack()
+			} else {
+				this.props.onDone()
+			}
 		}
 	}
   
@@ -191,7 +168,7 @@ class ProductForm extends Component {
 	}
   
 	render() {
-		const { user, product } = this.props
+		const { user, product, category } = this.props
 		const { uploadDialogOpen, loading } = this.state
 	  return (
 			<div style={{paddingBottom: 'calc(75px + 2em'}}>
@@ -201,7 +178,7 @@ class ProductForm extends Component {
 						onClose={this.handleUploadDialogClose} />
 				)}
 				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
-					<div>
+					<div className='UploadWrapper'>
 						<Button
 							style={{width: '88px', height: '88px', margin: '0 16px 0 0'}}
 							variant='outlined'
@@ -211,7 +188,10 @@ class ProductForm extends Component {
 						>
 							{this.state.imageUrl === '' ? 'Foto' : null}
 							<FileUpload style={{display: this.state.imageUrl === '' ? 'block' : 'none'}} />
-							<img style={{display: this.state.imageUrl !== '' ? 'block' : 'none', width: '88px', height: '88px', objectFit: 'cover'}} src={this.state.imageUrl} alt={this.state.imageUrl} />
+							<img
+								style={{display: this.state.imageUrl !== '' ? 'block' : 'none'}}
+								src={this.state.imageUrl}
+								alt={this.state.imageUrl} />
 						</Button>
 					</div>
 					<TextField
@@ -254,31 +234,31 @@ class ProductForm extends Component {
 						type='number'
 						onChange={this.handleInputChange} />
 				</form>
-				<div style={style.addButtonWrapper}>
+				<div className='AddButtonWrapper'>
 					<Button
 						size='large'
 						variant='contained'
 						color='primary'
-						style={style.saveButton}
+						className='SaveButton'
 						disabled={loading}
 						onClick={() => this.handleSubmit('add')}
 					>
 						{product ? 'Guardar' : 'Crear'} y Añadir Otro
 					</Button>
-					{loading && <CircularProgress size={24} style={style.buttonProgress} />}
+					{loading && <CircularProgress size={24} className='ButtonProgress' />}
 				</div>
-				<div style={style.shareButtonWrapper}>
+				<div className='ShareButtonWrapper'>
 					<Button
 						size='large'
 						variant='contained'
 						color='primary'
-						style={style.saveButton}
+						className='SaveButton'
 						disabled={loading}
-						onClick={() => this.handleSubmit('share')}
+						onClick={() => this.handleSubmit('finish')}
 					>
-						{product ? 'Guardar' : 'Crear'} y Compartir
+						{product ? 'Guardar' : 'Crear'} y {category && category.approved ? 'Finalizar' : 'Compartir'}
 					</Button>
-					{loading && <CircularProgress size={24} style={style.buttonProgress} />}
+					{loading && <CircularProgress size={24} className='ButtonProgress' />}
 				</div>
 			</div>
 	  )

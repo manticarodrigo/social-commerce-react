@@ -365,6 +365,7 @@ class App extends Component {
               exact path='/producto'
               render={() => (
                 <ProductForm
+                  category={category}
                   product={currentProduct}
                   nextProduct={nextProduct}
                   user={user}
@@ -373,8 +374,7 @@ class App extends Component {
                   onSubmit={this.handleProductSubmit}
                   onBack={this.handleBack}
                   onForward={this.handleForward}
-                  onDone={this.handleShare}
-                  category={category} />
+                  onDone={this.handleShare} />
             )} />
             <Route
               exact path='/catalogo'

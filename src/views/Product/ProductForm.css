@@ -1,0 +1,35 @@
+.UploadWrapper img {
+  min-width: 88px;
+  width: 88px;
+  height: 88px;
+  object-fit: cover;
+}
+
+.AddButtonWrapper {
+  position: fixed;
+  bottom: 45px;
+  left: 0;
+  width: 100%
+}
+
+.ShareButtonWrapper {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%
+}
+
+.SaveButton {
+  width: calc(100% - 1em);
+  height: 30px;
+  margin: 0.5em !important;
+}
+
+.ButtonProgress {
+  color: #00e500;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -12;
+  margin-left: -12;
+}

@@ -1,35 +1,13 @@
 import React, { Component } from 'react'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import green from '@material-ui/core/colors/green'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import FileUpload from '@material-ui/icons/FileUpload'
+import './CategoryForm.css'
 
 import UploadDialog from '../../components/Dialog/UploadDialog'
 
-import { uploadMedia, createCategory, updateCategory} from '../../services/WordPress'
-
-const style = {
-	saveButtonWrapper: {
-		position: 'fixed',
-		bottom: '0',
-		left: '0',
-		width: '100%'
-	},
-	saveButton: {
-		width: 'calc(100% - 1em)',
-		height:'30px',
-		margin: '0.5em'
-	},
-	buttonProgress: {
-    color: green[500],
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    marginTop: -12,
-    marginLeft: -12,
-  }
-}
+import { uploadMedia, createCategory, updateCategory } from '../../services/WordPress'
 
 class CategoryForm extends Component {
 	constructor(props) {
@@ -161,7 +139,7 @@ class CategoryForm extends Component {
 						onClose={this.handleUploadDialogClose} />
 				)}
 				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
-					<div>
+					<div className='UploadWrapper'>
 						<Button
 							style={{width: '88px', height: '88px', margin: '0 16px 0 0'}}
 							variant='outlined'
@@ -171,7 +149,10 @@ class CategoryForm extends Component {
 						>
 							{this.state.businessLogo === '' ? 'Logo' : null}
 							<FileUpload style={{display: this.state.businessLogo === '' ? 'block' : 'none'}} />
-							<img style={{display: this.state.businessLogo !== '' ? 'block' : 'none', width: '88px', height: '88px', objectFit: 'cover'}} src={this.state.businessLogo} alt={this.state.businessLogo} />
+							<img
+								style={{display: this.state.businessLogo !== '' ? 'block' : 'none'}}
+								src={this.state.businessLogo}
+								alt={this.state.businessLogo} />
 						</Button>
 						<TextField
 							required
@@ -235,18 +216,17 @@ class CategoryForm extends Component {
 						value={this.state.bankAccount}
 						onChange={this.handleInputChange} />
 				</form>
-				<div style={style.saveButtonWrapper}>
+				<div className='SaveButtonWrapper'>
 					<Button
 						size='large'
 						variant='contained'
 						color='primary'
-						style={style.saveButton}
+						className='SaveButton'
 						disabled={loading}
-						onClick={this.handleSubmit}
-					>
+						onClick={this.handleSubmit}>
 						{category ? 'Guardar' : 'Agregar'} Tienda
 					</Button>
-					{loading && <CircularProgress size={24} style={style.buttonProgress} />}
+					{loading && <CircularProgress size={24} className='ButtonProgress' />}
 				</div>
 			</div>
 	  )

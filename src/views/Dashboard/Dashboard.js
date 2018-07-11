@@ -15,7 +15,6 @@ import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
 import ShareIcon from '@material-ui/icons/Share'
-
 import './Dashboard.css'
 
 import DeleteDialog from '../../components/Dialog/DeleteDialog'
@@ -122,6 +121,7 @@ class Dashboard extends Component {
 					{products && products.map(product => (
 						<ListItem
 							key={product.id}
+							className='ProductCard'
 							onClick={() => this.handleProductSelected(product)}>
 							<ListItemAvatar>
 								<Avatar style={style.avatar}>
