@@ -20,7 +20,7 @@ import {
 const style = {
   socialButton: {
     display: 'inline-block',
-    padding: '0.5em'
+    padding: '1em 0.5em 0 0'
   },
   socialButtonDiv: {
     display: 'inline',
