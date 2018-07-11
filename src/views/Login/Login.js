@@ -60,8 +60,16 @@ class Login extends Component {
             onClick={() => alert('Not implemented')}>
             {this.state.login ? 'Ingresar' : 'Registrar'} con Google
           </SocialButton>
-          <p style={{color: '#fff', fontSize: '14px'}}><a onClick={this.toggleLogin.bind(this)}>{!this.state.login ? '¿Ya tienes cuenta? Ingresar acá.' : '¿No tienes cuenta? Registrar acá.'}</a></p>
-          <p style={{color: '#fff', fontSize: '13px'}}>Al ingresar esta indicando que ha leido<br />y acepta nuestros <a onClick={this.handleTerms}>Terminos y Condiciones</a>.</p>
+          <p
+            style={{color: '#fff', fontSize: '14px'}}
+            onClick={this.toggleLogin.bind(this)}>
+            {!this.state.login ? '¿Ya tienes cuenta? ' : '¿No tienes cuenta? '}
+            <a >{!this.state.login ? 'Ingresa acá.' : 'Registra acá.'}</a>
+          </p>
+          <p
+            style={{color: '#fff', fontSize: '13px'}}>
+            Al ingresar esta indicando que ha leido<br />y acepta nuestros <a onClick={this.handleTerms}>Terminos y Condiciones</a>.
+          </p>
         </div>
       </div>
 	  )
