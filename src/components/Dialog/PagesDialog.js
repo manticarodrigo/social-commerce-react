@@ -5,10 +5,6 @@ import InputAdornment from '@material-ui/core/InputAdornment'
 import Search from '@material-ui/icons/Search'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import GridList from '@material-ui/core/GridList'
-import GridListTile from '@material-ui/core/GridListTile'
-import GridListTileBar from '@material-ui/core/GridListTileBar'
-import ListSubheader from '@material-ui/core/ListSubheader'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
@@ -91,18 +87,6 @@ class PagesDialog extends Component {
                 <ListItemText primary={page.name} />
               </ListItem>
             ))}
-            {/* {page.photos && page.photos.data.map(img => (
-              <GridListTile key={img.id}>
-                <img
-                  src={img.source}
-                  alt={img.name != null ? img.name : img.source}
-                  onClick={() => this.handleListItemClick(img.source)} />
-                <GridListTileBar
-                  title={img.name != null ? img.name : 'Sin titulo'}
-                  subtitle={<span>{page.name}</span>}
-                />
-              </GridListTile>
-            ))} */}
           </List>
         </div>
       </Dialog>
