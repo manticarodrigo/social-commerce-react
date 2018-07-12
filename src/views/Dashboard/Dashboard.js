@@ -51,26 +51,55 @@ class Dashboard extends Component {
 			dense: false,
 			deleteDialog: null,
 			shareDialog: null,
+			moreDialog: null,
 			anchorEl: null
 		}
-
-		this.handleClick = this.handleClick.bind(this)
-		this.handleClose = this.handleClose.bind(this)
-		this.handleShare = this.handleShare.bind(this)
-		this.handleProductShare = this.handleProductShare.bind(this)
-		this.handleProductDelete = this.handleProductDelete.bind(this)
-		this.handleProductSelected = this.handleProductSelected.bind(this)
 	}
 
-	handleClick(event) {
-    this.setState({ anchorEl: event.currentTarget })
-  };
-
-  handleClose() {
-    this.setState({ anchorEl: null })
+	handleMore = (event, product) => {
+		const anchorEl = event.currentTarget
+		this.setState({
+			anchorEl: anchorEl,
+			moreDialog: (
+				<Menu
+					id="long-menu"
+					anchorEl={anchorEl}
+					open={true}
+					onClose={this.handleMoreClose}
+					PaperProps={{
+						style: {
+							width: 200,
+						},
+					}}
+				>
+					<MenuItem
+						onClick={() => this.handleProductShare(product)}>
+						<ListItemIcon>
+							<ShareIcon />
+						</ListItemIcon>
+						<ListItemText>
+							Compartír
+						</ListItemText>
+					</MenuItem>
+					<MenuItem
+						onClick={() => this.handleProductDelete(product)}>
+						<ListItemIcon>
+							<DeleteIcon />
+						</ListItemIcon>
+						<ListItemText>
+							Eliminár
+						</ListItemText>
+					</MenuItem>
+				</Menu>
+			)
+		})
+	}
+	
+	handleMoreClose = () => {
+    this.setState({ anchorEl: null, moreDialog: null })
   }
 
-	handleShare() {
+	handleShare = () => {
 		const { category } = this.props
 		const shareDialog = (
 			<ShareDialog
@@ -81,7 +110,7 @@ class Dashboard extends Component {
 		this.setState({ shareDialog: shareDialog})
 	}
 
-	handleProductShare(product) {
+	handleProductShare = (product) => {
 		const shareDialog = (
 			<ShareDialog
 				product={product}
@@ -91,7 +120,8 @@ class Dashboard extends Component {
 		this.setState({ shareDialog: shareDialog})
 	}
 
-	handleProductDelete(product) {
+	handleProductDelete = (product) => {
+		console.log(product)
 		const deleteDialog = (
 			<DeleteDialog
 				product={product}
@@ -101,18 +131,18 @@ class Dashboard extends Component {
 		this.setState({ deleteDialog: deleteDialog})
 	}
 
-	finishProductDelete(product) {
+	finishProductDelete = (product) => {
 		this.setState({ deleteDialog: null })
 		this.props.onDelete(product)
 	}
 
-	handleProductSelected(product) {
+	handleProductSelected = (product) => {
 		this.props.onSelect(product)
 	}
   
 	render() {
 		const { products } = this.props
-		const { dense, deleteDialog, shareDialog, anchorEl } = this.state
+		const { dense, deleteDialog, shareDialog, moreDialog, anchorEl } = this.state
 	  return (
 			<div>
 				{deleteDialog}
@@ -136,9 +166,7 @@ class Dashboard extends Component {
 								className='ProductInfo'
 								primary={product.name}
 								secondary={
-									product.description
-										.replace('<p>', '')
-										.replace('</p>', '')
+									product.description.replace(/<[^>]+>/g, '')
 								}
 							/>
 							<ListItemSecondaryAction>
@@ -146,40 +174,11 @@ class Dashboard extends Component {
 									aria-label="More"
 									aria-owns={anchorEl ? 'long-menu' : null}
 									aria-haspopup="true"
-									onClick={this.handleClick}
+									onClick={(event) => this.handleMore(event, product)}
 								>
 									<MoreVertIcon />
 								</IconButton>
-								<Menu
-									id="long-menu"
-									anchorEl={anchorEl}
-									open={Boolean(anchorEl)}
-									onClose={this.handleClose}
-									PaperProps={{
-										style: {
-											width: 200,
-										},
-									}}
-								>
-									<MenuItem
-										onClick={() => this.handleProductShare(product)}>
-										<ListItemIcon>
-											<ShareIcon />
-										</ListItemIcon>
-										<ListItemText>
-											Compartír
-										</ListItemText>
-									</MenuItem>
-									<MenuItem
-										onClick={() => this.handleProductDelete(product)}>
-										<ListItemIcon>
-											<DeleteIcon />
-										</ListItemIcon>
-										<ListItemText>
-											Eliminár
-										</ListItemText>
-									</MenuItem>
-								</Menu>
+								{moreDialog}
 							</ListItemSecondaryAction>
 						</ListItem>
 					))}

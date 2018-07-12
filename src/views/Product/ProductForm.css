@@ -3,10 +3,19 @@
 }
 
 .ProductForm .UploadWrapper img {
+  position: absolute;
+  top: 0;
+  left: 0;
   min-width: 100%;
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.ProductForm .UploadWrapper .UploadButton {
+  width: 88px;
+  height: 88px;
+  margin: 0 16px 0 0;
 }
 
 .ProductForm .UploadWrapper .Dimensions {
