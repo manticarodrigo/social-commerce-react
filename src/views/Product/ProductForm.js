@@ -161,6 +161,7 @@ class ProductForm extends Component {
 			name === 'cost' ||
 			name === 'inventoryCount'
 		) && !value.match(/^(\s*|\d+)$/)) { return }
+		if (name === 'description' && value.length >= 300) { return }
 	  this.setState({ [name]: value })
 	}
   
