@@ -10,6 +10,7 @@ import Login from './views/Login/Login'
 import Dashboard from './views/Dashboard/Dashboard'
 import CategoryForm from './views/Category/CategoryForm'
 import ProductForm from './views/Product/ProductForm'
+import ProductAnalytics from './views/ProductAnalytics/ProductAnalytics'
 import Catalog from './views/Catalog/Catalog'
 
 import DeleteDialog from './components/Dialog/DeleteDialog'
@@ -59,6 +60,7 @@ class App extends Component {
     this.handleCategoryDelete = this.handleCategoryDelete.bind(this)
     this.handleProductSubmit = this.handleProductSubmit.bind(this)
     this.handleProductSelected = this.handleProductSelected.bind(this)
+    this.handleProductAnalytics = this.handleProductAnalytics.bind(this)
     this.handleProductAdd = this.handleProductAdd.bind(this)
     this.handleProductDelete = this.handleProductDelete.bind(this)
     this.handleApprove = this.handleApprove.bind(this)
@@ -168,6 +170,7 @@ class App extends Component {
         }
       }
     } else {
+      this.setState({ navBarTitle: null })
       this.props.history.replace('/')
     }
   }
@@ -257,6 +260,11 @@ class App extends Component {
   handleProductSelected(product) {
     this.setState({ currentProduct: product })
     this.props.history.replace('/producto')
+  }
+
+  handleProductAnalytics(product) {
+    this.setState({ currentProduct: product })
+    this.props.history.replace('/producto/analisis')
   }
 
   handleProductAdd() {
@@ -354,6 +362,7 @@ class App extends Component {
                   category={category}
                   products={products}
                   onSelect={this.handleProductSelected}
+                  onAnalytics={this.handleProductAnalytics}
                   onAdd={this.handleProductAdd}
                   onDelete={this.handleProductDelete} />
             )} />
@@ -384,6 +393,16 @@ class App extends Component {
                   onBack={this.handleBack}
                   onForward={this.handleForward}
                   onDone={this.handleShare} />
+            )} />
+            <Route
+              exact path='/producto/analisis'
+              render={() => (
+                <ProductAnalytics
+                  navBarTitle={this.handleNavBarTitleUpdates}
+                  user={user}
+                  product={currentProduct}
+                  onBack={this.handleBack}
+                />
             )} />
             <Route
               exact path='/catalogo'

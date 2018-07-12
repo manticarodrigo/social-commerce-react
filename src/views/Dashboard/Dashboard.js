@@ -9,12 +9,15 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import Avatar from '@material-ui/core/Avatar'
+
 import CardGiftcard from '@material-ui/icons/CardGiftcard'
 import DeleteIcon from '@material-ui/icons/Delete'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
 import ShareIcon from '@material-ui/icons/Share'
+import ShowChartIcon from '@material-ui/icons/ShowChart'
+
 import './Dashboard.css'
 
 import DeleteDialog from '../../components/Dialog/DeleteDialog'
@@ -60,6 +63,7 @@ class Dashboard extends Component {
 		this.handleProductShare = this.handleProductShare.bind(this)
 		this.handleProductDelete = this.handleProductDelete.bind(this)
 		this.handleProductSelected = this.handleProductSelected.bind(this)
+		this.handleProductAnalytics = this.handleProductAnalytics.bind(this)
 	}
 
 	handleClick(event) {
@@ -108,6 +112,10 @@ class Dashboard extends Component {
 
 	handleProductSelected(product) {
 		this.props.onSelect(product)
+	}
+
+	handleProductAnalytics(product) {
+		this.props.onAnalytics(product)
 	}
   
 	render() {
@@ -162,12 +170,21 @@ class Dashboard extends Component {
 									}}
 								>
 									<MenuItem
+										onClick={() => this.handleProductAnalytics(product)}>
+										<ListItemIcon>
+											<ShowChartIcon />
+										</ListItemIcon>
+										<ListItemText>
+											Análisis
+										</ListItemText>
+									</MenuItem>
+									<MenuItem
 										onClick={() => this.handleProductShare(product)}>
 										<ListItemIcon>
 											<ShareIcon />
 										</ListItemIcon>
 										<ListItemText>
-											Compartír
+											Compartir
 										</ListItemText>
 									</MenuItem>
 									<MenuItem
@@ -176,7 +193,7 @@ class Dashboard extends Component {
 											<DeleteIcon />
 										</ListItemIcon>
 										<ListItemText>
-											Eliminár
+											Eliminar
 										</ListItemText>
 									</MenuItem>
 								</Menu>
