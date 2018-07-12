@@ -18,7 +18,7 @@ class ProductForm extends Component {
 
 		this.state = {
 			id: product ? product.id : '',
-			title: product ? product.name : '',
+			name: product ? product.name : '',
 			description: product ? product.description.replace('<p>', '').replace('</p>', '') : '',
 			cost: product ? product.price : '',
 			inventoryCount: product ? product.stock_quantity : '',
@@ -42,7 +42,7 @@ class ProductForm extends Component {
 		if (product && product.id !== id) {
 			return {
 				id: product.id,
-				title: product.name,
+				name: product.name,
 				description: product.description.replace('<p>', '').replace('</p>', ''),
 				cost: product.price,
 				inventoryCount: product.stock_quantity,
@@ -84,9 +84,9 @@ class ProductForm extends Component {
   handleSubmit(type) {
 		this.setState({ loading: true, adding: type === 'add' ? true : false })
 		const data = this.state
-		const { title, description, cost, inventoryCount, imageUrl, imageFile } = this.state
+		const { name, description, cost, inventoryCount, imageUrl, imageFile } = this.state
 		if (
-			title !== '' &&
+			name !== '' &&
 			description !== '' &&
 			cost !== '' &&
 			inventoryCount !== '' &&
@@ -138,7 +138,7 @@ class ProductForm extends Component {
 			this.props.onAdd()
 			this.setState({
 				id: '',
-				title: '',
+				name: '',
 				description: '',
 				cost: '',
 				inventoryCount: '',
@@ -204,9 +204,9 @@ class ProductForm extends Component {
 							required
 							style={{width: 'calc(100% - 104px'}}
 							margin='normal'
-							label='Titulo (Nombre)'
-							name='title'
-							value={this.state.title}
+							label='Nombre'
+							name='name'
+							value={this.state.name}
 							type='text'
 							onChange={this.handleInputChange} />
 					</div>
