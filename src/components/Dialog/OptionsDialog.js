@@ -7,23 +7,29 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 
 class OptionsDialog extends Component {
-  state = {
-    options: this.props.options
+  constructor(props) {
+    super(props)
+    this.state = {
+      options: props.options
+    }
   }
 
   handleClose = () => {
-    this.props.onClose(this.props.selectedValue)
+    this.props.onClose()
   }
 
-  handleListItemClick = value => {
+  handleListItemClick = (value) => {
+    this.setState({ open: false })
     this.props.onClose(value)
   }
 
   render() {
-    const { classes, onClose, selectedValue, ...other } = this.props
     const { options } = this.state
     return (
-      <Dialog onClose={this.handleClose} aria-labelledby="options-dialog-title" {...other}>
+      <Dialog
+        open={true}
+        onClose={this.handleClose}
+        aria-labelledby="options-dialog-title">
         <DialogTitle id="options-dialog-title">Suba Imagen</DialogTitle>
         <div>
           <List>
@@ -40,8 +46,7 @@ class OptionsDialog extends Component {
 }
 
 OptionsDialog.propTypes = {
-  onClose: PropTypes.func,
-  selectedValue: PropTypes.string,
+  onClose: PropTypes.func
 }
 
 export default OptionsDialog

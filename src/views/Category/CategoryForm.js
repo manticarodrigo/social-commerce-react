@@ -6,7 +6,6 @@ import FileUpload from '@material-ui/icons/FileUpload'
 import './CategoryForm.css'
 
 import UploadDialog from '../../components/Dialog/UploadDialog'
-
 import { uploadMedia, createCategory, updateCategory } from '../../services/WordPress'
 
 class CategoryForm extends Component {
@@ -15,6 +14,7 @@ class CategoryForm extends Component {
 		
 		const { user, category } = this.props
 		if (!user) this.props.onBack()
+		this.props.navBarTitle(category ? 'Edita ' + category.name : null)
 
 		this.state = {
 			id: category ? category.id : false,
@@ -49,6 +49,7 @@ class CategoryForm extends Component {
   	handleUploadDialogClose(value) {
 		const { imageId } = this.state
 		if (typeof(value) === 'object') {
+			console.log(value)
 			this.setState({
 				uploadDialogOpen: false,
 				businessLogo: value !== null ? value.imageUrl : '',
@@ -70,7 +71,6 @@ class CategoryForm extends Component {
 		const data = this.state
 		const { businessName, businessLogo, imageFile, name, email, phone, dni } = this.state
 		const { auth, category } = this.props
-
 		if (
 			businessName !== '' &&
 			businessLogo !== '' &&
@@ -123,15 +123,18 @@ class CategoryForm extends Component {
 	  const target = event.target
 	  const value = target.type === 'checkbox' ? target.checked : target.value	
 		const name = target.name
-		if (name === 'businessName') this.props.navBarTitle(this.props.category ? 'Edita ' + value : 'Registra ' + value)
-	  this.setState({
+		this.setState({
 			[name]: value
 	  })
+		const { category } = this.props
+		if (name === 'businessName') {
+			this.props.navBarTitle(category ? 'Edita ' + value : 'Registra ' + value)
+		}
 	}
   
 	render() {
 		const { user, category } = this.props
-		const { uploadDialogOpen, loading } = this.state
+		const { uploadDialogOpen, loading, businessLogo } = this.state
 	  return (
 			<div style={{paddingBottom: 'calc(30px + 2em'}}>
 				{uploadDialogOpen && (
@@ -148,18 +151,23 @@ class CategoryForm extends Component {
 							color='primary'
 							onClick={this.handleUploadDialogOpen}
 						>
-							{this.state.businessLogo === '' ? 'Logo' : null}
-							<FileUpload style={{display: this.state.businessLogo === '' ? 'block' : 'none'}} />
+							{businessLogo === '' ? 'Logo' : null}
+							<FileUpload style={{display: businessLogo === '' ? 'block' : 'none'}} />
+							<span
+								style={{display: businessLogo === '' ? 'block' : 'none'}}
+								className='Dimensions'>
+								300 x 300
+							</span>
 							<img
-								style={{display: this.state.businessLogo !== '' ? 'block' : 'none'}}
-								src={this.state.businessLogo}
-								alt={this.state.businessLogo} />
+								style={{display: businessLogo !== '' ? 'block' : 'none'}}
+								src={businessLogo}
+								alt={businessLogo} />
 						</Button>
 						<TextField
 							required
 							style={{width: 'calc(100% - 104px'}}
 							margin='normal'
-							label='Nombre del negocio'
+							label='Nombre del Negocio'
 							name='businessName'
 							value={this.state.businessName}
 							type='text'
@@ -169,7 +177,7 @@ class CategoryForm extends Component {
 						required
 						fullWidth
 						margin='normal'
-						label='Tu Nombre y apellido'
+						label='Nombre completo'
 						name='name'
 						value={this.state.name}
 						type='text'
@@ -178,7 +186,7 @@ class CategoryForm extends Component {
 						required
 						fullWidth
 						margin='normal'
-						label='Tu Email'
+						label='Correo electronico'
 						name='email'
 						value={this.state.email}
 						type='email'
@@ -187,16 +195,15 @@ class CategoryForm extends Component {
 						required
 						fullWidth
 						margin='normal'
-						label='Telefono'
+						label='Numero de Telefono Celular'
 						name='phone'
 						value={this.state.phone}
-						type='number'
 						onChange={this.handleInputChange} />
 					<TextField
 						required
 						fullWidth
 						margin='normal'
-						label='DNI'
+						label='Numero de DNI'
 						name='dni'
 						value={this.state.dni}
 						type='number'
@@ -204,7 +211,7 @@ class CategoryForm extends Component {
 					<TextField
 						fullWidth
 						margin='normal'
-						label='RUC'
+						label='Numero RUC'
 						name='ruc'
 						value={this.state.ruc}
 						type='number'

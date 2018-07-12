@@ -82,7 +82,7 @@ class NavBar extends React.Component {
       case '/catalogo':
         return 'Tu Tienda'
       default:
-        'Tu Tienda'
+        return 'Tu Tienda'
     }
   }
 

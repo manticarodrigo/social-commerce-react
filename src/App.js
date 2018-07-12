@@ -286,7 +286,7 @@ class App extends Component {
 
 
   backCase() {
-    const { pathname, category, products, nextProduct } = this.state
+    const { pathname, category } = this.state
     if (category && category.approved) {
       return  pathname !== '/' ? true : false
     } else if (pathname !== '/perfil') {
@@ -308,7 +308,6 @@ class App extends Component {
   }
 
   handleNavBarTitleUpdates(text) {
-    console.log(text)
     this.setState({ navBarTitle: text })
   }
 

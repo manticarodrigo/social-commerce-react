@@ -2,69 +2,102 @@ import React, { Component } from 'react'
 
 import OptionsDialog from './OptionsDialog'
 import AlbumDialog from './AlbumDialog'
+import CropDialog from './CropDialog'
+
+const options = {
+  facebook: {
+    title: 'Suba de Facebook'
+  },
+  device: {
+    title: 'Suba de Dispositivo'
+  }
+}
 
 class UploadDialog extends Component {
   constructor(props) {
     super(props)
-    const options = ['Suba de Facebook', 'Suba de Dispositivo']
-    const optionsDialog = (
-      <OptionsDialog
-        options={options}
-        open={true}
-        onClose={this.handleOptionsDialogClose.bind(this)} />
-    )
+    const { facebook, device } = options
     this.state = {
-      currentDialog: optionsDialog
+      currentDialog: (
+        <OptionsDialog
+          options={[facebook.title, device.title]}
+          onClose={this.handleOptionsDialogClose} />
+      )
     }
-    this.handleImageChanged = this.handleImageChanged.bind(this)
   }
   
   inputElement = null
 
-  handleOptionsDialogClose(value) {
+  handleOptionsDialogClose = (value) => {
     if (value === undefined) {
       this.props.onClose(value)
-    } else if (value === 'Suba de Dispositivo') {
+    } else if (value === options.device.title) {
       this.inputElement.click()
       this.setState({ currentDialog: null })
-		} else {
-      const albumDialog = (
-        <AlbumDialog
-          token={this.props.token}
-          open={true}
-          onClose={this.handleAlbumDialogClose.bind(this)} />
-      )
-      this.setState({ currentDialog: albumDialog })
+		} else if (value === options.facebook.title) {
+      this.setState({
+        currentDialog: (
+          <AlbumDialog
+            token={this.props.token}
+            onClose={this.handleAlbumDialogClose} />
+        )
+      })
     }
 	}
 
-  handleAlbumDialogClose(value) {
-    this.props.onClose(value)
+  handleAlbumDialogClose = (value) => {
+    if (value === undefined) {
+      this.props.onClose(value)
+		} else {
+      const cropDialog = (
+        <CropDialog
+          src={value}
+          onClose={(croppedValue) => {
+            this.handleCropDialogClose(croppedValue ? croppedValue : value)
+          }} />
+      )
+      this.setState({ currentDialog: cropDialog })
+    }
   }
   
-  handleImageChanged(event) {
+  handleImageChanged = (event) => {
 		if (event.target.files && event.target.files[0]) {
       const imageFile = event.target.files[0]
-			let reader = new FileReader();
+			let reader = new FileReader()
 			reader.onload = (e) => {
         this.props.onClose({
           imageFile: imageFile,
           imageUrl: e.target.result
         })
 			}
-			reader.readAsDataURL(event.target.files[0]);
+			reader.readAsDataURL(event.target.files[0])
     } else {
       this.props.onClose(null)
     }
-	}
+  }
+
+  handleCropDialogClose = (value) => {
+    this.setState({ currentDialog: null })
+    console.log(typeof(value))
+    if (typeof(value) === 'object') {
+      let reader = new FileReader()
+			reader.onload = (e) => {
+        this.props.onClose({
+          imageFile: value,
+          imageUrl: e.target.result
+        })
+			}
+			reader.readAsDataURL(value)
+    } else {
+      this.props.onClose(value)
+    }
+  }
 
   render() {
     const { currentDialog } = this.state
     return (
       <div>
-        {currentDialog && (
-          currentDialog
-        )}
+        {currentDialog}
         <input
           ref={input => this.inputElement = input}
           onChange={this.handleImageChanged}

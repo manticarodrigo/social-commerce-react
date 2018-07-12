@@ -3,15 +3,15 @@ import axios from 'axios'
 const url = process.env.REACT_APP_BACKEND_URL
 
 export function facebookLogin(accessToken) {
-	let base_url = url + '/?json=user.fb_connect&access_token=' + accessToken;
+	let base_url = url + '/?json=user.fb_connect&access_token=' + accessToken
 	if (process.env.REACT_APP_ENV !== 'production') {
-		base_url += '&insecure=cool';
+		base_url += '&insecure=cool'
 	}
-	return axios.get(base_url);
+	return axios.get(base_url)
 }
 
 export function createCategory(auth, data) {
-	const image = data.imageId ? {id: data.imageId} : {src: data.businessLogo};
+	const image = data.imageId ? { id: data.imageId } : data.image ? { id: data.image.id } : { src: data.businessLogo }
 	const category = {
 		name: data.businessName,
 		owner_id: auth.wp_user_id,
@@ -26,7 +26,7 @@ export function createCategory(auth, data) {
 }
 
 export function updateCategory(auth, data) {
-	const image = data.imageId ? { id: data.imageId } : data.image ? { id :data.image.id } : { src: data.businessLogo };
+	const image = data.imageId ? { id: data.imageId } : data.image ? { id: data.image.id } : { src: data.businessLogo }
 	const category = {
 		approved: data.approved,
 		name: data.businessName,
@@ -42,15 +42,12 @@ export function updateCategory(auth, data) {
 }
 
 export function deleteCategory(categoryId) {
-	const data = {
-		force: true
-	}
-	return axios.delete(url + '/wp-json/wc/v2/products/categories/' + categoryId, {data:{force: true }})
+	return axios.delete(url + '/wp-json/wc/v2/products/categories/' + categoryId, { data: { force: true } })
 }
 
 export function fetchCategories(auth) {
-	const ownerId = auth.wp_user_id;
-	return axios.get(`${url}/wp-json/wc/custom/products/categories/?owner_id=${ownerId}`);
+	const ownerId = auth.wp_user_id
+	return axios.get(`${url}/wp-json/wc/custom/products/categories/?owner_id=${ownerId}`)
 }
 
 // export function updateUser(auth, data) {
@@ -139,11 +136,11 @@ export function uploadMedia(file) {
 	var formData = new FormData()
 	formData.append('file', file)
 	formData.append('title', stamp)
-	formData.append('caption', 'test');
+	formData.append('caption', 'test')
 
 	return axios.post(url + '/wp-json/wp/v2/media', formData, {
 		headers: {
 			'Content-Type': 'multipart/form-data'
 		}
-	});
+	})
 }

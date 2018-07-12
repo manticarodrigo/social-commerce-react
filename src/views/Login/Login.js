@@ -61,10 +61,12 @@ class Login extends Component {
             {this.state.login ? 'Ingresar' : 'Registrar'} con Google
           </SocialButton>
           <p
-            style={{color: '#fff', fontSize: '15px'}}
-            onClick={this.toggleLogin.bind(this)}>
+            style={{color: '#fff', fontSize: '15px'}}>
             {!this.state.login ? '¿Ya tienes cuenta? ' : '¿No tienes cuenta? '}
-            <a >{!this.state.login ? 'Ingresa acá.' : 'Registra acá.'}</a>
+            <a 
+              onClick={this.toggleLogin.bind(this)}>
+              {!this.state.login ? 'Ingresa acá.' : 'Registra acá.'}
+            </a>
           </p>
           <p
             style={{color: '#fff', fontSize: '14px'}}>

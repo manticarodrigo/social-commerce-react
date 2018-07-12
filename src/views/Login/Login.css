@@ -8,9 +8,10 @@
   align-items: center;
   justify-content: center;
   background-color: #3f51b5;
-}
+} 
 
 .Login a {
   color: #fff;
   text-decoration: underline;
+  cursor: pointer;
 }

@@ -19,8 +19,8 @@ class Catalog extends Component {
 
 	disableInputs() {
 		var buttons = document.getElementsByTagName('button');
-		for (var i = 0; i < buttons.length; i++) {
-			buttons[i].disabled = true;
+		for (var h = 0; h < buttons.length; h++) {
+			buttons[h].disabled = true;
 		}
 		var inputs = document.getElementsByTagName('input');
 		for (var i = 0; i < inputs.length; i++) {

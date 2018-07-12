@@ -15,13 +15,15 @@ import { getAlbums } from '../../services/Facebook'
 class AlbumDialog extends Component {
   constructor(props) {
     super(props)
-    this.state = { albums: [], currentAlbums: [], searchInput: '' }
+    this.state = {
+      albums: [],
+      currentAlbums: [],
+      searchInput: ''
+    }
     this.fetchFacebookAlbums()
-    this.handleClose = this.handleClose.bind(this)
-    this.handleInputChange = this.handleInputChange.bind(this)
   }
 
-  fetchFacebookAlbums() {
+  fetchFacebookAlbums = () => {
     const accessToken = this.props.token.accessToken
     getAlbums(accessToken)
     .then(res => {
@@ -30,15 +32,15 @@ class AlbumDialog extends Component {
     })
   }
 
-  handleClose() {
-    this.props.onClose(this.props.selectedValue)
+  handleClose = () => {
+    this.props.onClose()
   }
 
-  handleListItemClick(value) {
+  handleListItemClick = (value) => {
     this.props.onClose(value)
   }
 
-  handleInputChange(event) {
+  handleInputChange = (event) => {
 	  const target = event.target
 	  const value = target.type === 'checkbox' ? target.checked : target.value	
     const name = target.name
@@ -53,10 +55,12 @@ class AlbumDialog extends Component {
 	}
 
   render() {
-    const { classes, onClose, selectedValue, ...other } = this.props
     const { currentAlbums, searchInput } = this.state
     return (
-      <Dialog onClose={this.handleClose} aria-labelledby='album-dialog-title' {...other}>
+      <Dialog
+        open={true}
+        onClose={this.handleClose}
+        aria-labelledby='album-dialog-title'>
       <DialogTitle id="album-dialog-title">
         <TextField
           fullWidth
@@ -101,8 +105,7 @@ class AlbumDialog extends Component {
 }
   
 AlbumDialog.propTypes = {
-  onClose: PropTypes.func,
-  selectedValue: PropTypes.object
+  onClose: PropTypes.func
 }
 
 export default AlbumDialog
