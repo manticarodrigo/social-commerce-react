@@ -160,10 +160,11 @@ class App extends Component {
       } else {
         // Go back an index
         if (currentProduct === products[products.length - 1]) {
-          this.setState({ currentProduct: null, nextProduct: null })
+          this.setState({ currentProduct: null, nextProduct: null, navBarTitle: null })
           this.props.history.replace('/perfil')
         } else {
           this.updateProductLocations('back')
+          this.setState({ navBarTitle: null })
           this.props.history.replace('/producto')
         }
       }
@@ -176,11 +177,12 @@ class App extends Component {
     const { products } = this.state
     if (!Array.isArray(products) || !products.length) {
       // Array does not exist, is not an array, or is empty
-      this.setState({ currentProduct: null, nextProduct: null })
+      this.setState({ currentProduct: null, nextProduct: null, navBarTitle: null })
       this.props.history.replace('/producto')
     } else {
       // Go forward an index
       this.updateProductLocations('forward')
+      this.setState({ navBarTitle: null })
       this.props.history.replace('/producto')
     }
   }
@@ -204,7 +206,7 @@ class App extends Component {
   }
 
   handleCategorySubmit(category) {
-    this.setState({ category: category })
+    this.setState({ category: category, navBarTitle: null })
     if (category.approved) {
       this.props.history.replace('/')
     } else {
@@ -221,7 +223,7 @@ class App extends Component {
 				onClose={() => this.setState({ deleteCategoryDialog: null })}
         onConfirm={() => this.finishCategoryDelete(category)} />
 		)
-		this.setState({ deleteCategoryDialog: deleteCategoryDialog})
+		this.setState({ deleteCategoryDialog: deleteCategoryDialog })
   }
 
   finishCategoryDelete(category) {
@@ -232,7 +234,8 @@ class App extends Component {
           category: null,
           products: null,
           currentProduct: null,
-          nextProduct: null
+          nextProduct: null,
+          navBarTitle: null
         })
         this.props.history.replace('/perfil')
       })
@@ -255,12 +258,12 @@ class App extends Component {
   }
 
   handleProductSelected(product) {
-    this.setState({ currentProduct: product })
+    this.setState({ currentProduct: product, navBarTitle: null })
     this.props.history.replace('/producto')
   }
 
   handleProductAdd() {
-    this.setState({ currentProduct: null, nextProduct: null })
+    this.setState({ currentProduct: null, nextProduct: null, navBarTitle: null })
     this.props.history.replace('/producto')
   }
 

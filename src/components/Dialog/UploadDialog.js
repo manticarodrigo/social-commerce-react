@@ -66,14 +66,16 @@ class UploadDialog extends Component {
     if (value === undefined) {
       this.props.onClose(value)
 		} else {
-      const cropDialog = (
-        <CropDialog
-          src={value}
-          onClose={(croppedValue) => {
-            this.handleCropDialogClose(croppedValue ? croppedValue : value)
-          }} />
-      )
-      this.setState({ currentDialog: cropDialog })
+      // const { aspect } = this.props
+      this.setState({
+        currentDialog: (
+          <CropDialog
+            src={value}
+            onClose={(croppedValue) => {
+              this.handleCropDialogClose(croppedValue ? croppedValue : value)
+            }} />
+        )
+      })
     }
   }
   

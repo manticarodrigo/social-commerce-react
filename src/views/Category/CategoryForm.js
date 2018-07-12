@@ -63,7 +63,7 @@ class CategoryForm extends Component {
 		event.preventDefault()
 		const data = this.state
 		const { businessName, businessLogo, imageFile, name, email, phone, dni } = this.state
-		const { auth, category } = this.props
+		const { auth, category, onSubmit } = this.props
 		if (
 			businessName !== '' &&
 			businessLogo !== '' &&
@@ -83,7 +83,7 @@ class CategoryForm extends Component {
 						console.log(res)
 						if (res.data && res.data.id !== null) {
 							this.setState({ loading: false })
-							this.props.onSubmit(res.data)
+							onSubmit(res.data)
 						}
 					})
 					.catch(err => {
@@ -99,7 +99,7 @@ class CategoryForm extends Component {
 					console.log(res)
 					if (res.data && res.data.id !== null) {
 						this.setState({ loading: false })
-						this.props.onSubmit(res.data)
+						onSubmit(res.data)
 					}
 				})
 				.catch(err => {
