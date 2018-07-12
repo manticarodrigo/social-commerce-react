@@ -20,7 +20,6 @@ class UploadDialog extends Component {
           onClose={this.handleOptionsDialogClose} />
       )
     }
-    console.log(this.props)
   }
   
   inputElement = null
@@ -81,12 +80,14 @@ class UploadDialog extends Component {
   
   handleImageChanged = (event) => {
 		if (event.target.files && event.target.files[0]) {
-      const imageFile = event.target.files[0]
 			let reader = new FileReader()
 			reader.onload = (e) => {
-        this.props.onClose({
-          imageFile: imageFile,
-          imageUrl: e.target.result
+        this.setState({
+          currentDialog: (
+            <CropDialog
+              src={e.target.result}
+              onClose={this.handleCropDialogClose} />
+          )
         })
 			}
 			reader.readAsDataURL(event.target.files[0])
@@ -97,7 +98,6 @@ class UploadDialog extends Component {
 
   handleCropDialogClose = (value) => {
     this.setState({ currentDialog: null })
-    console.log(typeof(value))
     if (typeof(value) === 'object') {
       let reader = new FileReader()
 			reader.onload = (e) => {
