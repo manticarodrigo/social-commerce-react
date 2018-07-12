@@ -174,7 +174,7 @@ class ProductForm extends Component {
 			<div style={{paddingBottom: 'calc(75px + 2em'}}>
 				{uploadDialogOpen && (
 					<UploadDialog
-						token={user.token}
+						user={user}
 						onClose={this.handleUploadDialogClose} />
 				)}
 				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>

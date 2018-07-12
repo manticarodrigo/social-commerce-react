@@ -1,29 +1,26 @@
 import React, { Component } from 'react'
 
 import OptionsDialog from './OptionsDialog'
-import AlbumDialog from './AlbumDialog'
+import PagesDialog from './PagesDialog'
+import AlbumsDialog from './AlbumsDialog'
 import CropDialog from './CropDialog'
 
-const options = {
-  facebook: {
-    title: 'Suba de Facebook'
-  },
-  device: {
-    title: 'Suba de Dispositivo'
-  }
+const constants = {
+  FACEBOOK_UPLOAD: 'Suba de Facebook',
+  DEVICE_UPLOAD: 'Suba de Dispositivo'
 }
 
 class UploadDialog extends Component {
   constructor(props) {
     super(props)
-    const { facebook, device } = options
     this.state = {
       currentDialog: (
         <OptionsDialog
-          options={[facebook.title, device.title]}
+          options={[constants.FACEBOOK_UPLOAD, constants.DEVICE_UPLOAD]}
           onClose={this.handleOptionsDialogClose} />
       )
     }
+    console.log(this.props)
   }
   
   inputElement = null
@@ -31,21 +28,41 @@ class UploadDialog extends Component {
   handleOptionsDialogClose = (value) => {
     if (value === undefined) {
       this.props.onClose(value)
-    } else if (value === options.device.title) {
+    } else if (value === constants.DEVICE_UPLOAD) {
       this.inputElement.click()
       this.setState({ currentDialog: null })
-		} else if (value === options.facebook.title) {
+		} else if (value === constants.FACEBOOK_UPLOAD) {
+      const { token } = this.props.user
       this.setState({
         currentDialog: (
-          <AlbumDialog
-            token={this.props.token}
-            onClose={this.handleAlbumDialogClose} />
+          <PagesDialog
+            token={token}
+            onClose={this.handlePagesDialogClose} />
         )
       })
     }
-	}
+  }
+  
+  handlePagesDialogClose = (value) => {
+    if (value === undefined) {
+      this.props.onClose(value)
+		} else {
+      const { user } = this.props
+      const page = typeof(value) === 'object'
+      const id = page ? value.id : user.profile.id
+      const token = page ? value.access_token : user.token.accessToken    
+      this.setState({
+        currentDialog: (
+          <AlbumsDialog
+            id={id}
+            token={token}
+            onClose={this.handleAlbumsDialogClose} />
+        )
+      })
+    }
+  }
 
-  handleAlbumDialogClose = (value) => {
+  handleAlbumsDialogClose = (value) => {
     if (value === undefined) {
       this.props.onClose(value)
 		} else {

@@ -28,8 +28,6 @@ class CategoryForm extends Component {
 			phone: category ? category.phone : '',
 			dni: category ? category.dni : '',
 			ruc: category ? category.ruc : '',
-			bankAccount: category ? category.bank_account : '',
-			logisticProvider: category ? category.logistic_provider : '',
 			uploadDialogOpen: false,
 			loading: false
 		}
@@ -115,7 +113,7 @@ class CategoryForm extends Component {
   }
   
 	handleInputChange = (event) => {
-		const { category } = this.props
+		const { category, navBarTitle } = this.props
 		const target = event.target
 		const name = target.name
 		const value = target.value
@@ -124,11 +122,9 @@ class CategoryForm extends Component {
 			name === 'dni' ||
 			name === 'ruc' ||
 			name === 'bankAccount'
-			) && !value.match(/^(\s*|\d+)$/)) {
-			return
-		}
+		) && !value.match(/^(\s*|\d+)$/)) { return }
 		if (name === 'businessName') {
-			this.props.navBarTitle(category ? 'Edita ' + value : 'Registra ' + value)
+			navBarTitle(category ? 'Edita ' + value : 'Registra ' + value)
 		}
 		this.setState({ [name]: value })
 	}
@@ -136,11 +132,12 @@ class CategoryForm extends Component {
 	render() {
 		const { user, category } = this.props
 		const { uploadDialogOpen, loading, businessLogo } = this.state
+		console.log(this.props)
 	  return (
 			<div style={{paddingBottom: 'calc(30px + 2em'}}>
 				{uploadDialogOpen && (
 					<UploadDialog
-						token={user.token}
+						user={user}
 						onClose={this.handleUploadDialogClose} />
 				)}
 				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
@@ -214,13 +211,6 @@ class CategoryForm extends Component {
 						label='Numero RUC'
 						name='ruc'
 						value={this.state.ruc}
-						onChange={this.handleInputChange} />
-					<TextField
-						fullWidth
-						margin='normal'
-						label='Número de cuenta de Banco'
-						name='bankAccount'
-						value={this.state.bankAccount}
 						onChange={this.handleInputChange} />
 				</form>
 				<div className='SaveButtonWrapper'>

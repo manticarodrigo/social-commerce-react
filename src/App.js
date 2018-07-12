@@ -365,7 +365,7 @@ class App extends Component {
                   category={category}
                   products={products}
                   user={user}
-                  auth={auth ? auth : null}
+                  auth={auth}
                   onBack={this.handleBack}
                   onForward={this.handleForward}
                   onSubmit={this.handleCategorySubmit} />

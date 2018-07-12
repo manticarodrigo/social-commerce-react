@@ -45,7 +45,7 @@ class Login extends Component {
             type='facebook'
             provider='facebook'
             appId={process.env.REACT_APP_FACEBOOK_APP_ID}
-            scope='user_photos'
+            scope='user_photos, pages_show_list'
             onLoginSuccess={this.handleResponse}
             onLoginFailure={this.handleResponse}>
             {this.state.login ? 'Ingresar' : 'Registrar'} con Facebook
