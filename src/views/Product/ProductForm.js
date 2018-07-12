@@ -159,12 +159,14 @@ class ProductForm extends Component {
 	}
   
 	handleInputChange(event) {
-	  const target = event.target;
+	  const target = event.target
 	  const value = target.type === 'checkbox' ? target.checked : target.value	
-	  const name = target.name;
-	  this.setState({
-			[name]: value
-		})
+		const name = target.name
+		if ((
+			name === 'cost' ||
+			name === 'inventoryCount'
+		) && !value.match(/^(\s*|\d+)$/)) { return }
+	  this.setState({ [name]: value })
 	}
   
 	render() {
@@ -188,32 +190,35 @@ class ProductForm extends Component {
 						>
 							{this.state.imageUrl === '' ? 'Foto' : null}
 							<FileUpload style={{display: this.state.imageUrl === '' ? 'block' : 'none'}} />
+							<span
+								style={{display: this.state.imageUrl === '' ? 'block' : 'none'}}
+								className='Dimensions'>
+								300 x 300
+							</span>
 							<img
 								style={{display: this.state.imageUrl !== '' ? 'block' : 'none'}}
 								src={this.state.imageUrl}
 								alt={this.state.imageUrl} />
 						</Button>
+						<TextField
+							required
+							style={{width: 'calc(100% - 104px'}}
+							margin='normal'
+							label='Titulo (Nombre)'
+							name='title'
+							value={this.state.title}
+							type='text'
+							onChange={this.handleInputChange} />
 					</div>
-					<TextField
-						required
-						fullWidth
-						margin='normal'
-						label='Titulo (Nombre)'
-						name='title'
-						value={this.state.title}
-						type='text'
-						onChange={this.handleInputChange} />
 					<TextField
 						required
 						fullWidth
 						margin='normal'
 						label='Descripción'
 						name='description'
-						multiline={true}
-						rows={2}
-						rowsMax={5}
+						multiline
+						rows={3}
 						value={this.state.description}
-						type='textarea'
 						onChange={this.handleInputChange} />
 					<TextField
 						required
@@ -222,7 +227,6 @@ class ProductForm extends Component {
 						label='Costo'
 						name='cost'
 						value={this.state.cost}
-						type='number'
 						onChange={this.handleInputChange} />
 					<TextField
 						required
@@ -231,7 +235,6 @@ class ProductForm extends Component {
 						label='Cantidad de Inventario'
 						name='inventoryCount'
 						value={this.state.inventoryCount}
-						type='number'
 						onChange={this.handleInputChange} />
 				</form>
 				<div className='AddButtonWrapper'>
