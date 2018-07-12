@@ -134,43 +134,44 @@ class CategoryForm extends Component {
 		const { uploadDialogOpen, loading, businessLogo } = this.state
 		console.log(this.props)
 	  return (
-			<div style={{paddingBottom: 'calc(30px + 2em'}}>
+			<div className='CategoryForm' style={{paddingBottom: 'calc(30px + 2em'}}>
 				{uploadDialogOpen && (
 					<UploadDialog
 						user={user}
+						aspect={'16/9'}
 						onClose={this.handleUploadDialogClose} />
 				)}
 				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
 					<div className='UploadWrapper'>
 						<Button
-							style={{width: '88px', height: '88px', margin: '0 16px 0 0'}}
+							className='UploadButton'
 							variant='outlined'
 							component='label'
 							color='primary'
 							onClick={this.handleUploadDialogOpen}
 						>
-							{businessLogo === '' ? 'Logo' : null}
+							{businessLogo === '' ? 'Banner' : null}
 							<FileUpload style={{display: businessLogo === '' ? 'block' : 'none'}} />
+							<img
+								style={{display: businessLogo !== '' ? 'block' : 'none'}}
+								src={businessLogo}
+								alt={businessLogo} />
 							<span
 								style={{display: businessLogo === '' ? 'block' : 'none'}}
 								className='Dimensions'>
 								480 x 270
 							</span>
-							<img
-								style={{display: businessLogo !== '' ? 'block' : 'none'}}
-								src={businessLogo}
-								alt={businessLogo} />
 						</Button>
-						<TextField
-							required
-							style={{width: 'calc(100% - 104px'}}
-							margin='normal'
-							label='Nombre del Negocio'
-							name='businessName'
-							value={this.state.businessName}
-							type='text'
-							onChange={this.handleInputChange} />
 					</div>
+					<TextField
+						required
+						fullWidth
+						margin='normal'
+						label='Nombre del Negocio'
+						name='businessName'
+						value={this.state.businessName}
+						type='text'
+						onChange={this.handleInputChange} />
 					<TextField
 						required
 						fullWidth

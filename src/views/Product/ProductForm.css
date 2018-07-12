@@ -1,11 +1,15 @@
-.UploadWrapper img {
-  min-width: 88px;
-  width: 88px;
-  height: 88px;
+.ProductForm .UploadWrapper {
+  position: relative;
+}
+
+.ProductForm .UploadWrapper img {
+  min-width: 100%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
-.UploadWrapper .Dimensions {
+.ProductForm .UploadWrapper .Dimensions {
   position: absolute;
   width: 100%;
   bottom: 2px;
@@ -13,32 +17,32 @@
   font-size: 11px;
 }
 
-.AddButtonWrapper {
+.ProductForm .AddButtonWrapper {
   position: fixed;
   bottom: 45px;
   left: 0;
   width: 100%
 }
 
-.ShareButtonWrapper {
+.ProductForm .ShareButtonWrapper {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%
 }
 
-.SaveButton {
+.ProductForm .SaveButton {
   width: calc(100% - 1em);
   height: 30px;
   margin: 0.5em !important;
 }
 
-.ButtonProgress {
+.ProductForm .ButtonProgress {
   position: absolute;
   top: calc(50% - 12px);
   left: calc(50% - 12px);
 }
 
-.ButtonProgress svg {
+.ProductForm .ButtonProgress svg {
   color: #00cc00;
 }

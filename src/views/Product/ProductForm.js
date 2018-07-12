@@ -173,10 +173,11 @@ class ProductForm extends Component {
 		const { user, product, category } = this.props
 		const { uploadDialogOpen, loading, adding } = this.state
 	  return (
-			<div style={{paddingBottom: 'calc(75px + 2em'}}>
+			<div className='ProductForm' style={{paddingBottom: 'calc(75px + 2em'}}>
 				{uploadDialogOpen && (
 					<UploadDialog
 						user={user}
+						aspect={'1/1'}
 						onClose={this.handleUploadDialogClose} />
 				)}
 				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>

@@ -65,14 +65,13 @@ class UploadDialog extends Component {
     if (value === undefined) {
       this.props.onClose(value)
 		} else {
-      // const { aspect } = this.props
+      const { aspect } = this.props
       this.setState({
         currentDialog: (
           <CropDialog
             src={value}
-            onClose={(croppedValue) => {
-              this.handleCropDialogClose(croppedValue ? croppedValue : value)
-            }} />
+            aspect={aspect}
+            onClose={this.handleCropDialogClose} />
         )
       })
     }
@@ -80,12 +79,14 @@ class UploadDialog extends Component {
   
   handleImageChanged = (event) => {
 		if (event.target.files && event.target.files[0]) {
+      const { aspect } = this.props
 			let reader = new FileReader()
 			reader.onload = (e) => {
         this.setState({
           currentDialog: (
             <CropDialog
               src={e.target.result}
+              aspect={aspect}
               onClose={this.handleCropDialogClose} />
           )
         })
