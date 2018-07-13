@@ -1,3 +1,28 @@
 .PaymentShipping {
   padding-bottom: calc(75px + 2em);
 }
+
+.PaymentShipping .CheckBoxLabel {
+  position: relative;
+  text-align: center;
+  padding: 70px 0 0;
+  width: 6em;
+  margin: 0.5em auto !important;
+}
+
+.PaymentShipping .CheckBoxLabel > span:nth-of-type(2) {
+  width: 100%;
+}
+
+.PaymentShipping .CheckBoxLabel .CheckBox {
+  position: absolute;
+  top: 0;
+  left: calc(50% - 1.25em);
+  padding: 0.25em;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.PaymentShipping .CheckBoxLabel .CheckBoxIcon {
+  width: 1.5em;
+  height: 1.5em;
+}
