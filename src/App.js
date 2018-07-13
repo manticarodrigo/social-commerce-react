@@ -9,6 +9,7 @@ import Loading from './views/Loading/Loading'
 import Login from './views/Login/Login'
 import Dashboard from './views/Dashboard/Dashboard'
 import CategoryForm from './views/Category/CategoryForm'
+import PaymentShipping from './views/PaymentShipping/PaymentShipping'
 import ProductForm from './views/Product/ProductForm'
 import ProductAnalytics from './views/ProductAnalytics/ProductAnalytics'
 import Catalog from './views/Catalog/Catalog'
@@ -49,28 +50,13 @@ class App extends Component {
       nextProduct: null,
       deleteCategoryDialog: null
     }
-
-    // Bind function scopes
-    this.handleNavBarTitleUpdates = this.handleNavBarTitleUpdates.bind(this)
-    this.handleBack = this.handleBack.bind(this)
-    this.handleForward = this.handleForward.bind(this)
-    this.handleShare = this.handleShare.bind(this)
-    this.handleAuthResponse = this.handleAuthResponse.bind(this)
-    this.handleCategorySubmit = this.handleCategorySubmit.bind(this)
-    this.handleCategoryDelete = this.handleCategoryDelete.bind(this)
-    this.handleProductSubmit = this.handleProductSubmit.bind(this)
-    this.handleProductSelected = this.handleProductSelected.bind(this)
-    this.handleProductAnalytics = this.handleProductAnalytics.bind(this)
-    this.handleProductAdd = this.handleProductAdd.bind(this)
-    this.handleProductDelete = this.handleProductDelete.bind(this)
-    this.handleApprove = this.handleApprove.bind(this)
   }
 
   static getDerivedStateFromProps(props, state) {
     return { pathname: props.location.pathname }
   }
 
-  processAuth(response) {
+  processAuth = (response) => {
     // Use fb sdk response for wp auth
     facebookLogin(response.token.accessToken)
       .then(res => {
@@ -125,7 +111,7 @@ class App extends Component {
       })
   }
 
-  handleAuthResponse(response) {
+  handleAuthResponse = (response) => {
     // Facebook login callback
     console.log(response)
     if (response.profile) {
@@ -139,7 +125,7 @@ class App extends Component {
     }
   }
 
-  updateProductLocations(direction) {
+  updateProductLocations = (direction) => {
     const { products, currentProduct } = this.state
     console.log(this.state)
     if (products && direction === 'back') {
@@ -153,7 +139,7 @@ class App extends Component {
     }
   }
 
-  handleBack() {
+  handleBack = () => {
     const { category, products, currentProduct } = this.state
     if (category && !category.approved) {
       if (!Array.isArray(products) || !products.length) {
@@ -176,7 +162,7 @@ class App extends Component {
     }
   }
 
-  handleForward() {
+  handleForward = () => {
     const { products } = this.state
     if (!Array.isArray(products) || !products.length) {
       // Array does not exist, is not an array, or is empty
@@ -190,12 +176,12 @@ class App extends Component {
     }
   }
 
-  handleShare() {
+  handleShare = () => {
     this.setState({ currentProduct: null, nextProduct: null })
     this.props.history.replace('/catalogo')
   }
 
-  handleApprove() {
+  handleApprove = () => {
     const { auth, category } = this.state
     category.approved = true
     updateCategory(auth, category)
@@ -208,7 +194,7 @@ class App extends Component {
       })
   }
 
-  handleCategorySubmit(category) {
+  handleCategorySubmit = (category) => {
     this.setState({ category: category, navBarTitle: null })
     if (category.approved) {
       this.props.history.replace('/')
@@ -218,7 +204,7 @@ class App extends Component {
     }
   }
 
-  handleCategoryDelete() {
+  handleCategoryDelete = () => {
     const { category } = this.state
     const deleteCategoryDialog = (
 			<DeleteDialog
@@ -229,7 +215,7 @@ class App extends Component {
 		this.setState({ deleteCategoryDialog: deleteCategoryDialog })
   }
 
-  finishCategoryDelete(category) {
+  finishCategoryDelete = (category) => {
     deleteCategory(category.id)
       .then(res => {
         console.log(res)
@@ -247,7 +233,7 @@ class App extends Component {
       })
   }
 
-  handleProductSubmit() {
+  handleProductSubmit = () => {
     const { category } = this.state
     fetchProducts(category.id)
       .then(res => {
@@ -260,22 +246,22 @@ class App extends Component {
       })
   }
 
-  handleProductSelected(product) {
+  handleProductSelected = (product) => {
     this.setState({ currentProduct: product, navBarTitle: null })
     this.props.history.replace('/producto')
   }
 
-  handleProductAnalytics(product) {
+  handleProductAnalytics = (product) => {
     this.setState({ currentProduct: product })
     this.props.history.replace('/producto/analisis')
   }
 
-  handleProductAdd() {
+  handleProductAdd = () => {
     this.setState({ currentProduct: null, nextProduct: null, navBarTitle: null })
     this.props.history.replace('/producto')
   }
 
-  handleProductDelete(product) {
+  handleProductDelete = (product) => {
     const { category } = this.state
     deleteProduct(product.id)
       .then(res => {
@@ -296,7 +282,7 @@ class App extends Component {
   }
 
 
-  backCase() {
+  backCase = () => {
     const { pathname, category } = this.state
     if (category && category.approved) {
       return  pathname !== '/' ? true : false
@@ -306,7 +292,7 @@ class App extends Component {
     return false
   }
 
-  forwardCase() {
+  forwardCase = () => {
     const { pathname, category, products, nextProduct } = this.state
     if (category && !category.approved) {
       if (pathname === '/perfil' && products) {
@@ -318,7 +304,7 @@ class App extends Component {
     return false
   }
 
-  handleNavBarTitleUpdates(text) {
+  handleNavBarTitleUpdates = (text) => {
     this.setState({ navBarTitle: text })
   }
 
@@ -381,6 +367,12 @@ class App extends Component {
                   onBack={this.handleBack}
                   onForward={this.handleForward}
                   onSubmit={this.handleCategorySubmit} />
+            )} />
+            <Route
+              exact path='/ajustes'
+              render={() => (
+                <PaymentShipping
+                   />
             )} />
             <Route
               exact path='/producto'
