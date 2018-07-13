@@ -7,23 +7,20 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 
 class TermsDialog extends React.Component {
-  state = {
-    open: true,
-  }
 
   handleClose = () => {
-    this.setState({ open: false })
     this.props.onClose()
   }
 
   handleConfirm = () => {
-    this.setState({ open: false })
+    this.props.onClose()
   }
 
   render() {
+    const { open } = this.props
     return (
       <Dialog
-        open={this.state.open}
+        open={open}
         onClose={this.handleClose}
         aria-labelledby='terms-dialog-title'
         aria-describedby='terms-dialog-description'

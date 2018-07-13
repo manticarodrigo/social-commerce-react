@@ -9,7 +9,7 @@ class Login extends Component {
     super(props)
     this.state = {
       login: true,
-      termsDialog: null
+      termsDialogOpen: false
     }
   }
   
@@ -18,11 +18,7 @@ class Login extends Component {
   }
 
   handleTerms = () => {
-    const termsDialog = (
-      <TermsDialog
-        onClose={() => this.setState({ termsDialog: null })} />
-    )
-    this.setState({ termsDialog: termsDialog })
+    this.setState({ termsDialogOpen: true })
   }
 
   handleResponse = (response) => {
@@ -30,10 +26,14 @@ class Login extends Component {
   }
   
 	render() {
-    const { termsDialog } = this.state
+    const { termsDialogOpen } = this.state
 	  return (
 			<div className='Login'>
-        {termsDialog}
+        <TermsDialog
+          open={termsDialogOpen}
+          onClose={() => this.setState({
+            termsDialogOpen: false
+          })} />
         <div>
           <h1 style={{color: '#fff'}}>
             <span>HeyShopper</span>
