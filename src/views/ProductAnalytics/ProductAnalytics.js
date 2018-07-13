@@ -52,7 +52,7 @@ class ProductAnalytics extends Component {
 
     handleTabChange = (event, currentTab) => {
         this.setState({ loading: true, currentTab } );
-        this.fetchData(this.state.productId, currentTab);
+        this.fetchData(this.state.id, currentTab);
     }
 
     componentDidMount() {
