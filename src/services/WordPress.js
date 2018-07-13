@@ -131,9 +131,9 @@ export function fetchProducts(categoryId) {
 	return axios.get(url + '/wp-json/wc/v2/products/?category=' + categoryId, options)
 }
 
-export function fetchProductsAnalytics(productId) {
-	productId = 217; // just for testing
-	return axios.get(url + '/wp-json/custom/v1/analytics/' + productId);
+export function fetchProductsAnalytics(productId, period) {
+	// productId = 219; // just for testing
+	return axios.get(url + '/wp-json/ga/v1/product/' + productId + '?period=' + period);
 }
 
 export function uploadMedia(file) {
