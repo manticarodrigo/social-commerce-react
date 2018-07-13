@@ -132,7 +132,6 @@ class CategoryForm extends Component {
 	render() {
 		const { user, category } = this.props
 		const { uploadDialogOpen, loading, businessLogo } = this.state
-		console.log(this.props)
 	  return (
 			<div className='CategoryForm' style={{paddingBottom: 'calc(30px + 2em'}}>
 				{uploadDialogOpen && (
@@ -141,7 +140,10 @@ class CategoryForm extends Component {
 						aspect={'16/9'}
 						onClose={this.handleUploadDialogClose} />
 				)}
-				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
+				<form
+					style={{textAlign:'left'}}
+					onChange={this.handleInputChange}
+					onSubmit={this.handleSubmit}>
 					<div className='UploadWrapper'>
 						<Button
 							className='UploadButton'
@@ -170,8 +172,7 @@ class CategoryForm extends Component {
 						label='Nombre del Negocio'
 						name='businessName'
 						value={this.state.businessName}
-						type='text'
-						onChange={this.handleInputChange} />
+						type='text' />
 					<TextField
 						required
 						fullWidth
@@ -179,8 +180,7 @@ class CategoryForm extends Component {
 						label='Nombre completo'
 						name='name'
 						value={this.state.name}
-						type='text'
-						onChange={this.handleInputChange} />
+						type='text' />
 					<TextField
 						required
 						fullWidth
@@ -188,31 +188,27 @@ class CategoryForm extends Component {
 						label='Correo electronico'
 						name='email'
 						value={this.state.email}
-						type='email'
-						onChange={this.handleInputChange} />
+						type='email' />
 					<TextField
 						required
 						fullWidth
 						margin='normal'
 						label='Numero de Telefono Celular'
 						name='phone'
-						value={this.state.phone}
-						onChange={this.handleInputChange} />
+						value={this.state.phone} />
 					<TextField
 						required
 						fullWidth
 						margin='normal'
 						label='Numero de DNI'
 						name='dni'
-						value={this.state.dni}
-						onChange={this.handleInputChange} />
+						value={this.state.dni} />
 					<TextField
 						fullWidth
 						margin='normal'
 						label='Numero RUC'
 						name='ruc'
-						value={this.state.ruc}
-						onChange={this.handleInputChange} />
+						value={this.state.ruc} />
 				</form>
 				<div className='SaveButtonWrapper'>
 					<Button
