@@ -38,7 +38,7 @@ class ProductForm extends Component {
 			return {
 				id: product.id,
 				name: product.name,
-				description: product.description.replace('<p>', '').replace('</p>', ''),
+				description: product.description.replace(/<[^>]+>/g, ''),
 				cost: product.price,
 				inventoryCount: product.stock_quantity,
 				imageUrl: product.images[0].src,
@@ -176,7 +176,10 @@ class ProductForm extends Component {
 						aspect={'1/1'}
 						onClose={this.handleUploadDialogClose} />
 				)}
-				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
+				<form
+					style={{textAlign:'left'}}
+					onChange={this.handleInputChange}
+					onSubmit={this.handleSubmit}>
 					<div className='UploadWrapper'>
 						<Button
 							className='UploadButton'
@@ -204,8 +207,7 @@ class ProductForm extends Component {
 							label='Nombre'
 							name='name'
 							value={this.state.name}
-							type='text'
-							onChange={this.handleInputChange} />
+							type='text' />
 					</div>
 					<TextField
 						required
@@ -215,24 +217,21 @@ class ProductForm extends Component {
 						name='description'
 						multiline
 						rows={3}
-						value={this.state.description}
-						onChange={this.handleInputChange} />
+						value={this.state.description} />
 					<TextField
 						required
 						fullWidth
 						margin='normal'
 						label='Costo'
 						name='cost'
-						value={this.state.cost}
-						onChange={this.handleInputChange} />
+						value={this.state.cost} />
 					<TextField
 						required
 						fullWidth
 						margin='normal'
 						label='Cantidad de Inventario'
 						name='inventoryCount'
-						value={this.state.inventoryCount}
-						onChange={this.handleInputChange} />
+						value={this.state.inventoryCount} />
 				</form>
 				<div className='AddButtonWrapper'>
 					<Button
