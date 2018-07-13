@@ -129,8 +129,8 @@ class PaymentOptions extends Component {
 							<Checkbox
 								className={'CheckBox' + (checkedMercadoPago ? ' Checked' : '')}
 								color='primary'
-								icon={<img className='CheckBoxIcon' src={MercadoPago} />}
-								checkedIcon={<img className='CheckBoxIcon' src={MercadoPago} />}
+								icon={<img alt='MercadoPago' className='CheckBoxIcon' src={MercadoPago} />}
+								checkedIcon={<img alt='MercadoPago' className='CheckBoxIcon' src={MercadoPago} />}
 								checked={checkedMercadoPago}
 								onChange={this.handleChange('checkedMercadoPago')}
 								value='checkedMercadoPago'
@@ -144,8 +144,8 @@ class PaymentOptions extends Component {
 							<Checkbox
 								className={'CheckBox' + (checkedPayU ? ' Checked' : '')}
 								color='primary'
-								icon={<img className='CheckBoxIcon' src={PayU} />}
-								checkedIcon={<img className='CheckBoxIcon' src={PayU} />}
+								icon={<img alt='PayU' className='CheckBoxIcon' src={PayU} />}
+								checkedIcon={<img alt='PayU' className='CheckBoxIcon' src={PayU} />}
 								checked={checkedPayU}
 								onChange={this.handleChange('checkedPayU')}
 								value='checkedPayU'
@@ -159,8 +159,8 @@ class PaymentOptions extends Component {
 							<Checkbox
 								className={'CheckBox' + (checkedCulqi ? ' Checked' : '')}
 								color='primary'
-								icon={<img className='CheckBoxIcon' src={Culqi} />}
-								checkedIcon={<img className='CheckBoxIcon' src={Culqi} />}
+								icon={<img alt='Culqi' className='CheckBoxIcon' src={Culqi} />}
+								checkedIcon={<img alt='Culqi' className='CheckBoxIcon' src={Culqi} />}
 								checked={checkedCulqi}
 								onChange={this.handleChange('checkedCulqi')}
 								value='checkedCulqi'
@@ -174,8 +174,8 @@ class PaymentOptions extends Component {
 							<Checkbox
 								className={'CheckBox' + (checkedPagoFlash ? ' Checked' : '')}
 								color='primary'
-								icon={<img className='CheckBoxIcon' src={PagoFlash} />}
-								checkedIcon={<img className='CheckBoxIcon' src={PagoFlash} />}
+								icon={<img alt='PagoFlash' className='CheckBoxIcon' src={PagoFlash} />}
+								checkedIcon={<img alt='PagoFlash' className='CheckBoxIcon' src={PagoFlash} />}
 								checked={checkedPagoFlash}
 								onChange={this.handleChange('checkedPagoFlash')}
 								value='checkedPagoFlash'

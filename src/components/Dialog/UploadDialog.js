@@ -16,7 +16,6 @@ class UploadDialog extends Component {
     this.state = {
       optionsDialogOpen: true,
       pagesDialogOpen: false,
-      pagesDialogOpen: false,
       albumsDialogData: null,
       cropDialogData: null
     }
