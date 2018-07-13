@@ -51,7 +51,7 @@ class ProductAnalytics extends Component {
     }
 
     componentDidMount() {
-        this.props.navBarTitle(this.state.title);
+        this.props.onTitleChange(this.state.title);
         this.fetchData(this.state.productId);
     }
 

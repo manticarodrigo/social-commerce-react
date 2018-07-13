@@ -2,16 +2,18 @@ import React, { Component } from 'react';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import SvgIcon from '@material-ui/core/SvgIcon';
 import {
 	Cash,
 	Bank,
 	Paypal,
 	Bitcoin,
 	CreditCard
-} from 'mdi-material-ui'
-import './PaymentShipping.css';
+} from 'mdi-material-ui';
+import PayU from '../../assets/png/PayU.png';
+import './PaymentOptions.css';
 
-class PaymentShipping extends Component {
+class PaymentOptions extends Component {
   state = {
     checkedCash: true,
     checkedTransfer: false,
@@ -69,6 +71,21 @@ class PaymentShipping extends Component {
 							<Checkbox
 								className='CheckBox'
 								color='primary'
+								icon={<CreditCard className='CheckBoxIcon' />}
+								checkedIcon={<CreditCard className='CheckBoxIcon' />}
+								checked={this.state.checkedCard}
+								onChange={this.handleChange('checkedCard')}
+								value='checkedCard'
+							/>
+						}
+						label="Debito/Credito"
+					/>
+					<FormControlLabel
+						className='CheckBoxLabel'
+						control={
+							<Checkbox
+								className='CheckBox'
+								color='primary'
 								icon={<Paypal className='CheckBoxIcon' />}
 								checkedIcon={<Paypal className='CheckBoxIcon' />}
 								checked={this.state.checkedPayPal}
@@ -99,14 +116,14 @@ class PaymentShipping extends Component {
 							<Checkbox
 								className='CheckBox'
 								color='primary'
-								icon={<CreditCard className='CheckBoxIcon' />}
-								checkedIcon={<CreditCard className='CheckBoxIcon' />}
-								checked={this.state.checkedCard}
-								onChange={this.handleChange('checkedCard')}
-								value='checkedCard'
+								icon={<img className='CheckBoxIcon' src={PayU} />}
+								checkedIcon={<img className='CheckBoxIcon' src={PayU} />}
+								checked={this.state.checkedPayU}
+								onChange={this.handleChange('checkedPayU')}
+								value='checkedPayU'
 							/>
 						}
-						label="Debito/Credito"
+						label="PayU"
 					/>
 				</FormGroup>
 			</div>
@@ -114,4 +131,4 @@ class PaymentShipping extends Component {
   }
 }
 
-export default PaymentShipping;
+export default PaymentOptions;

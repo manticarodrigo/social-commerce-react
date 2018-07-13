@@ -9,7 +9,7 @@ import Loading from './views/Loading/Loading'
 import Login from './views/Login/Login'
 import Dashboard from './views/Dashboard/Dashboard'
 import CategoryForm from './views/Category/CategoryForm'
-import PaymentShipping from './views/PaymentShipping/PaymentShipping'
+import PaymentOptions from './views/Payment/PaymentOptions'
 import ProductForm from './views/Product/ProductForm'
 import ProductAnalytics from './views/ProductAnalytics/ProductAnalytics'
 import Catalog from './views/Catalog/Catalog'
@@ -304,7 +304,7 @@ class App extends Component {
     return false
   }
 
-  handleNavBarTitleUpdates = (text) => {
+  handleTitleChange = (text) => {
     this.setState({ navBarTitle: text })
   }
 
@@ -348,6 +348,7 @@ class App extends Component {
               exact path='/'
               render={() => (
                 <Dashboard
+                  onTitleChange={this.handleTitleChange}
                   category={category}
                   products={products}
                   onSelect={this.handleProductSelected}
@@ -359,7 +360,7 @@ class App extends Component {
               exact path='/perfil'
               render={() => (
                 <CategoryForm
-                  navBarTitle={this.handleNavBarTitleUpdates}
+                  onTitleChange={this.handleTitleChange}
                   category={category}
                   products={products}
                   user={user}
@@ -369,15 +370,16 @@ class App extends Component {
                   onSubmit={this.handleCategorySubmit} />
             )} />
             <Route
-              exact path='/ajustes'
+              exact path='/pagos'
               render={() => (
-                <PaymentShipping
-                   />
+                <PaymentOptions
+                  onTitleChange={this.handleTitleChange} />
             )} />
             <Route
               exact path='/producto'
               render={() => (
                 <ProductForm
+                  onTitleChange={this.handleTitleChange}
                   category={category}
                   product={currentProduct}
                   nextProduct={nextProduct}
@@ -393,7 +395,7 @@ class App extends Component {
               exact path='/producto/analisis'
               render={() => (
                 <ProductAnalytics
-                  navBarTitle={this.handleNavBarTitleUpdates}
+                  onTitleChange={this.handleTitleChange}
                   user={user}
                   product={currentProduct}
                   onBack={this.handleBack}
@@ -403,6 +405,7 @@ class App extends Component {
               exact path='/catalogo'
               render={() => (
                 <Catalog
+                  onTitleChange={this.handleTitleChange}
                   category={category}
                   onApprove={this.handleApprove}
                   onBack={this.handleBack} />
