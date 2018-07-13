@@ -1,4 +1,4 @@
-.ProductInfo > p {
+.ProductCard .ProductInfo > p {
   height: 3em;
   overflow: hidden;
 }
@@ -8,4 +8,29 @@
   margin: 0.5em 0;
   border-radius: 2px;
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2);
+}
+
+.ProductCard .ProductAvatar {
+  border-radius: 0px;
+  width: 60px;
+  height: 60px;
+}
+
+.ProductCard .ProductImage {
+  min-width: 60px;
+  width: 60px;
+  height: 60px;
+  object-fit: cover
+}
+
+.ShareFab {
+  position: fixed !important;
+  bottom: 1em;
+  right: 4em
+}
+
+.AddFab {
+  position: fixed !important;
+  bottom: 1em;
+  right: 1em
 }

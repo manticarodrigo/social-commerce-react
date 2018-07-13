@@ -1,130 +1,58 @@
-import React, { Component } from 'react'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemAvatar from '@material-ui/core/ListItemAvatar'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import ListItemText from '@material-ui/core/ListItemText'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import MoreVertIcon from '@material-ui/icons/MoreVert'
-import Avatar from '@material-ui/core/Avatar'
+import React, { Component } from 'react';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import Avatar from '@material-ui/core/Avatar';
+import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
+import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
+import ShareIcon from '@material-ui/icons/Share';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import './Dashboard.css';
 
-import CardGiftcard from '@material-ui/icons/CardGiftcard'
-import DeleteIcon from '@material-ui/icons/Delete'
-import IconButton from '@material-ui/core/IconButton'
-import Button from '@material-ui/core/Button'
-import AddIcon from '@material-ui/icons/Add'
-import ShareIcon from '@material-ui/icons/Share'
-import ShowChartIcon from '@material-ui/icons/ShowChart'
-
-import './Dashboard.css'
-
-import DeleteDialog from '../../components/Dialog/DeleteDialog'
-import ShareDialog from '../../components/Dialog/ShareDialog'
-
-const style = {
-	avatar: {
-		borderRadius: '0px',
-		width: '60px',
-		height: '60px',
-	},
-	img: {
-		minWidth: '60px',
-		width: '60px',
-		height: '60px',
-		objectFit: 'cover'
-	},
-	shareFab: {
-		position: 'fixed',
-		bottom: '1em',
-		right: '4em'
-	},
-	addFab: {
-		position: 'fixed',
-		bottom: '1em',
-		right: '1em'
-	}
-}
+import MoreMenu from '../../components/Menu/MoreMenu';
+import DeleteDialog from '../../components/Dialog/DeleteDialog';
+import ShareDialog from '../../components/Dialog/ShareDialog';
 
 class Dashboard extends Component {
 	constructor(props) {
-		super(props)
+		super(props);
 		this.state = {
 			dense: false,
 			deleteDialog: null,
 			shareDialog: null,
-			moreDialog: null,
-			anchorEl: null
-		}
-		this.handleShare = this.handleShare.bind(this)
-		this.handleProductShare = this.handleProductShare.bind(this)
-		this.handleProductDelete = this.handleProductDelete.bind(this)
-		this.handleProductSelected = this.handleProductSelected.bind(this)
-		this.handleProductAnalytics = this.handleProductAnalytics.bind(this)
+			moreProduct: null
+		};
 	}
 
 	handleMore = (event, product) => {
-		const anchorEl = event.currentTarget
+		const anchorEl = event.currentTarget;
 		this.setState({
-			anchorEl: anchorEl,
-			moreDialog: (
-				<Menu
-					id="long-menu"
-					anchorEl={anchorEl}
-					open={true}
-					onClose={this.handleMoreClose}
-					PaperProps={{
-						style: {
-							width: 200,
-						},
-					}}
-				>
-					<MenuItem
-						onClick={() => this.handleProductShare(product)}>
-						<ListItemIcon>
-							<ShareIcon />
-						</ListItemIcon>
-						<ListItemText>
-							Compartír
-						</ListItemText>
-					</MenuItem>
-					<MenuItem
-                        onClick={() => this.handleProductAnalytics(product)}>
-                        <ListItemIcon>
-                            <ShowChartIcon />
-                        </ListItemIcon>
-                        <ListItemText>
-                            Análisis
-                        </ListItemText>
-                    </MenuItem>
-					<MenuItem
-						onClick={() => this.handleProductDelete(product)}>
-						<ListItemIcon>
-							<DeleteIcon />
-						</ListItemIcon>
-						<ListItemText>
-							Eliminar
-						</ListItemText>
-					</MenuItem>
-				</Menu>
-			)
-		})
+			moreProduct: {
+				anchorEl: anchorEl,
+				product: product
+			}
+		});
 	}
-	
+
 	handleMoreClose = () => {
-    this.setState({ anchorEl: null, moreDialog: null })
+    this.setState({
+			moreProduct: null
+		});
   }
 
 	handleShare = () => {
-		const { category } = this.props
+		const { category } = this.props;
 		const shareDialog = (
 			<ShareDialog
 				category={category}
 				onClose={() => this.setState({ shareDialog: null })}
 				onConfirm={() => this.setState({ shareDialog: null })} />
-		)
-		this.setState({ shareDialog: shareDialog})
+		);
+		this.setState({ shareDialog: shareDialog});
 	}
 
 	handleProductShare = (product) => {
@@ -133,37 +61,36 @@ class Dashboard extends Component {
 				product={product}
 				onClose={() => this.setState({ shareDialog: null })}
 				onConfirm={() => this.setState({ shareDialog: null })} />
-		)
-		this.setState({ shareDialog: shareDialog})
+		);
+		this.setState({ shareDialog: shareDialog});
 	}
 
 	handleProductDelete = (product) => {
-		console.log(product)
 		const deleteDialog = (
 			<DeleteDialog
 				product={product}
 				onClose={() => this.setState({ deleteDialog: null })}
 				onConfirm={() => this.finishProductDelete(product)} />
-		)
-		this.setState({ deleteDialog: deleteDialog})
+		);
+		this.setState({ deleteDialog: deleteDialog});
 	}
 
 	finishProductDelete = (product) => {
-		this.setState({ deleteDialog: null })
-		this.props.onDelete(product)
+		this.setState({ deleteDialog: null });
+		this.props.onDelete(product);
 	}
 
 	handleProductSelected = (product) => {
-		this.props.onSelect(product)
+		this.props.onSelect(product);
 	}
 
-	handleProductAnalytics(product) {
-		this.props.onAnalytics(product)
+	handleProductAnalytics = (product) => {
+		this.props.onAnalytics(product);
 	}
   
 	render() {
-		const { products } = this.props
-		const { dense, deleteDialog, shareDialog, moreDialog, anchorEl } = this.state
+		const { products } = this.props;
+		const { dense, deleteDialog, shareDialog, moreProduct } = this.state;
 	  return (
 			<div>
 				{deleteDialog}
@@ -175,11 +102,11 @@ class Dashboard extends Component {
 							className='ProductCard'
 							onClick={() => this.handleProductSelected(product)}>
 							<ListItemAvatar>
-								<Avatar style={style.avatar}>
+								<Avatar className='ProductAvatar'>
 									{product.images ? (
-										<img style={style.img} src={product.images[0].src} alt={product.id} />
+										<img className='ProductImage' src={product.images[0].src} alt={product.id} />
 									) : (
-										<CardGiftcard style={style.img} />
+										<CardGiftcardIcon className='ProductImage' />
 									)}
 								</Avatar>
 							</ListItemAvatar>
@@ -192,14 +119,22 @@ class Dashboard extends Component {
 							/>
 							<ListItemSecondaryAction>
 								<IconButton
-									aria-label="More"
-									aria-owns={anchorEl ? 'long-menu' : null}
-									aria-haspopup="true"
+									aria-label='More'
+									aria-owns={moreProduct ? 'long-menu' : null}
+									aria-haspopup='true'
 									onClick={(event) => this.handleMore(event, product)}
 								>
 									<MoreVertIcon />
 								</IconButton>
-								{moreDialog}
+								<MoreMenu
+									open={Boolean(moreProduct)}
+									anchorEl={moreProduct ? moreProduct.anchorEl : null}
+									product={moreProduct ? moreProduct.product : null}
+									onShare={this.handleProductShare}
+									onAnalytics={this.handleProductAnalytics}
+									onDelete={this.handleProductDelete}
+									onClose={this.handleMoreClose}
+								/>
 							</ListItemSecondaryAction>
 						</ListItem>
 					))}
@@ -208,7 +143,7 @@ class Dashboard extends Component {
 					variant='fab'
 					color='secondary'
 					aria-label='add'
-					style={style.shareFab}
+					className='ShareFab'
 					onClick={this.handleShare}>
 					<ShareIcon />
 				</Button>
@@ -216,7 +151,7 @@ class Dashboard extends Component {
 					variant='fab'
 					color='primary'
 					aria-label='add'
-					style={style.addFab}
+					className='AddFab'
 					onClick={this.props.onAdd}>
 					<AddIcon />
 				</Button>
@@ -225,4 +160,4 @@ class Dashboard extends Component {
 	}
 }
 
-export default Dashboard
+export default Dashboard;
