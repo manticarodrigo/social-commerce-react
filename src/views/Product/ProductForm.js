@@ -38,7 +38,7 @@ class ProductForm extends Component {
 			return {
 				id: product.id,
 				name: product.name,
-				description: product.description.replace('<p>', '').replace('</p>', ''),
+				description: product.description.replace(/<[^>]+>/g, ''),
 				cost: product.price,
 				inventoryCount: product.stock_quantity,
 				imageUrl: product.images[0].src,
