@@ -131,6 +131,11 @@ export function fetchProducts(categoryId) {
 	return axios.get(url + '/wp-json/wc/v2/products/?category=' + categoryId, options)
 }
 
+export function fetchProductsAnalytics(productId) {
+	productId = 217; // just for testing
+	return axios.get(url + '/wp-json/custom/v1/analytics/' + productId);
+}
+
 export function uploadMedia(file) {
 	const stamp = Date.now()
 	var formData = new FormData()
