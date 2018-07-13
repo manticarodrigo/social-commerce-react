@@ -98,7 +98,8 @@ class UploadDialog extends Component {
   }
 
   render() {
-    const { token, aspect } = this.props.user
+    const { user, aspect } = this.props
+    console.log(aspect)
     const { optionsDialogOpen, pagesDialogOpen, albumsDialogData, cropDialogData } = this.state
     return (
       <div>
@@ -108,7 +109,7 @@ class UploadDialog extends Component {
           onClose={this.handleOptionsDialogClose} />
         <PagesDialog
           open={pagesDialogOpen}
-          token={token}
+          token={user.token}
           onClose={this.handlePagesDialogClose} />
         {albumsDialogData && (
           <AlbumsDialog
