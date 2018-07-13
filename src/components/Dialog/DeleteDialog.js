@@ -7,25 +7,20 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 
 class DeleteDialog extends React.Component {
-  state = {
-    open: true,
-  }
 
   handleClose = () => {
-    this.setState({ open: false })
     this.props.onClose()
   }
 
   handleConfirm = () => {
-    this.setState({ open: false })
     this.props.onConfirm(true)
   }
 
   render() {
-    const { product, category } = this.props
+    const { open, product, category } = this.props
     return (
       <Dialog
-        open={this.state.open}
+        open={open}
         onClose={this.handleClose}
         aria-labelledby='delete-dialog-title'
         aria-describedby='delete-dialog-description'

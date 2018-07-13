@@ -21,9 +21,8 @@ class Dashboard extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			dense: false,
-			deleteDialog: null,
-			shareDialog: null,
+			deleteDialogOpen: false,
+			shareDialogOpen: false,
 			moreProduct: null
 		};
 	}
@@ -39,44 +38,23 @@ class Dashboard extends Component {
 	}
 
 	handleMoreClose = () => {
-    this.setState({
-			moreProduct: null
-		});
-  }
-
+    this.setState({ moreProduct: null });
+	}
+	
 	handleShare = () => {
-		const { category } = this.props;
-		const shareDialog = (
-			<ShareDialog
-				category={category}
-				onClose={() => this.setState({ shareDialog: null })}
-				onConfirm={() => this.setState({ shareDialog: null })} />
-		);
-		this.setState({ shareDialog: shareDialog});
+		this.setState({ shareDialogOpen: true });
 	}
 
 	handleProductShare = (product) => {
-		const shareDialog = (
-			<ShareDialog
-				product={product}
-				onClose={() => this.setState({ shareDialog: null })}
-				onConfirm={() => this.setState({ shareDialog: null })} />
-		);
-		this.setState({ shareDialog: shareDialog});
+		this.setState({ shareDialogOpen: true });
 	}
 
 	handleProductDelete = (product) => {
-		const deleteDialog = (
-			<DeleteDialog
-				product={product}
-				onClose={() => this.setState({ deleteDialog: null })}
-				onConfirm={() => this.finishProductDelete(product)} />
-		);
-		this.setState({ deleteDialog: deleteDialog});
+		this.setState({ deleteDialogOpen: true});
 	}
 
 	finishProductDelete = (product) => {
-		this.setState({ deleteDialog: null });
+		this.setState({ deleteDialogOpen: false });
 		this.props.onDelete(product);
 	}
 
@@ -89,13 +67,11 @@ class Dashboard extends Component {
 	}
   
 	render() {
-		const { products } = this.props;
-		const { dense, deleteDialog, shareDialog, moreProduct } = this.state;
+		const { category, products } = this.props;
+		const { deleteDialogOpen, shareDialogOpen, moreProduct } = this.state;
 	  return (
 			<div>
-				{deleteDialog}
-				{shareDialog}
-				<List dense={dense}>
+				<List dense={false}>
 					{products && products.map(product => (
 						<ListItem
 							key={product.id}
@@ -155,6 +131,17 @@ class Dashboard extends Component {
 					onClick={this.props.onAdd}>
 					<AddIcon />
 				</Button>
+				<ShareDialog
+					open={shareDialogOpen}
+					category={moreProduct ? null : category}
+					product={moreProduct ? moreProduct.product : null}
+					onClose={() => this.setState({ shareDialogOpen: false })}
+					onConfirm={() => this.setState({ shareDialogOpen: false })} />
+				<DeleteDialog
+					open={deleteDialogOpen}
+					product={moreProduct ? moreProduct.product : null}
+					onClose={() => this.setState({ deleteDialogOpen: false })}
+					onConfirm={() => this.finishProductDelete(moreProduct ? moreProduct.product : null)} />
 			</div>
 	  )
 	}
