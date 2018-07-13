@@ -54,10 +54,11 @@ class PagesDialog extends Component {
 	}
 
   render() {
+    const { open } = this.props
     const { currentPages, searchInput } = this.state
     return (
       <Dialog
-        open={true}
+        open={open}
         onClose={this.handleClose}
         aria-labelledby='page-dialog-title'>
       <DialogTitle id="page-dialog-title">

@@ -14,11 +14,11 @@ class UploadDialog extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      currentDialog: (
-        <OptionsDialog
-          options={[constants.FACEBOOK_UPLOAD, constants.DEVICE_UPLOAD]}
-          onClose={this.handleOptionsDialogClose} />
-      )
+      optionsDialogOpen: true,
+      pagesDialogOpen: false,
+      pagesDialogOpen: false,
+      albumsDialogData: null,
+      cropDialogData: null
     }
   }
   
@@ -29,15 +29,11 @@ class UploadDialog extends Component {
       this.props.onClose(value)
     } else if (value === constants.DEVICE_UPLOAD) {
       this.inputElement.click()
-      this.setState({ currentDialog: null })
+      this.setState({ optionsDialogOpen: false })
 		} else if (value === constants.FACEBOOK_UPLOAD) {
-      const { token } = this.props.user
       this.setState({
-        currentDialog: (
-          <PagesDialog
-            token={token}
-            onClose={this.handlePagesDialogClose} />
-        )
+        optionsDialogOpen: false,
+        pagesDialogOpen: true
       })
     }
   }
@@ -51,12 +47,11 @@ class UploadDialog extends Component {
       const id = page ? value.id : user.profile.id
       const token = page ? value.access_token : user.token.accessToken    
       this.setState({
-        currentDialog: (
-          <AlbumsDialog
-            id={id}
-            token={token}
-            onClose={this.handleAlbumsDialogClose} />
-        )
+        pagesDialogOpen: false,
+        albumsDialogData: {
+          id: id,
+          token: token
+        }
       })
     }
   }
@@ -65,30 +60,19 @@ class UploadDialog extends Component {
     if (value === undefined) {
       this.props.onClose(value)
 		} else {
-      const { aspect } = this.props
       this.setState({
-        currentDialog: (
-          <CropDialog
-            src={value}
-            aspect={aspect}
-            onClose={this.handleCropDialogClose} />
-        )
+        albumsDialogData: null,
+        cropDialogData: value
       })
     }
   }
   
   handleImageChanged = (event) => {
 		if (event.target.files && event.target.files[0]) {
-      const { aspect } = this.props
 			let reader = new FileReader()
 			reader.onload = (e) => {
         this.setState({
-          currentDialog: (
-            <CropDialog
-              src={e.target.result}
-              aspect={aspect}
-              onClose={this.handleCropDialogClose} />
-          )
+          cropDialogData: e.target.result
         })
 			}
 			reader.readAsDataURL(event.target.files[0])
@@ -98,7 +82,7 @@ class UploadDialog extends Component {
   }
 
   handleCropDialogClose = (value) => {
-    this.setState({ currentDialog: null })
+    this.setState({ cropDialogData: null })
     if (typeof(value) === 'object') {
       let reader = new FileReader()
 			reader.onload = (e) => {
@@ -114,16 +98,36 @@ class UploadDialog extends Component {
   }
 
   render() {
-    const { currentDialog } = this.state
+    const { token, aspect } = this.props.user
+    const { optionsDialogOpen, pagesDialogOpen, albumsDialogData, cropDialogData } = this.state
     return (
       <div>
-        {currentDialog}
+        <OptionsDialog
+          open={optionsDialogOpen}
+          options={[constants.FACEBOOK_UPLOAD, constants.DEVICE_UPLOAD]}
+          onClose={this.handleOptionsDialogClose} />
+        <PagesDialog
+          open={pagesDialogOpen}
+          token={token}
+          onClose={this.handlePagesDialogClose} />
+        {albumsDialogData && (
+          <AlbumsDialog
+            open={Boolean(albumsDialogData)}
+            id={albumsDialogData ? albumsDialogData.id : null}
+            token={albumsDialogData ? albumsDialogData.token : null}
+            onClose={this.handleAlbumsDialogClose} />
+        )}
+        <CropDialog
+          open={Boolean(cropDialogData)}
+          src={cropDialogData}
+          aspect={aspect}
+          onClose={this.handleCropDialogClose} />
         <input
           ref={input => this.inputElement = input}
           onChange={this.handleImageChanged}
           style={{display: 'none'}}
-          name="imageFile"
-          type="file"
+          name='imageFile'
+          type='file'
         />
       </div>
     )

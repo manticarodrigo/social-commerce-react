@@ -124,23 +124,25 @@ class CropDialog extends React.Component {
   }
 
   render() {
-    const { src } = this.props;
+    const { open, src } = this.props;
     const { crop, loading } = this.state;
     return (
       <Dialog
-        open={true}
+        open={open}
         onClose={this.handleClose}
         aria-labelledby='crop-dialog-title'
         aria-describedby='crop-dialog-description'
       >
         <DialogTitle id='crop-dialog-title'>Recortar Imagen</DialogTitle>
         <DialogContent>
-          <ReactCrop
-            src={src}
-            crop={crop}
-            onImageLoaded={this.handleImageLoaded}
-            onComplete={this.handleCropComplete}
-            onChange={this.handleCropChange}/>
+          {src && (
+            <ReactCrop
+              src={src}
+              crop={crop}
+              onImageLoaded={this.handleImageLoaded}
+              onComplete={this.handleCropComplete}
+              onChange={this.handleCropChange}/>
+          )}
           {loading && (
             <div className='Loading'>
               <CircularProgress size={50} />

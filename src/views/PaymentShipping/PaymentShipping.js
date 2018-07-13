@@ -72,8 +72,8 @@ class PaymentShipping extends Component {
 								icon={<Paypal className='CheckBoxIcon' />}
 								checkedIcon={<Paypal className='CheckBoxIcon' />}
 								checked={this.state.checkedPayPal}
-								onChange={this.handleChange('checkedPaypal')}
-								value='checkedPaypal'
+								onChange={this.handleChange('checkedPayPal')}
+								value='checkedPayPal'
 							/>
 						}
 						label="PayPal"

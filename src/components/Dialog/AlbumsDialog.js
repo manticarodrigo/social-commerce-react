@@ -55,10 +55,11 @@ class AlbumsDialog extends Component {
 	}
 
   render() {
+    const { open } = this.props
     const { currentAlbums, searchInput } = this.state
     return (
       <Dialog
-        open={true}
+        open={open}
         onClose={this.handleClose}
         aria-labelledby='album-dialog-title'>
       <DialogTitle id="album-dialog-title">

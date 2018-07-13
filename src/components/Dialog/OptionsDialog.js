@@ -7,12 +7,6 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 
 class OptionsDialog extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      options: props.options
-    }
-  }
 
   handleClose = () => {
     this.props.onClose()
@@ -24,10 +18,10 @@ class OptionsDialog extends Component {
   }
 
   render() {
-    const { options } = this.state
+    const { open, options } = this.props
     return (
       <Dialog
-        open={true}
+        open={open}
         onClose={this.handleClose}
         aria-labelledby="options-dialog-title">
         <DialogTitle id="options-dialog-title">Suba Imagen</DialogTitle>
