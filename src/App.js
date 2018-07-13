@@ -48,7 +48,7 @@ class App extends Component {
       products: null,
       currentProduct: null,
       nextProduct: null,
-      deleteCategoryDialog: null
+      deleteCategoryOpen: false
     }
   }
 
@@ -205,14 +205,7 @@ class App extends Component {
   }
 
   handleCategoryDelete = () => {
-    const { category } = this.state
-    const deleteCategoryDialog = (
-			<DeleteDialog
-				category={category}
-				onClose={() => this.setState({ deleteCategoryDialog: null })}
-        onConfirm={() => this.finishCategoryDelete(category)} />
-		)
-		this.setState({ deleteCategoryDialog: deleteCategoryDialog })
+		this.setState({ deleteCategoryOpen: true })
   }
 
   finishCategoryDelete = (category) => {
@@ -224,7 +217,8 @@ class App extends Component {
           products: null,
           currentProduct: null,
           nextProduct: null,
-          navBarTitle: null
+          navBarTitle: null,
+          deleteCategoryOpen: false
         })
         this.props.history.replace('/perfil')
       })
@@ -319,11 +313,17 @@ class App extends Component {
       products,
       currentProduct,
       nextProduct,
-      deleteCategoryDialog
+      deleteCategoryOpen
     } = this.state
     return (
       <div className='App'>
-        {deleteCategoryDialog}
+        {category && (
+          <DeleteDialog
+            open={deleteCategoryOpen}
+            category={category}
+            onClose={() => this.setState({ deleteCategoryOpen: false })}
+            onConfirm={() => this.finishCategoryDelete(category)} />
+        )}
         {pathname !== '/ingresar' && (
           <NavBar
             title={navBarTitle}
