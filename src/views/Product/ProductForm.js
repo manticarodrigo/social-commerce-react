@@ -18,8 +18,8 @@ class ProductForm extends Component {
 
 		this.state = {
 			id: product ? product.id : '',
-			title: product ? product.name : '',
-			description: product ? product.description.replace('<p>', '').replace('</p>', '') : '',
+			name: product ? product.name : '',
+			description: product ? product.description.replace(/<[^>]+>/g, '') : '',
 			cost: product ? product.price : '',
 			inventoryCount: product ? product.stock_quantity : '',
 			imageUrl: product ? product.images[0].src : '',
@@ -29,20 +29,15 @@ class ProductForm extends Component {
 			loading: false,
 			adding: false
 		}
-
-		this.handleSubmit = this.handleSubmit.bind(this)
-		this.handleInputChange = this.handleInputChange.bind(this)
-		this.handleUploadDialogOpen = this.handleUploadDialogOpen.bind(this)
-		this.handleUploadDialogClose = this.handleUploadDialogClose.bind(this)
 	}
 
-	static getDerivedStateFromProps(props, state) {
+	static getDerivedStateFromProps = (props, state) => {
 		const { product } = props
 		const { id } = state
 		if (product && product.id !== id) {
 			return {
 				id: product.id,
-				title: product.name,
+				name: product.name,
 				description: product.description.replace('<p>', '').replace('</p>', ''),
 				cost: product.price,
 				inventoryCount: product.stock_quantity,
@@ -57,13 +52,13 @@ class ProductForm extends Component {
 		return null
   }
 
-	handleUploadDialogOpen() {
+	handleUploadDialogOpen = () => {
     this.setState({
 			uploadDialogOpen: true
 		})
   }
 
-	handleUploadDialogClose(value) {
+	handleUploadDialogClose = (value) => {
 		const { imageId } = this.state
 		if (typeof(value) === 'object') {
 			this.setState({
@@ -81,12 +76,12 @@ class ProductForm extends Component {
 		}
 	}
 	
-  handleSubmit(type) {
+  handleSubmit = (type) => {
 		this.setState({ loading: true, adding: type === 'add' ? true : false })
 		const data = this.state
-		const { title, description, cost, inventoryCount, imageUrl, imageFile } = this.state
+		const { name, description, cost, inventoryCount, imageUrl, imageFile } = this.state
 		if (
-			title !== '' &&
+			name !== '' &&
 			description !== '' &&
 			cost !== '' &&
 			inventoryCount !== '' &&
@@ -132,13 +127,13 @@ class ProductForm extends Component {
 		}
 	}
 	
-	finishSubmit(type) {
+	finishSubmit = (type) => {
 		const { category } = this.props
 		if (type === 'add') {
 			this.props.onAdd()
 			this.setState({
 				id: '',
-				title: '',
+				name: '',
 				description: '',
 				cost: '',
 				inventoryCount: '',
@@ -158,29 +153,33 @@ class ProductForm extends Component {
 		}
 	}
   
-	handleInputChange(event) {
-	  const target = event.target;
+	handleInputChange = (event) => {
+	  const target = event.target
 	  const value = target.type === 'checkbox' ? target.checked : target.value	
-	  const name = target.name;
-	  this.setState({
-			[name]: value
-		})
+		const name = target.name
+		if ((
+			name === 'cost' ||
+			name === 'inventoryCount'
+		) && !value.match(/^(\s*|\d+)$/)) { return }
+		if (name === 'description' && value.length >= 300) { return }
+	  this.setState({ [name]: value })
 	}
   
 	render() {
 		const { user, product, category } = this.props
 		const { uploadDialogOpen, loading, adding } = this.state
 	  return (
-			<div style={{paddingBottom: 'calc(75px + 2em'}}>
+			<div className='ProductForm' style={{paddingBottom: 'calc(75px + 2em'}}>
 				{uploadDialogOpen && (
 					<UploadDialog
-						token={user.token}
+						user={user}
+						aspect={'1/1'}
 						onClose={this.handleUploadDialogClose} />
 				)}
 				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
 					<div className='UploadWrapper'>
 						<Button
-							style={{width: '88px', height: '88px', margin: '0 16px 0 0'}}
+							className='UploadButton'
 							variant='outlined'
 							component='label'
 							color='primary'
@@ -192,28 +191,31 @@ class ProductForm extends Component {
 								style={{display: this.state.imageUrl !== '' ? 'block' : 'none'}}
 								src={this.state.imageUrl}
 								alt={this.state.imageUrl} />
+							<span
+								style={{display: this.state.imageUrl === '' ? 'block' : 'none'}}
+								className='Dimensions'>
+								300 x 300
+							</span>
 						</Button>
+						<TextField
+							required
+							style={{width: 'calc(100% - 104px'}}
+							margin='normal'
+							label='Nombre'
+							name='name'
+							value={this.state.name}
+							type='text'
+							onChange={this.handleInputChange} />
 					</div>
-					<TextField
-						required
-						fullWidth
-						margin='normal'
-						label='Titulo (Nombre)'
-						name='title'
-						value={this.state.title}
-						type='text'
-						onChange={this.handleInputChange} />
 					<TextField
 						required
 						fullWidth
 						margin='normal'
 						label='Descripción'
 						name='description'
-						multiline={true}
-						rows={2}
-						rowsMax={5}
+						multiline
+						rows={3}
 						value={this.state.description}
-						type='textarea'
 						onChange={this.handleInputChange} />
 					<TextField
 						required
@@ -222,7 +224,6 @@ class ProductForm extends Component {
 						label='Costo'
 						name='cost'
 						value={this.state.cost}
-						type='number'
 						onChange={this.handleInputChange} />
 					<TextField
 						required
@@ -231,7 +232,6 @@ class ProductForm extends Component {
 						label='Cantidad de Inventario'
 						name='inventoryCount'
 						value={this.state.inventoryCount}
-						type='number'
 						onChange={this.handleInputChange} />
 				</form>
 				<div className='AddButtonWrapper'>

@@ -69,7 +69,7 @@ export function createProduct(data) {
 	const id = {id: data.imageId, position: 0}
 	const src = {src: data.imageUrl, position: 0}
 	const product = {
-		name: data.title,
+		name: data.name,
 		regular_price: data.cost,
 		description: data.description,
 		short_description: data.description,
@@ -92,7 +92,7 @@ export function updateProduct(data) {
 	const id = {id: data.imageId, position: 0}
 	const src = {src: data.imageUrl, position: 0}
 	const product = {
-		name: data.title,
+		name: data.name,
 		regular_price: data.cost,
 		description: data.description,
 		short_description: data.description,

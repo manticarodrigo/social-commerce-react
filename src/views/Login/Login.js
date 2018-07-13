@@ -11,16 +11,13 @@ class Login extends Component {
       login: true,
       termsDialog: null
     }
-
-    this.handleTerms = this.handleTerms.bind(this)
-    this.handleResponse = this.handleResponse.bind(this)
   }
   
-  toggleLogin() {
+  toggleLogin = () => {
     this.setState({login: !this.state.login})
   }
 
-  handleTerms() {
+  handleTerms = () => {
     const termsDialog = (
       <TermsDialog
         onClose={() => this.setState({ termsDialog: null })} />
@@ -28,7 +25,7 @@ class Login extends Component {
     this.setState({ termsDialog: termsDialog })
   }
 
-  handleResponse(response) {
+  handleResponse = (response) => {
     this.props.onResponse(response)
   }
   
@@ -45,7 +42,7 @@ class Login extends Component {
             type='facebook'
             provider='facebook'
             appId={process.env.REACT_APP_FACEBOOK_APP_ID}
-            scope='user_photos'
+            scope='user_photos, pages_show_list'
             onLoginSuccess={this.handleResponse}
             onLoginFailure={this.handleResponse}>
             {this.state.login ? 'Ingresar' : 'Registrar'} con Facebook
@@ -64,7 +61,7 @@ class Login extends Component {
             style={{color: '#fff', fontSize: '15px'}}>
             {!this.state.login ? '¿Ya tienes cuenta? ' : '¿No tienes cuenta? '}
             <a 
-              onClick={this.toggleLogin.bind(this)}>
+              onClick={this.toggleLogin}>
               {!this.state.login ? 'Ingresa acá.' : 'Registra acá.'}
             </a>
           </p>

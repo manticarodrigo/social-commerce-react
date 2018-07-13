@@ -1,26 +1,22 @@
 import React, { Component } from 'react'
 
 import OptionsDialog from './OptionsDialog'
-import AlbumDialog from './AlbumDialog'
+import PagesDialog from './PagesDialog'
+import AlbumsDialog from './AlbumsDialog'
 import CropDialog from './CropDialog'
 
-const options = {
-  facebook: {
-    title: 'Suba de Facebook'
-  },
-  device: {
-    title: 'Suba de Dispositivo'
-  }
+const constants = {
+  FACEBOOK_UPLOAD: 'Suba de Facebook',
+  DEVICE_UPLOAD: 'Suba de Dispositivo'
 }
 
 class UploadDialog extends Component {
   constructor(props) {
     super(props)
-    const { facebook, device } = options
     this.state = {
       currentDialog: (
         <OptionsDialog
-          options={[facebook.title, device.title]}
+          options={[constants.FACEBOOK_UPLOAD, constants.DEVICE_UPLOAD]}
           onClose={this.handleOptionsDialogClose} />
       )
     }
@@ -31,43 +27,68 @@ class UploadDialog extends Component {
   handleOptionsDialogClose = (value) => {
     if (value === undefined) {
       this.props.onClose(value)
-    } else if (value === options.device.title) {
+    } else if (value === constants.DEVICE_UPLOAD) {
       this.inputElement.click()
       this.setState({ currentDialog: null })
-		} else if (value === options.facebook.title) {
+		} else if (value === constants.FACEBOOK_UPLOAD) {
+      const { token } = this.props.user
       this.setState({
         currentDialog: (
-          <AlbumDialog
-            token={this.props.token}
-            onClose={this.handleAlbumDialogClose} />
+          <PagesDialog
+            token={token}
+            onClose={this.handlePagesDialogClose} />
         )
       })
     }
-	}
-
-  handleAlbumDialogClose = (value) => {
+  }
+  
+  handlePagesDialogClose = (value) => {
     if (value === undefined) {
       this.props.onClose(value)
 		} else {
-      const cropDialog = (
-        <CropDialog
-          src={value}
-          onClose={(croppedValue) => {
-            this.handleCropDialogClose(croppedValue ? croppedValue : value)
-          }} />
-      )
-      this.setState({ currentDialog: cropDialog })
+      const { user } = this.props
+      const page = typeof(value) === 'object'
+      const id = page ? value.id : user.profile.id
+      const token = page ? value.access_token : user.token.accessToken    
+      this.setState({
+        currentDialog: (
+          <AlbumsDialog
+            id={id}
+            token={token}
+            onClose={this.handleAlbumsDialogClose} />
+        )
+      })
+    }
+  }
+
+  handleAlbumsDialogClose = (value) => {
+    if (value === undefined) {
+      this.props.onClose(value)
+		} else {
+      const { aspect } = this.props
+      this.setState({
+        currentDialog: (
+          <CropDialog
+            src={value}
+            aspect={aspect}
+            onClose={this.handleCropDialogClose} />
+        )
+      })
     }
   }
   
   handleImageChanged = (event) => {
 		if (event.target.files && event.target.files[0]) {
-      const imageFile = event.target.files[0]
+      const { aspect } = this.props
 			let reader = new FileReader()
 			reader.onload = (e) => {
-        this.props.onClose({
-          imageFile: imageFile,
-          imageUrl: e.target.result
+        this.setState({
+          currentDialog: (
+            <CropDialog
+              src={e.target.result}
+              aspect={aspect}
+              onClose={this.handleCropDialogClose} />
+          )
         })
 			}
 			reader.readAsDataURL(event.target.files[0])
@@ -78,7 +99,6 @@ class UploadDialog extends Component {
 
   handleCropDialogClose = (value) => {
     this.setState({ currentDialog: null })
-    console.log(typeof(value))
     if (typeof(value) === 'object') {
       let reader = new FileReader()
 			reader.onload = (e) => {

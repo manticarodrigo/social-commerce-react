@@ -12,7 +12,7 @@ import ListSubheader from '@material-ui/core/ListSubheader'
 
 import { getAlbums } from '../../services/Facebook'
 
-class AlbumDialog extends Component {
+class AlbumsDialog extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -24,8 +24,8 @@ class AlbumDialog extends Component {
   }
 
   fetchFacebookAlbums = () => {
-    const accessToken = this.props.token.accessToken
-    getAlbums(accessToken)
+    const { id, token } = this.props
+    getAlbums(id, token)
     .then(res => {
       console.log(res)
       this.setState({ albums: res, currentAlbums: res })
@@ -104,8 +104,8 @@ class AlbumDialog extends Component {
   }
 }
   
-AlbumDialog.propTypes = {
+AlbumsDialog.propTypes = {
   onClose: PropTypes.func
 }
 
-export default AlbumDialog
+export default AlbumsDialog

@@ -40,6 +40,7 @@ class ShareDialog extends React.Component {
 
   handleConfirm = () => {
     this.setState({ open: false })
+    this.props.onClose()
   }
 
   render() {

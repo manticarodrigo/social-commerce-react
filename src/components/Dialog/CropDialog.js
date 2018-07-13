@@ -5,14 +5,18 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 // import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import ReactCrop, { makeAspectCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
+import './CropDialog.css'
 
 class CropDialog extends React.Component {
-  state = {
-    image: null,
-    crop: {
-      aspect: 1/1,
+  constructor(props) {
+    super(props)
+    this.state = {
+      image: null,
+      crop: null,
+      loading: false
     }
   }
 
@@ -21,27 +25,45 @@ class CropDialog extends React.Component {
   }
 
   handleImageLoaded = (image) => {
-    this.setState({
-      image,
-      crop: makeAspectCrop({
+    const { aspect } = this.props
+    var crop = null
+    var pixelCrop = null
+    if (aspect === '16/9') {
+      crop = {
+        x: 25,
+        y: 50,
+        aspect: 16 / 9,
+        width: 50,
+      }
+      pixelCrop = {
+        x: 0.25 * image.naturalWidth,
+        y: 0.5 * image.naturalHeight,
+        width: 0.5 * image.naturalWidth,
+        height: 0.28125 * image.naturalHeight
+      }
+    } else {
+      crop = {
         width: 50,
         height: 50,
         x: 25,
         y: 25,
-        aspect: 1/1,
-      }, image.naturalWidth / image.naturalHeight),
-      pixelCrop: {
+        aspect: 1,
+      }
+      pixelCrop = {
         x: 0.25 * image.naturalWidth,
         y: 0.25 * image.naturalHeight,
         width: 0.5 * image.naturalWidth,
         height: 0.5 * image.naturalHeight
       }
+    }
+    this.setState({
+      image,
+      crop: makeAspectCrop(crop, image.naturalWidth / image.naturalHeight),
+      pixelCrop: pixelCrop
     })
   }
 
   handleCropComplete = (crop, pixelCrop) => {
-    console.log(crop)
-    console.log(pixelCrop)
     this.setState({ crop: crop, pixelCrop: pixelCrop })
   }
 
@@ -50,23 +72,20 @@ class CropDialog extends React.Component {
   }
 
   handleConfirm = () => {
-    this.setState({ open: false })
+    this.setState({ loading: true })
     const { image, crop, pixelCrop } = this.state
     console.log(crop)
-    if (crop.width === 100) {
-      const { src } = this.props
-      this.props.onClose(src)
-    } else {
-      this.getCroppedImg(image, pixelCrop, Date.now())
-        .then(res => {
-          console.log(res)
-          this.props.onClose(res)
-        })
-        .catch(err => {
-          console.log(err)
-          this.props.onClose()
-        })
-    }
+    this.getCroppedImg(image, pixelCrop, Date.now())
+      .then(res => {
+        console.log(res)
+        this.setState({ open: false, loading: false })
+        this.props.onClose(res)
+      })
+      .catch(err => {
+        console.log(err)
+        this.setState({ open: false, loading: false })
+        this.props.onClose()
+      })
   }
 
   getCroppedImg = (image, pixelCrop, fileName) => {
@@ -92,9 +111,6 @@ class CropDialog extends React.Component {
           pixelCrop.height
         )
 
-        // As Base64 string
-        // const base64Image = canvas.toDataURL('image/jpeg')
-
         // Convert to blob
         canvas.toBlob(blob => {
           const properties = { type: 'image/jpeg', lastModified: Date.now() }
@@ -110,7 +126,7 @@ class CropDialog extends React.Component {
 
   render() {
     const { src } = this.props
-    const { crop } = this.state
+    const { crop, loading } = this.state
     return (
       <Dialog
         open={true}
@@ -126,6 +142,11 @@ class CropDialog extends React.Component {
             onImageLoaded={this.handleImageLoaded}
             onComplete={this.handleCropComplete}
             onChange={this.handleCropChange}/>
+          {loading && (
+            <div className='Loading'>
+              <CircularProgress size={50} />
+            </div>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={this.handleClose} color='primary'>

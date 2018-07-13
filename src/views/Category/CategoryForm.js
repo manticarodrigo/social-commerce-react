@@ -28,25 +28,18 @@ class CategoryForm extends Component {
 			phone: category ? category.phone : '',
 			dni: category ? category.dni : '',
 			ruc: category ? category.ruc : '',
-			bankAccount: category ? category.bank_account : '',
-			logisticProvider: category ? category.logistic_provider : '',
 			uploadDialogOpen: false,
 			loading: false
 		}
-
-		this.handleSubmit = this.handleSubmit.bind(this)
-		this.handleInputChange = this.handleInputChange.bind(this)
-		this.handleUploadDialogOpen = this.handleUploadDialogOpen.bind(this)
-		this.handleUploadDialogClose = this.handleUploadDialogClose.bind(this)
 	}
 	
-	handleUploadDialogOpen() {
+	handleUploadDialogOpen = () => {
     this.setState({
 			uploadDialogOpen: true
 		})
   }
 
-  	handleUploadDialogClose(value) {
+  handleUploadDialogClose = (value) => {
 		const { imageId } = this.state
 		if (typeof(value) === 'object') {
 			console.log(value)
@@ -65,12 +58,12 @@ class CategoryForm extends Component {
 		}
 	}
 	
-  handleSubmit(event) {
+  handleSubmit = (event) => {
 		this.setState({ loading: true })
 		event.preventDefault()
 		const data = this.state
 		const { businessName, businessLogo, imageFile, name, email, phone, dni } = this.state
-		const { auth, category } = this.props
+		const { auth, category, onSubmit } = this.props
 		if (
 			businessName !== '' &&
 			businessLogo !== '' &&
@@ -90,7 +83,7 @@ class CategoryForm extends Component {
 						console.log(res)
 						if (res.data && res.data.id !== null) {
 							this.setState({ loading: false })
-							this.props.onSubmit(res.data)
+							onSubmit(res.data)
 						}
 					})
 					.catch(err => {
@@ -106,7 +99,7 @@ class CategoryForm extends Component {
 					console.log(res)
 					if (res.data && res.data.id !== null) {
 						this.setState({ loading: false })
-						this.props.onSubmit(res.data)
+						onSubmit(res.data)
 					}
 				})
 				.catch(err => {
@@ -119,60 +112,66 @@ class CategoryForm extends Component {
 		}
   }
   
-	handleInputChange(event) {
-	  const target = event.target
-	  const value = target.type === 'checkbox' ? target.checked : target.value	
+	handleInputChange = (event) => {
+		const { category, navBarTitle } = this.props
+		const target = event.target
 		const name = target.name
-		this.setState({
-			[name]: value
-	  })
-		const { category } = this.props
+		const value = target.value
+		if ((
+			name === 'phone' ||
+			name === 'dni' ||
+			name === 'ruc' ||
+			name === 'bankAccount'
+		) && !value.match(/^(\s*|\d+)$/)) { return }
 		if (name === 'businessName') {
-			this.props.navBarTitle(category ? 'Edita ' + value : 'Registra ' + value)
+			navBarTitle(category ? 'Edita ' + value : 'Registra ' + value)
 		}
+		this.setState({ [name]: value })
 	}
   
 	render() {
 		const { user, category } = this.props
 		const { uploadDialogOpen, loading, businessLogo } = this.state
+		console.log(this.props)
 	  return (
-			<div style={{paddingBottom: 'calc(30px + 2em'}}>
+			<div className='CategoryForm' style={{paddingBottom: 'calc(30px + 2em'}}>
 				{uploadDialogOpen && (
 					<UploadDialog
-						token={user.token}
+						user={user}
+						aspect={'16/9'}
 						onClose={this.handleUploadDialogClose} />
 				)}
 				<form style={{textAlign:'left'}} onSubmit={this.handleSubmit}>
 					<div className='UploadWrapper'>
 						<Button
-							style={{width: '88px', height: '88px', margin: '0 16px 0 0'}}
+							className='UploadButton'
 							variant='outlined'
 							component='label'
 							color='primary'
 							onClick={this.handleUploadDialogOpen}
 						>
-							{businessLogo === '' ? 'Logo' : null}
+							{businessLogo === '' ? 'Banner' : null}
 							<FileUpload style={{display: businessLogo === '' ? 'block' : 'none'}} />
-							<span
-								style={{display: businessLogo === '' ? 'block' : 'none'}}
-								className='Dimensions'>
-								300 x 300
-							</span>
 							<img
 								style={{display: businessLogo !== '' ? 'block' : 'none'}}
 								src={businessLogo}
 								alt={businessLogo} />
+							<span
+								style={{display: businessLogo === '' ? 'block' : 'none'}}
+								className='Dimensions'>
+								480 x 270
+							</span>
 						</Button>
-						<TextField
-							required
-							style={{width: 'calc(100% - 104px'}}
-							margin='normal'
-							label='Nombre del Negocio'
-							name='businessName'
-							value={this.state.businessName}
-							type='text'
-							onChange={this.handleInputChange} />
 					</div>
+					<TextField
+						required
+						fullWidth
+						margin='normal'
+						label='Nombre del Negocio'
+						name='businessName'
+						value={this.state.businessName}
+						type='text'
+						onChange={this.handleInputChange} />
 					<TextField
 						required
 						fullWidth
@@ -206,7 +205,6 @@ class CategoryForm extends Component {
 						label='Numero de DNI'
 						name='dni'
 						value={this.state.dni}
-						type='number'
 						onChange={this.handleInputChange} />
 					<TextField
 						fullWidth
@@ -214,14 +212,6 @@ class CategoryForm extends Component {
 						label='Numero RUC'
 						name='ruc'
 						value={this.state.ruc}
-						type='number'
-						onChange={this.handleInputChange} />
-					<TextField
-						fullWidth
-						margin='normal'
-						label='Número de cuenta de Banco'
-						name='bankAccount'
-						value={this.state.bankAccount}
 						onChange={this.handleInputChange} />
 				</form>
 				<div className='SaveButtonWrapper'>
