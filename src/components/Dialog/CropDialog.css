@@ -1,5 +1,5 @@
-.ReactCrop__crop-selection {
-  touch-action: none;
+.ReactCrop {
+  touch-action: manipulation !important;
 }
 
 .Loading {

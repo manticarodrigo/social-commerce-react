@@ -21,7 +21,7 @@ class ProductForm extends Component {
 			name: product ? product.name : '',
 			description: product ? product.description.replace(/<[^>]+>/g, '') : '',
 			cost: product ? product.price : '',
-			inventoryCount: product ? product.stock_quantity : '',
+			inventoryCount: product && product.stock_quantity ? product.stock_quantity : '',
 			imageUrl: product ? product.images[0].src : '',
 			imageId: product ? product.images[0].id : null,
 			imageFile: null,
@@ -41,7 +41,7 @@ class ProductForm extends Component {
 				name: product.name,
 				description: product.description.replace(/<[^>]+>/g, ''),
 				cost: product.price,
-				inventoryCount: product.stock_quantity,
+				inventoryCount: product.stock_quantity ? product.stock_quantity : '',
 				imageUrl: product.images[0].src,
 				imageId: product.images[0].id,
 				imageFile: null,
@@ -82,7 +82,6 @@ class ProductForm extends Component {
 			name !== '' &&
 			description !== '' &&
 			cost !== '' &&
-			inventoryCount !== '' &&
 			imageUrl !== ''
 		) {
 			const { product, category } = this.props
@@ -153,13 +152,15 @@ class ProductForm extends Component {
   
 	handleInputChange = (event) => {
 	  const target = event.target
-	  const value = target.type === 'checkbox' ? target.checked : target.value	
+	  var value = target.type === 'checkbox' ? target.checked : target.value	
 		const name = target.name
-		if ((
-			name === 'cost' ||
-			name === 'inventoryCount'
-		) && !value.match(/^(\s*|\d+)$/)) { return }
-		if (name === 'description' && value.length >= 300) { return }
+		if (name === 'cost' && !value.match(/^\d*\.?\d*$/)) {
+			return
+		} else if	(name === 'inventoryCount' && !value.match(/^(\s*|\d+)$/)) {
+			 return
+		} else if (name === 'description' && value.length >= 300) {
+			return 
+		}
 	  this.setState({ [name]: value })
 	}
 
@@ -234,7 +235,6 @@ class ProductForm extends Component {
 						name='cost'
 						value={this.state.cost} />
 					<TextField
-						required
 						fullWidth
 						margin='normal'
 						label='Cantidad de inventario'

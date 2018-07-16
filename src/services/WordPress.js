@@ -75,8 +75,8 @@ export function createProduct(data) {
 		short_description: data.description,
 		categories: [{id: data.category.id}],
 		images: [data.imageId ? id : src],
-		manage_stock: true,
-		stock_quantity: data.inventoryCount,
+		manage_stock: data.inventoryCount ? true : false,
+		stock_quantity: data.inventoryCount ? data.inventoryCount : 0,
 		in_stock: true,
 	}
 	const options = {
@@ -91,6 +91,7 @@ export function createProduct(data) {
 export function updateProduct(data) {
 	const id = {id: data.imageId, position: 0}
 	const src = {src: data.imageUrl, position: 0}
+	
 	const product = {
 		name: data.name,
 		regular_price: data.cost,
@@ -98,8 +99,8 @@ export function updateProduct(data) {
 		short_description: data.description,
 		categories: [{id: data.category.id}],
 		images: [data.imageId ? id : src],
-		manage_stock: true,
-		stock_quantity: data.inventoryCount,
+		manage_stock:  data.inventoryCount ? true : false,
+		stock_quantity: data.inventoryCount ? data.inventoryCount : 0,
 		in_stock: true,
 	}
 	const options = {
