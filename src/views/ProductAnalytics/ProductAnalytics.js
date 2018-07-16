@@ -1,28 +1,16 @@
 import React, { Component } from 'react';
-import Loading from '../Loading/Loading'
-import Paper from '@material-ui/core/Paper';
+import Loading from '../Loading/Loading';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
 import ChartistGraph from 'react-chartist';
 import './ProductAnalytics.css';
 import { fetchProductsAnalytics } from '../../services/WordPress';
-
-
-// function TabContainer(props) {
-//   return (
-//     <Typography component="div" style={{ padding: 8 * 3 }}>
-//       {props.children}
-//     </Typography>
-//   );
-// }
 
 class ProductAnalytics extends Component {
     constructor(props) {
         super(props)
 
-        const { user, product } = this.props
-        if (!user || product === null) this.props.onBack()
+        const { user, product } = this.props;
         
         this.state = {
             id: product ? product.id : null,
@@ -34,6 +22,13 @@ class ProductAnalytics extends Component {
             values: [],
             loading: true
         };
+
+        if (user && product.id != null) {
+            this.props.onTitleChange(product.name);
+            this.fetchData(product.id, this.state.currentTab);
+        } else {
+            this.props.onBack();
+        }
     }
 
     fetchData = (productId, period) => {
@@ -55,13 +50,8 @@ class ProductAnalytics extends Component {
         this.fetchData(this.state.id, currentTab);
     }
 
-    componentDidMount() {
-        this.props.onTitleChange(this.state.title);
-        this.fetchData(this.state.id, this.state.currentTab);
-    }
-
     render() {
-        const { product } = this.props;
+        // const { product } = this.props;
         const { labels, values } = this.state;
 
         const lineChartData = {
@@ -73,42 +63,44 @@ class ProductAnalytics extends Component {
         const lineChartOptions = {
             low: 0,
             lineSmooth: false,
+            showPoint: false,
             axisX: {
                 showGrid: false,
                 showLabel: false
             },
             axisY: {
                 showGrid: false,
-                showLabel: true
+                showLabel: true,
+                onlyInteger: true
             },
         }
 
         const currentTab = this.state.currentTab;
-        const totalRevenue = this.state.totalRevenue;
-        const totalQuantity = this.state.totalQuantity;
+        const totalRevenue = this.state.totalRevenue ? this.state.totalRevenue : 0;
+        const totalQuantity = this.state.totalQuantity ? this.state.totalQuantity : 0;
         const loading = this.state.loading;
 
         let dateLabel;
         switch(currentTab) {
             case '1D':
-                dateLabel = 'hoy';
-                break;
-            case '1W':
-                dateLabel = 'esta semana';
+                dateLabel = 'las últimas 24hrs';
                 break;
             case '1M':
-                dateLabel = 'este mes';
+                dateLabel = 'el último mes';
                 break;
             case '1Y':
-                dateLabel = 'este año';
+                dateLabel = 'los últimos 12 meses';
                 break;
             case 'ALL':
                 dateLabel = 'en total';
                 break;
+            default: // 1W
+                dateLabel = 'los últimos 12 días';
+                break;
         }
 
         return (
-            <Paper className='graphCard'>
+            <div>
                 {loading && (
                   <Loading />
                 )}
@@ -118,12 +110,13 @@ class ProductAnalytics extends Component {
                         <span className='totalRevenue'>{totalRevenue}</span>
                     </div>
                     <div>
-                        <span className='totalQuantity'>{totalQuantity}</span>
-                        <span> Vendidos {dateLabel}</span>
+                        <span className='totalQuantity'>Vendidos <strong>{totalQuantity}</strong></span>
+                        <span> {dateLabel}</span>
                     </div>
                 </div>
                 <ChartistGraph data={lineChartData} options={lineChartOptions} type={'Line'} />
                 <Tabs
+                    className="datesTabs"
                     value={currentTab}
                     indicatorColor="primary"
                     textColor="primary"
@@ -131,13 +124,13 @@ class ProductAnalytics extends Component {
                     centered
                     fullWidth
                 >
-                    <Tab value={'1D'} label="1D" />
-                    <Tab value={'1W'} label="1W" />
-                    <Tab value={'1M'} label="1M" />
-                    <Tab value={'1Y'} label="1Y" />
-                    <Tab value={'ALL'} label="ALL" />
+                    <Tab value={'1D'} label="1 Día" className="dateTab" />
+                    <Tab value={'1W'} label="1 Sem" className="dateTab" />
+                    <Tab value={'1M'} label="1 Mes" className="dateTab" />
+                    <Tab value={'1Y'} label="1 Año" className="dateTab" />
+                    <Tab value={'ALL'} label="Todas" className="dateTab" />
                 </Tabs>
-            </Paper>
+            </div>
         )
     }
 }

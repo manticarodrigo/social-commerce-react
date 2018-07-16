@@ -21,6 +21,10 @@
   stroke: #3f51b5;  
 }
 
-.graphCard {
-    padding-top: 0.5em;
+.datesTabs .dateTab {
+    min-width: 60px !important;
+}
+
+.datesTabs .dateTab span {
+    padding: 0 !important;
 }
