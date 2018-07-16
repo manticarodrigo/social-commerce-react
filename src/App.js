@@ -128,14 +128,32 @@ class App extends Component {
 
   updateProductLocations = (direction) => {
     const { products, currentProduct } = this.state
-    console.log(this.state)
-    if (products && direction === 'back') {
-      const index = currentProduct ? products.map(e => { return e.name }).indexOf(currentProduct.name) + 1 : 0
-      this.setState({ currentProduct: products[index], nextProduct: products[index - 1] ? products[index - 1] : null })
-    } else if (products) {
-      const index = currentProduct ? products.map(e => { return e.name }).indexOf(currentProduct.name) - 1 : products.length - 1
-      this.setState({ currentProduct: products[index], nextProduct: products[index - 1] ? products[index - 1] : null })
+    if (Boolean(products) && direction === 'back') {
+      var index = currentProduct ? (
+        products
+          .map(e => { return e.name })
+          .indexOf(currentProduct.name) + 1
+      ) : 0
+      this.setState({
+        currentProduct: products[index],
+        nextProduct: products[index - 1] ? products[index - 1] : null
+      })
+      return
+    }
+    if  (Boolean(products)) {
+      index = currentProduct ? (
+        products
+          .map(e => { return e.name })
+          .indexOf(currentProduct.name) - 1
+      ) : products.length - 1
+      this.setState({
+        currentProduct: products[index !== -1 ? index : 0],
+        nextProduct: products[index - 1] ? products[index - 1] : null
+      })
+      return
     } else {
+      console.log('wjat')
+      console.log(products)
       this.setState({ currentProduct: null, nextProduct: null })
     }
   }
