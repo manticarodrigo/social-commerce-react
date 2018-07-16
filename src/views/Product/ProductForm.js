@@ -60,20 +60,17 @@ class ProductForm extends Component {
   }
 
 	handleUploadDialogClose = (value) => {
-		const { imageId } = this.state
-		if (typeof(value) === 'object') {
+		if (typeof(value) === 'object' && value !== null) {
 			this.setState({
 				uploadDialogOpen: false,
-				imageUrl: value !== null ? value.imageUrl : '',
+				imageUrl: value.imageUrl,
 				imageId: null,
 				imageFile: value.imageFile
-			})
+			});
 		} else {
 			this.setState({
-				uploadDialogOpen: false,
-				imageUrl: value !== undefined ? value : '',
-				imageId: value !== undefined ? null : imageId
-			})
+				uploadDialogOpen: false
+			});
 		}
 	}
 	

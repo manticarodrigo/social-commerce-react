@@ -152,8 +152,6 @@ class App extends Component {
       })
       return
     } else {
-      console.log('wjat')
-      console.log(products)
       this.setState({ currentProduct: null, nextProduct: null })
     }
   }

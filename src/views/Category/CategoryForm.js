@@ -30,6 +30,30 @@ class CategoryForm extends Component {
 		};
 	}
 
+	static getDerivedStateFromProps = (props, state) => {
+		const { user, category } = props;
+		const { id } = state;
+		if ((user && category) && category.id !== id) {
+			return {
+				id: category.id,
+				ownerId: category.ownerId,
+				businessName: category.name,
+				businessLogo: category.image ? category.image.src : '',
+				imageId: category.image ? category.image.id : null,
+				imageFile: null,
+				name: user.profile.name,
+				email: user.profile.email,
+				phone: category.phone,
+				dni: category.dni,
+				ruc: category.ruc,
+				uploadDialogOpen: false,
+				loading: false,
+				keyboardOpen: false
+			}
+		}
+		return null
+  }
+
 	componentDidMount() {
 		const { onTitleChange, category } = this.props;
 		onTitleChange(category ? 'Edita ' + category.name : 'Registra tu Tienda');
@@ -47,20 +71,16 @@ class CategoryForm extends Component {
   }
 
   handleUploadDialogClose = (value) => {
-		const { imageId } = this.state;
-		if (typeof(value) === 'object') {
-			console.log(value);
+		if (typeof(value) === 'object' && value !== null) {
 			this.setState({
 				uploadDialogOpen: false,
-				businessLogo: value !== null ? value.imageUrl : '',
+				businessLogo: value.imageUrl,
 				imageId: null,
 				imageFile: value.imageFile
 			});
 		} else {
 			this.setState({
-				uploadDialogOpen: false,
-				businessLogo: value !== undefined ? value : '',
-				imageId: value !== undefined ? null : imageId
+				uploadDialogOpen: false
 			});
 		}
 	}
