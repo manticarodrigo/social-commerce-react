@@ -1,8 +1,8 @@
-.PaymentOptions {
+.ShippingOptions {
   padding-bottom: calc(75px + 2em);
 }
 
-.PaymentOptions .CheckBoxLabel {
+.ShippingOptions .CheckBoxLabel {
   position: relative;
   text-align: center;
   padding: 70px 0 0;
@@ -10,11 +10,11 @@
   margin: 0.5em auto !important;
 }
 
-.PaymentOptions .CheckBoxLabel > span:nth-of-type(2) {
+.ShippingOptions .CheckBoxLabel > span:nth-of-type(2) {
   width: 100%;
 }
 
-.PaymentOptions .CheckBoxLabel .CheckBox {
+.ShippingOptions .CheckBoxLabel .CheckBox {
   position: absolute;
   top: 0;
   left: calc(50% - 1.25em);
@@ -22,11 +22,11 @@
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-.PaymentOptions .CheckBoxLabel .CheckBox.Checked {
+.ShippingOptions .CheckBoxLabel .CheckBox.Checked {
   background-color: #3f51b5;
 }
 
-.PaymentOptions .CheckBoxLabel .CheckBoxIcon {
+.ShippingOptions .CheckBoxLabel .CheckBoxIcon {
   width: 1.5em;
   height: 1.5em;
   object-fit: contain;
@@ -34,31 +34,31 @@
   filter: saturate(0%);
 }
 
-.PaymentOptions .CheckBoxLabel .CheckBox.Checked .CheckBoxIcon {
+.ShippingOptions .CheckBoxLabel .CheckBox.Checked .CheckBoxIcon {
   color: #fff;
   -webkit-filter: brightness(400%); /* Safari 6.0 - 9.0 */
   filter: brightness(400%);
 }
 
-.PaymentOptions .SaveButtonWrapper {
+.ShippingOptions .SaveButtonWrapper {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%
 }
 
-.PaymentOptions .SaveButton {
+.ShippingOptions .SaveButton {
   width: calc(100% - 1em);
   height: 30px;
   margin: 0.5em !important;
 }
 
-.PaymentOptions .ButtonProgress {
+.ShippingOptions .ButtonProgress {
   position: absolute;
   top: calc(50% - 12px);
   left: calc(50% - 12px);
 }
 
-.PaymentOptions .ButtonProgress svg {
+.ShippingOptions .ButtonProgress svg {
   color: #00cc00;
 }

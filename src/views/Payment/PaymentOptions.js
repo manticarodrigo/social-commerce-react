@@ -59,7 +59,7 @@ class PaymentOptions extends Component {
 			loading
 		} = this.state
     return (
-			<div className='PaymentShipping'>
+			<div className='PaymentOptions'>
 				<p style={{maxWidth: '250px', margin: '1em auto'}}>
 					Escoga todas las formas de pago que desea ofrecer a sus clientes.
 				</p>
