@@ -95,7 +95,7 @@ class ProductAnalytics extends Component {
                 dateLabel = 'en total';
                 break;
             default: // 1W
-                dateLabel = 'los últimos 12 días';
+                dateLabel = 'los últimos 7 días';
                 break;
         }
 

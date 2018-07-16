@@ -132,7 +132,6 @@ export function fetchProducts(categoryId) {
 }
 
 export function fetchProductsAnalytics(productId, period) {
-	// productId = 219; // just for testing
 	return axios.get(url + '/wp-json/ga/v1/product/' + productId + '?period=' + period);
 }
 
