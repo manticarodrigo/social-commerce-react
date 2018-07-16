@@ -251,7 +251,7 @@ class ProductForm extends Component {
 						size='large'
 						variant='contained'
 						color='primary'
-						className='SaveButton'
+						className='SaveButton ShareButton'
 						disabled={loading}
 						onClick={() => this.handleSubmit('finish')}
 					>
