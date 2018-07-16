@@ -10,6 +10,7 @@ import Login from './views/Login/Login'
 import Dashboard from './views/Dashboard/Dashboard'
 import CategoryForm from './views/Category/CategoryForm'
 import PaymentOptions from './views/Payment/PaymentOptions'
+import ShippingOptions from './views/Shipping/ShippingOptions'
 import ProductForm from './views/Product/ProductForm'
 import ProductAnalytics from './views/ProductAnalytics/ProductAnalytics'
 import Catalog from './views/Catalog/Catalog'
@@ -373,6 +374,12 @@ class App extends Component {
               exact path='/pagos'
               render={() => (
                 <PaymentOptions
+                  onTitleChange={this.handleTitleChange} />
+            )} />
+            <Route
+              exact path='/envios'
+              render={() => (
+                <ShippingOptions
                   onTitleChange={this.handleTitleChange} />
             )} />
             <Route
