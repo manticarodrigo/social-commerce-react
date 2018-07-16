@@ -126,8 +126,7 @@ class CategoryForm extends Component {
 		if ((
 			name === 'phone' ||
 			name === 'dni' ||
-			name === 'ruc' ||
-			name === 'bankAccount'
+			name === 'ruc'
 		) && !value.match(/^(\s*|\d+)$/)) { return; }
 		if (name === 'businessName') {
 			onTitleChange(category ? 'Edita ' + value : 'Registra ' + value);
