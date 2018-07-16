@@ -54,6 +54,7 @@ class App extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
+    console.log(props.location.pathname)
     return { pathname: props.location.pathname }
   }
 
@@ -83,11 +84,12 @@ class App extends Component {
                     currentProduct: products[0],
                     nextProduct: null
                   })
+                  console.log(this.state)
                   const { pathname } = this.state
                   if (pathname === '/ingresar' || pathname === '/') {
                     this.props.history.replace(category.approved ? '/' : '/producto')
                   } else {
-                    this.props.history.replace(pathname)
+                    this.props.history.replace(pathname);
                   }
                 })
                 .catch(err => {
@@ -307,7 +309,6 @@ class App extends Component {
     const {
       loading,
       pathname,
-      navBarTitle,
       user,
       auth,
       category,
@@ -327,7 +328,6 @@ class App extends Component {
         )}
         {pathname !== '/ingresar' && (
           <NavBar
-            title={navBarTitle}
             category={category}
             product={currentProduct}
             onBack={this.backCase() ? this.handleBack : null}
@@ -424,5 +424,18 @@ class App extends Component {
     )
   }
 }
+
+// const mapStateToProps = state => ({
+//   // title: state.title.title
+// });
+
+// const mapDispatchToProps = dispatch => bindActionCreators({
+//   updateTitle: (title) => updateTitle(title)
+// }, dispatch);
+
+// export default connect(
+// 	null,
+// 	mapDispatchToProps
+// )(Dashboard);
 
 export default withRouter(App)

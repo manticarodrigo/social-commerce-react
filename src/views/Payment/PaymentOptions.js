@@ -216,7 +216,7 @@ class PaymentOptions extends Component {
 							required
 							fullWidth
 							margin='normal'
-							label='Numero de Cuenta de Banco'
+							label='Numero de cuenta de banco'
 							name='bankAccount'
 							value={bankAccount} />
 					</form>

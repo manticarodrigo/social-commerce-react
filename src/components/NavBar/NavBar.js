@@ -1,16 +1,18 @@
-import React from 'react'
-import { withRouter } from 'react-router-dom'
-import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
-import ArrowBackIcon from '@material-ui/icons/ArrowBack'
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
-import MoreVert from '@material-ui/icons/MoreVert'
-import MenuItem from '@material-ui/core/MenuItem'
-import Menu from '@material-ui/core/Menu'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { push } from 'connected-react-router';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import MoreVert from '@material-ui/icons/MoreVert';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
 
 const styles = {
   root: {
@@ -23,75 +25,44 @@ const styles = {
     marginLeft: -12,
     marginRight: 0,
   },
-}
+};
 
 class NavBar extends React.Component {
   constructor(props) {
-    super(props)
-
+    super(props);
     this.state = {
-      pathname: props.location.pathname,
       anchorEl: null,
-    }
-
-    this.handleMenu = this.handleMenu.bind(this)
-    this.handleClose = this.handleClose.bind(this)
-    this.handleShareCategory = this.handleShareCategory.bind(this)
-    this.handleEditCategory = this.handleEditCategory.bind(this)
-    this.handleLogout = this.handleLogout.bind(this)
+    };
   }
 
-  static getDerivedStateFromProps(props, state) {
-    return { pathname: props.location.pathname }
-  }
-
-  handleMenu(event) {
+  handleMenu = (event) => {
     this.setState({ anchorEl: event.currentTarget })
   }
 
-  handleClose() {
+  handleClose = () => {
     this.setState({ anchorEl: null })
   }
 
-  handleEditCategory() {
+  handleEditCategory = () => {
     this.handleClose()
-    this.props.history.replace('/perfil')
+    this.props.changePage('/perfil')
   }
 
-  handleShareCategory() {
+  handleShareCategory = () => {
     this.handleClose()
-    this.props.history.replace('/catalogo')
+    this.props.changePage('/catalogo')
   }
 
-  handleLogout() {
+  handleLogout = () => {
     this.handleClose()
     localStorage.clear()
-    this.props.history.replace('/ingresar')
-  }
-
-  getLocationTitle() {
-    const { pathname } = this.state
-    const { category, product } = this.props
-    switch (pathname) {
-      case '/':
-        return category ? category.name : 'Tu Tienda'
-      case '/perfil':
-        return category ? 'Edita tu Tienda' : 'Registra tu Tienda'
-      case '/pagos':
-        return 'Opciones de Pago'
-      case '/envios':
-        return 'Opciones de Envio'
-      case '/producto':
-        return product ? 'Edita tu Producto' : 'Crea tu Producto'
-      case '/catalogo':
-        return 'Tu Tienda'
-      default:
-        return 'Tu Tienda'
-    }
+    this.props.changePage('/ingresar')
   }
 
   render() {
     const { classes, title, category, onBack, onForward } = this.props
+    console.log(category)
+    console.log(title)
     const { anchorEl } = this.state
     const open = Boolean(anchorEl)
     return (
@@ -118,7 +89,7 @@ class NavBar extends React.Component {
               </IconButton>
             )}
             <Typography variant='title' color='inherit' className={classes.flex}>
-              {title && (title !== null && title !== '') ? title : this.getLocationTitle()}
+              {title}
             </Typography>
             <IconButton
               aria-owns={open ? 'menu-appbar' : null}
@@ -171,6 +142,18 @@ class NavBar extends React.Component {
 
 NavBar.propTypes = {
   classes: PropTypes.object.isRequired,
+  title: PropTypes.string.isRequired
 }
 
-export default withStyles(styles)(withRouter(NavBar))
+const mapStateToProps = state => ({
+  title: state.title.title
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  changePage: (route) => push(route)
+}, dispatch)
+
+export default connect(
+  mapStateToProps, 
+  mapDispatchToProps
+)(withStyles(styles)(NavBar))

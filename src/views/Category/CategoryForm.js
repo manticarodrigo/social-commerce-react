@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { updateTitle } from '../../actions/titleActions';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -30,13 +33,8 @@ class CategoryForm extends Component {
 	}
 
 	componentDidMount() {
-		const { onTitleChange, category } = this.props;
-		onTitleChange(category ? 'Edita ' + category.name : 'Registra tu Tienda');
-	}
-
-	componentWillUnmount() {
-		const { onTitleChange } = this.props;
-		onTitleChange(null);
+		const { updateTitle, category } = this.props;
+		updateTitle(category ? 'Edita ' + category.name : 'Registra tu Tienda');
 	}
 	
 	handleUploadDialogOpen = () => {
@@ -119,7 +117,7 @@ class CategoryForm extends Component {
   }
   
 	handleInputChange = (event) => {
-		const { category, onTitleChange } = this.props;
+		const { category, updateTitle } = this.props;
 		const target = event.target;
 		const name = target.name;
 		const value = target.value;
@@ -129,7 +127,7 @@ class CategoryForm extends Component {
 			name === 'ruc'
 		) && !value.match(/^(\s*|\d+)$/)) { return; }
 		if (name === 'businessName') {
-			onTitleChange(category ? 'Edita ' + value : 'Registra ' + value);
+			updateTitle(category ? 'Edita ' + value : 'Registra ' + value);
 		}
 		this.setState({ [name]: value });
 	}
@@ -174,7 +172,7 @@ class CategoryForm extends Component {
 						required
 						fullWidth
 						margin='normal'
-						label='Nombre del Negocio'
+						label='Nombre del negocio'
 						name='businessName'
 						value={this.state.businessName}
 						type='text' />
@@ -198,7 +196,7 @@ class CategoryForm extends Component {
 						required
 						fullWidth
 						margin='normal'
-						label='Numero de Telefono Celular'
+						label='Numero de telefono celular'
 						name='phone'
 						value={this.state.phone} />
 					<TextField
@@ -232,4 +230,15 @@ class CategoryForm extends Component {
 	}
 }
 
-export default CategoryForm;
+const mapStateToProps = state => ({
+  // title: state.title.title
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  updateTitle: (title) => updateTitle(title)
+}, dispatch)
+
+export default connect(
+	null,
+	mapDispatchToProps
+)(CategoryForm);
