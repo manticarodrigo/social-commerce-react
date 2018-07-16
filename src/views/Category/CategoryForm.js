@@ -25,7 +25,8 @@ class CategoryForm extends Component {
 			dni: category ? category.dni : '',
 			ruc: category ? category.ruc : '',
 			uploadDialogOpen: false,
-			loading: false
+			loading: false,
+			keyboardOpen: false
 		};
 	}
 
@@ -133,10 +134,18 @@ class CategoryForm extends Component {
 		}
 		this.setState({ [name]: value });
 	}
+
+	handleInputFocus = (event) => {
+		this.setState({ keyboardOpen: true})
+	}
+
+	handleInputBlur = (event) => {
+		this.setState({ keyboardOpen: false})
+	}
   
 	render() {
 		const { user, category } = this.props;
-		const { uploadDialogOpen, loading, businessLogo } = this.state;
+		const { uploadDialogOpen, loading, businessLogo, keyboardOpen } = this.state;
 	  return (
 			<div className='CategoryForm' style={{paddingBottom: 'calc(30px + 2em'}}>
 				{uploadDialogOpen && (
@@ -148,6 +157,8 @@ class CategoryForm extends Component {
 				<form
 					style={{textAlign:'left'}}
 					onChange={this.handleInputChange}
+					onFocus={this.handleInputFocus}
+					onBlur={this.handleInputBlur}
 					onSubmit={this.handleSubmit}>
 					<div className='UploadWrapper'>
 						<Button
@@ -174,7 +185,7 @@ class CategoryForm extends Component {
 						required
 						fullWidth
 						margin='normal'
-						label='Nombre del Negocio'
+						label='Número del negocio'
 						name='businessName'
 						value={this.state.businessName}
 						type='text' />
@@ -182,7 +193,7 @@ class CategoryForm extends Component {
 						required
 						fullWidth
 						margin='normal'
-						label='Nombre completo'
+						label='Número completo'
 						name='name'
 						value={this.state.name}
 						type='text' />
@@ -190,7 +201,7 @@ class CategoryForm extends Component {
 						required
 						fullWidth
 						margin='normal'
-						label='Correo electronico'
+						label='Correo electrónico'
 						name='email'
 						value={this.state.email}
 						type='email' />
@@ -198,24 +209,28 @@ class CategoryForm extends Component {
 						required
 						fullWidth
 						margin='normal'
-						label='Numero de Telefono Celular'
+						label='Número de Teléfono Celular'
 						name='phone'
 						value={this.state.phone} />
 					<TextField
 						required
 						fullWidth
 						margin='normal'
-						label='Numero de DNI'
+						label='Número de DNI'
 						name='dni'
 						value={this.state.dni} />
 					<TextField
 						fullWidth
 						margin='normal'
-						label='Numero RUC'
+						label='Número RUC'
 						name='ruc'
 						value={this.state.ruc} />
 				</form>
-				<div className='SaveButtonWrapper'>
+				<div
+					className='SaveButtonWrapper'
+					style={{
+						opacity: keyboardOpen ? '0.25' : '1',
+					}}>
 					<Button
 						size='large'
 						variant='contained'

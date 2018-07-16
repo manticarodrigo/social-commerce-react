@@ -27,7 +27,8 @@ class ProductForm extends Component {
 			imageFile: null,
 			uploadDialogOpen: false,
 			loading: false,
-			adding: false
+			adding: false,
+			keyboardOpen: false
 		}
 	}
 
@@ -164,10 +165,18 @@ class ProductForm extends Component {
 		if (name === 'description' && value.length >= 300) { return }
 	  this.setState({ [name]: value })
 	}
+
+	handleInputFocus = (event) => {
+		this.setState({ keyboardOpen: true})
+	}
+
+	handleInputBlur = (event) => {
+		this.setState({ keyboardOpen: false})
+	}
   
 	render() {
 		const { user, product, category } = this.props
-		const { uploadDialogOpen, loading, adding } = this.state
+		const { uploadDialogOpen, loading, adding, keyboardOpen } = this.state
 	  return (
 			<div className='ProductForm' style={{paddingBottom: 'calc(75px + 2em'}}>
 				{uploadDialogOpen && (
@@ -179,6 +188,8 @@ class ProductForm extends Component {
 				<form
 					style={{textAlign:'left'}}
 					onChange={this.handleInputChange}
+					onFocus={this.handleInputFocus}
+					onBlur={this.handleInputBlur}
 					onSubmit={this.handleSubmit}>
 					<div className='UploadWrapper'>
 						<Button
@@ -204,7 +215,7 @@ class ProductForm extends Component {
 							required
 							style={{width: 'calc(100% - 104px'}}
 							margin='normal'
-							label='Nombre'
+							label='Nombre del producto'
 							name='name'
 							value={this.state.name}
 							type='text' />
@@ -229,11 +240,15 @@ class ProductForm extends Component {
 						required
 						fullWidth
 						margin='normal'
-						label='Cantidad de Inventario'
+						label='Cantidad de inventario'
 						name='inventoryCount'
 						value={this.state.inventoryCount} />
 				</form>
-				<div className='AddButtonWrapper'>
+				<div
+					className='AddButtonWrapper'
+					style={{
+						opacity: keyboardOpen ? '0.25' : '1',
+					}}>
 					<Button
 						size='large'
 						variant='contained'
@@ -246,7 +261,11 @@ class ProductForm extends Component {
 					</Button>
 					{(loading && adding) && <CircularProgress size={24} className='ButtonProgress' />}
 				</div>
-				<div className='ShareButtonWrapper'>
+				<div
+					className='ShareButtonWrapper'
+					style={{
+						opacity: keyboardOpen ? '0.25' : '1',
+					}}>
 					<Button
 						size='large'
 						variant='contained'
