@@ -24,10 +24,10 @@ class PaymentOptions extends Component {
 	constructor(props) {
 		super(props)
 		const { category } = props
-		console.log(category)
 		this.state = {
+			id: category ? category.id : null,
 			checkedCash: true,
-			checkedTransfer: category && category.bank_account ? true : false,
+			checkedTransfer: category && category.bank_account !== '' ? true : false,
 			checkedPayPal: false,
 			checkedBitcoin: false,
 			checkedMercadoPago: false,
@@ -35,23 +35,25 @@ class PaymentOptions extends Component {
 			checkedCulqi: false,
 			checkedPagoFlash: false,
 			checkedCard: false,
-			bankAccount: category && category.bank_account ? category.bank_account : '',
+			bankAccount: category && category.bank_account !== '' ? category.bank_account : '',
 			loading: false
 		};
 	}
 
 	static getDerivedStateFromProps = (props, state) => {
-		const { category } = props
-		if (category) {
+		const { category } = props;
+		const { id } = state
+		if (category && category.id !== id) {
 			return {
-				checkedTransfer: category && category.bank_account ? true : false,
-				bankAccount: category && category.bank_account ? category.bank_account : ''
+				checkedTransfer: category.bank_account !== '' ? true : false,
+				bankAccount: category.bank_account !== '' ? category.bank_account : ''
 			}
 		}
 		return null
   }
 	
 	handleCheckboxChange = name => event => {
+		console.log(event.target.checked)
 		this.setState({ [name]: event.target.checked });
 	}
 

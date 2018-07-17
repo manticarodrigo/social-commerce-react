@@ -13,7 +13,7 @@ class CategoryForm extends Component {
 		super(props)
 		const { user, category } = props;
 		this.state = {
-			id: category ? category.id : false,
+			id: category ? category.id : null,
 			ownerId: user && user.profile.id ? user.profile.id : '',
 			businessName: category ? category.name : '',
 			businessLogo: category && category.image ? category.image.src : '',

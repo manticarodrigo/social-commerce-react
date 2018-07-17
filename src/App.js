@@ -140,7 +140,7 @@ class App extends Component {
       })
       return
     }
-    if  (Boolean(products)) {
+    if (Boolean(products)) {
       index = currentProduct ? (
         products
           .map(e => { return e.name })
@@ -157,50 +157,46 @@ class App extends Component {
   }
 
   handleBack = () => {
-    const { pathname, category, products, currentProduct } = this.state
+    const { pathname, category, products, currentProduct } = this.state;
+    console.log(pathname);
+    console.log(currentProduct);
+    this.setState({ navBarTitle: null });
     if (category && !category.approved) {
-      if (!Array.isArray(products) || !products.length) {
-        // Array does not exist, is not an array, or is empty
-        if (pathname === '/producto') {
-          this.props.history.replace('/envios')
+      if (pathname === '/envios') {
+        console.log('back');
+        this.props.history.replace('/pagos');
+      }
+      if (pathname === '/pagos') {
+        this.props.history.replace('/perfil');
+      }
+      if (pathname === '/producto') {
+        if (!Array.isArray(products) || !products.length) {
+          // Array does not exist, is not an array, or is empty
+          this.updateProductLocations('back');
+          this.props.history.replace('/envios');
+          return;
+        } else if (currentProduct === products[products.length - 1]) {
+          // Last product in list
+          this.setState({ currentProduct: null, nextProduct: null });
+          this.props.history.replace('/envios');
+          return;
         }
-        if (pathname === '/envios') {
-          this.props.history.replace('/pagos')
-        }
-        if (pathname === '/pagos') {
-          this.props.history.replace('/perfil')
-        }
-      } else {
-        // Go back an index
-        if (currentProduct === products[products.length - 1]) {
-          this.setState({ currentProduct: null, nextProduct: null, navBarTitle: null })
-          this.props.history.replace('/envios')
-        } else {
-          this.setState({ navBarTitle: null })
-          if (pathname === '/producto') {
-            this.props.history.replace('/envios')
-          }
-          if (pathname === '/envios') {
-            console.log('back')
-            this.props.history.replace('/pagos')
-          }
-          if (pathname === '/pagos') {
-            this.props.history.replace('/perfil')
-          }
-          if (pathname === '/catalogo') {
-            this.updateProductLocations('back')
-            this.props.history.replace('/producto')
-          }
-        }
+        this.updateProductLocations('back');
+        this.props.history.replace('/producto');
+      }
+      if (pathname === '/catalogo') {
+        this.updateProductLocations('back')
+        this.props.history.replace('/producto');
       }
     } else {
-      this.setState({ navBarTitle: null })
-      this.props.history.replace('/')
+      this.setState({ navBarTitle: null });
+      this.props.history.replace('/');
     }
   }
 
   handleForward = () => {
-    const { pathname, products } = this.state
+    const { pathname, products, currentProduct } = this.state
+    console.log(pathname)
     this.setState({ navBarTitle: null })
     if (pathname === '/perfil') {
       this.props.history.replace('/pagos')
@@ -217,6 +213,16 @@ class App extends Component {
         this.updateProductLocations('forward')
       }
       this.props.history.replace('/producto')
+    }
+    if (pathname === '/producto') {
+      if (currentProduct == products[0]) {
+        // First product in list
+       this.updateProductLocations('forward')
+       this.props.history.replace('/catalogo')
+      } else {
+        this.updateProductLocations('forward')
+        this.props.history.replace('/producto')
+      }
     }
   }
 
