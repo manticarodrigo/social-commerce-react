@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { updateTitle } from '../../actions/titleActions';
+import { updateTitle } from '../../actions/navActions';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -38,7 +38,7 @@ class ShippingOptions extends Component {
 	}
 
 	handleSubmit = () => {
-		this.props.onSubmit(null)
+		this.props.onSubmit(null);
 	}
 
   render() {
@@ -50,7 +50,7 @@ class ShippingOptions extends Component {
 			checkedUrbaner,
 			checkedGlovo,
 			loading
-		} = this.state
+		} = this.state;
     return (
 			<div className='ShippingOptions'>
 				<p style={{maxWidth: '250px', margin: '1em auto'}}>
@@ -175,10 +175,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  updateTitle: (title) => updateTitle(title)
+  updateTitle
 }, dispatch)
 
 export default connect(
-	null,
+	mapStateToProps,
 	mapDispatchToProps
 )(ShippingOptions);

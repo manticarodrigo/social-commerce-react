@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { updateTitle } from '../../actions/titleActions';
+import { bindActionCreators } from 'redux';
+import { updateTitle } from '../../actions/navActions';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -71,7 +72,7 @@ class Dashboard extends Component {
 	render() {
 		const { category, updateTitle, products } = this.props;
 		updateTitle(category ? category.name : 'Tu Tienda') // move from render
-		const { deleteDialogOpen, shareDialogOpen, moreProduct, title } = this.state;
+		const { deleteDialogOpen, shareDialogOpen, moreProduct } = this.state;
 	  return (
 			<div>
 				<List dense={false}>
@@ -154,7 +155,11 @@ const mapStateToProps = state => ({
   // title: state.title.title
 });
 
+const mapDispatchToProps = dispatch => bindActionCreators({
+  updateTitle
+}, dispatch);
+
 export default connect(
-	null,
-	{ updateTitle }
+	mapStateToProps,
+	mapDispatchToProps
 )(Dashboard);

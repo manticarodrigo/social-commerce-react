@@ -1,31 +1,34 @@
 import {
-  UPDATE_TITLE,
-  CREATE_PRODUCT,
-  FETCH_PRODUCTS
+  FETCH_PRODUCTS,
+  UPDATE_PRODUCT_LOCATIONS,
+  CREATE_PRODUCT
 } from '../actions/types';
 
 const initialState = {
-  title: '',
-  products: null
+  products: null,
+  currentProduct: null,
+  nextProduct: null
 };
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case UPDATE_TITLE:
-      return {
-        ...state,
-        title: action.payload
-      };
     case FETCH_PRODUCTS:
       return {
         ...state,
-        title: action.payload
-      }
+        products: action.payload,
+        currentProduct: action.payload[0]
+      };
+    case UPDATE_PRODUCT_LOCATIONS:
+      return {
+        ...state,
+        currentProduct: action.payload.currentProduct,
+        nextProduct: action.payload.nextProduct
+      };
     case CREATE_PRODUCT:
       return {
         ...state,
-        products: action.payload
-      }
+        products: state.products.push(action.payload)
+      };
     default:
       return state;
   }

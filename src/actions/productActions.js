@@ -1,30 +1,24 @@
 import axios from 'axios'
 import {
-	UPDATE_TITLE,
-  FETCH_PRODUCTS,
-  FETCH_PRODUCT_ANALYTICS,
-  CREATE_PRODUCT,
-  UPDATE_PRODUCT,
-  DELETE_PRODUCT
+	FETCH_PRODUCTS,
+	UPDATE_PRODUCT_LOCATIONS
+  // FETCH_PRODUCT_ANALYTICS,
+  // CREATE_PRODUCT,
+  // UPDATE_PRODUCT,
+  // DELETE_PRODUCT
 } from './types';
 
-export const updateTitle = title => dispatch => {
-  dispatch({
-    type: UPDATE_TITLE,
-    payload: title
-  });
-};
+const options = {
+	auth: {
+		username: process.env.REACT_APP_WOOCOMMERCE_USERNAME,
+		password: process.env.REACT_APP_WOOCOMMERCE_PASSWORD
+	}
+}
 
-export const fetchProducts = categoryId => dispatch => {
-	console.log(categoryId)
-	return dispatch => {
-		const options = {
-			auth: {
-				username: process.env.REACT_APP_WOOCOMMERCE_USERNAME,
-				password: process.env.REACT_APP_WOOCOMMERCE_PASSWORD
-			}
-		};
-		axios.get(process.env.REACT_APP_BACKEND_URL + '/wp-json/wc/v2/products/?category=' + categoryId, options)
+export const fetchProducts = (categoryId) => {
+	const url = process.env.REACT_APP_BACKEND_URL;
+	return (dispatch) => {
+		return axios.get(`${url}/wp-json/wc/v2/products/?category=${categoryId}`, options)
 			.then(res => {
 				console.log(res);
 				const products = res.data;
@@ -34,9 +28,50 @@ export const fetchProducts = categoryId => dispatch => {
 				});
 			})
 			.catch(err => {
-				console.log(err);
+				throw(err);
 			});
 	};
+}
+
+export const updateProductLocations = (direction, products, currentProduct) => {
+  return (dispatch) => {
+    if (Boolean(products) && direction === 'back') {
+      var index = currentProduct ? (
+        products
+          .map(e => { return e.name; })
+          .indexOf(currentProduct.name) + 1
+      ) : 0;
+      dispatch({
+        type: UPDATE_PRODUCT_LOCATIONS,
+        payload: {
+          currentProduct: products[index],
+          nextProduct: products[index - 1] ? products[index - 1] : null
+        }
+      });
+    }
+    if (Boolean(products)) {
+      index = currentProduct ? (
+        products
+          .map(e => { return e.name })
+          .indexOf(currentProduct.name) - 1
+      ) : products.length - 1;
+      dispatch({
+        type: UPDATE_PRODUCT_LOCATIONS,
+        payload: {
+          currentProduct: products[index !== -1 ? index : 0],
+          nextProduct: products[index - 1] ? products[index - 1] : null
+        }
+      });
+    } else {
+      dispatch({
+        type: UPDATE_PRODUCT_LOCATIONS,
+        payload: {
+          currentProduct: null,
+          nextProduct: null
+        }
+      });
+    }
+  }
 }
 
 // export const fetchProductsAnalytics = (productId, period) => dispatch => {
@@ -56,12 +91,6 @@ export const fetchProducts = categoryId => dispatch => {
 // 		manage_stock: data.inventoryCount ? true : false,
 // 		stock_quantity: data.inventoryCount ? data.inventoryCount : 0,
 // 		in_stock: true,
-// 	}
-// 	const options = {
-// 		auth: {
-// 			username: process.env.REACT_APP_WOOCOMMERCE_USERNAME,
-// 			password: process.env.REACT_APP_WOOCOMMERCE_PASSWORD
-// 		}
 // 	}
 //   axios.post(url + '/wp-json/wc/v2/products/', product, options)
 //     .then(res => {
@@ -92,21 +121,9 @@ export const fetchProducts = categoryId => dispatch => {
 // 		stock_quantity: data.inventoryCount ? data.inventoryCount : 0,
 // 		in_stock: true,
 // 	}
-// 	const options = {
-// 		auth: {
-// 			username: process.env.REACT_APP_WOOCOMMERCE_USERNAME,
-// 			password: process.env.REACT_APP_WOOCOMMERCE_PASSWORD
-// 		}
-// 	}
 // 	return axios.put(url + '/wp-json/wc/v2/products/' + data.id, product, options)
 // }
 
 // export function deleteProduct(productId) {
-// 	const options = {
-// 		auth: {
-// 			username: process.env.REACT_APP_WOOCOMMERCE_USERNAME,
-// 			password: process.env.REACT_APP_WOOCOMMERCE_PASSWORD
-// 		}
-// 	}
 // 	return axios.delete(url + '/wp-json/wc/v2/products/' + productId, options)
 // }

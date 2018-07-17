@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { updateTitle } from '../../actions/titleActions';
+import { updateTitle } from '../../actions/navActions';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -50,18 +50,18 @@ class PaymentOptions extends Component {
 
 	static getDerivedStateFromProps = (props, state) => {
 		const { category } = props;
-		const { id } = state
+		const { id } = state;
 		if (category && category.id !== id) {
 			return {
 				checkedTransfer: category.bank_account !== '' ? true : false,
 				bankAccount: category.bank_account !== '' ? category.bank_account : ''
-			}
+			};
 		}
-		return null
+		return null;
   }
 	
 	handleCheckboxChange = name => event => {
-		console.log(event.target.checked)
+		console.log(event.target.checked);
 		this.setState({ [name]: event.target.checked });
 	}
 
@@ -76,11 +76,10 @@ class PaymentOptions extends Component {
 	handleSubmit = () => {
 		this.setState({ loading: true });
 		const { auth, category, onSubmit } = this.props;
-		console.log(category)
 		const { checkedTransfer, bankAccount } = this.state;
 		if (category && checkedTransfer) {
 			if (bankAccount !== '') {
-				category.bankAccount = bankAccount
+				category.bankAccount = bankAccount;
 				updateCategory(auth, category)
 					.then(res => {
 						console.log(res);
@@ -90,14 +89,14 @@ class PaymentOptions extends Component {
 						}
 					})
 					.catch(err => {
-						console.log(err)
+						console.log(err);
 					})
 			} else {
 				this.setState({ loading: false });
 				alert('Favor llenar campos requeridos.');
 			}
 		} else {
-			category.bankAccount = null
+			category.bankAccount = null;
 			updateCategory(auth, category)
 				.then(res => {
 					console.log(res);
@@ -107,8 +106,8 @@ class PaymentOptions extends Component {
 					}
 				})
 				.catch(err => {
-					console.log(err)
-				})
+					console.log(err);
+				});
 		}
 	}
 
@@ -125,7 +124,7 @@ class PaymentOptions extends Component {
 			checkedCard,
 			bankAccount,
 			loading
-		} = this.state
+		} = this.state;
     return (
 			<div className='PaymentOptions'>
 				<p style={{maxWidth: '250px', margin: '1em auto'}}>
@@ -311,10 +310,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  updateTitle: (title) => updateTitle(title)
+  updateTitle
 }, dispatch)
 
 export default connect(
-	null,
+	mapStateToProps,
 	mapDispatchToProps
 )(PaymentOptions);

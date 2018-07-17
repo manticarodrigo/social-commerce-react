@@ -60,26 +60,50 @@ class NavBar extends React.Component {
     this.props.changePage('/ingresar')
   }
 
+  backCase = () => {
+    const { pathname, category } = this.props;
+    if (category && category.approved) {
+      return  pathname !== '/' ? true : false;
+    } else if (pathname !== '/perfil') {
+      return true;
+    }
+    return false;
+  }
+  
+  forwardCase = () => {
+    const { pathname, category, products, nextProduct } = this.props;
+    if (category && !category.approved) {
+      if (pathname === '/perfil' && products) {
+        return true;
+      } else if (pathname === '/producto' && nextProduct) {
+        return true;
+      } else if (pathname === '/pagos') {
+        return true;
+      } else if (pathname === '/envios') {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
+
   render() {
-    const { classes, title, category, products, onBack, onForward } = this.props
-    console.log(products)
-    const { anchorEl } = this.state
-    const open = Boolean(anchorEl)
+    const { classes, title, category } = this.props;
+    const { anchorEl } = this.state;
     return (
       <div className={classes.root}>
         <AppBar position='fixed'>
           <Toolbar>
-            {onBack && (
+            {this.backCase() && (
               <IconButton
                 className={classes.menuButton}
                 color='inherit'
                 aria-label='Back'
-                disabled={!onBack}
                 onClick={this.props.onBack}>
                   <ArrowBackIcon />
               </IconButton>
             )}
-            {onForward && (
+            {this.forwardCase() && (
               <IconButton
                 className={classes.menuButton}
                 color='inherit'
@@ -92,7 +116,7 @@ class NavBar extends React.Component {
               {title}
             </Typography>
             <IconButton
-              aria-owns={open ? 'menu-appbar' : null}
+              aria-owns={Boolean(anchorEl) ? 'menu-appbar' : null}
               aria-haspopup='true'
               onClick={this.handleMenu}
               color='inherit'
@@ -110,7 +134,7 @@ class NavBar extends React.Component {
                 vertical: 'top',
                 horizontal: 'right',
               }}
-              open={open}
+              open={Boolean(anchorEl)}
               onClose={this.handleClose}
             >
               <MenuItem
@@ -143,12 +167,16 @@ class NavBar extends React.Component {
 NavBar.propTypes = {
   classes: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
-  products: PropTypes.array
+  category: PropTypes.object,
+  products: PropTypes.array,
+  pathname: PropTypes.string
 }
 
 const mapStateToProps = state => ({
-  title: state.title.title,
-  products: state.products.products
+  title: state.nav.title,
+  category: state.categories.category,
+  products: state.products.products,
+  pathname: state.nav.pathname
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
-import titleReducer from './titleReducer';
+import navReducer from './navReducer';
+import categoryReducer from './categoryReducer';
 import productReducer from './productReducer';
 
 export default combineReducers({
-  title: titleReducer,
+  nav: navReducer,
+  categories: categoryReducer,
   products: productReducer
 });

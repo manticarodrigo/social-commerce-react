@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { updateTitle } from '../../actions/titleActions';
+import { updateTitle } from '../../actions/navActions';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -15,10 +15,7 @@ import { uploadMedia, createProduct, updateProduct } from '../../services/WordPr
 class ProductForm extends Component {
 	constructor(props) {
 		super(props);
-
-		const { user, product } = this.props;
-		if (!user) this.props.onBack();
-
+		const { product } = this.props;
 		this.state = {
 			id: product ? product.id : '',
 			name: product ? product.name : '',
@@ -294,10 +291,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  updateTitle: (title) => updateTitle(title)
+	updateTitle
 }, dispatch);
 
 export default connect(
-	null,
+	mapStateToProps,
 	mapDispatchToProps
 )(ProductForm);

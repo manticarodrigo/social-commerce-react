@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { updateTitle } from '../../actions/titleActions';
+import { updateTitle } from '../../actions/navActions';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -270,10 +270,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  updateTitle: (title) => updateTitle(title)
+  updateTitle
 }, dispatch)
 
 export default connect(
-	null,
+	mapStateToProps,
 	mapDispatchToProps
 )(CategoryForm);
