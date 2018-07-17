@@ -259,25 +259,29 @@ class App extends Component {
   }
 
   handlePaymentOptionsSubmit = (category) => {
+    const currentCategory = this.state.category;
     this.setState({
-      category: category ? category : this.state.category ? this.state.category : null,
+      category: category ? category : currentCategory ? currentCategory : null,
       navBarTitle: null
-    })
+    });
     if (category && category.approved) {
-      this.props.history.replace('/')
+      this.props.history.replace('/');
     } else {
-      // this.updateProductLocations('forward')
-      this.props.history.replace('/envios')
+      this.props.history.replace('/envios');
     }
   }
 
   handleShippingOptionsSubmit = (category) => {
-    this.setState({ category: category, navBarTitle: null })
+    const currentCategory = this.state.category;
+    this.setState({
+      category: category ? category : currentCategory ? currentCategory : null,
+      navBarTitle: null
+    });
     if (category && category.approved) {
-      this.props.history.replace('/')
+      this.props.history.replace('/');
     } else {
-      this.updateProductLocations('forward')
-      this.props.history.replace('/producto')
+      this.updateProductLocations('forward');
+      this.props.history.replace('/producto');
     }
   }
 
