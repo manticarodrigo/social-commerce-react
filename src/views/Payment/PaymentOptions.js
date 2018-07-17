@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { updateTitle } from '../../actions/titleActions';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -18,31 +21,96 @@ import Culqi from '../../assets/png/Culqi.png';
 import PagoFlash from '../../assets/png/PagoFlash.png';
 import './PaymentOptions.css';
 
+import { updateCategory } from '../../services/WordPress';
+
 class PaymentOptions extends Component {
-  state = {
-    checkedCash: true,
-    checkedTransfer: false,
-    checkedPayPal: false,
-		checkedBitcoin: false,
-		checkedMercadoPago: false,
-		checkedPayU: false,
-		checkedCulqi: false,
-		checkedPagoFlash: false,
-		checkedCard: false,
-		bankAccount: '',
-		loading: false
-	};
+	constructor(props) {
+		super(props)
+		const { category } = props
+		this.state = {
+			id: category ? category.id : null,
+			checkedCash: true,
+			checkedTransfer: category && category.bank_account !== '' ? true : false,
+			checkedPayPal: false,
+			checkedBitcoin: false,
+			checkedMercadoPago: false,
+			checkedPayU: false,
+			checkedCulqi: false,
+			checkedPagoFlash: false,
+			checkedCard: false,
+			bankAccount: category && category.bank_account !== '' ? category.bank_account : '',
+			loading: false
+		};
+	}
+
+	componentDidMount() {
+		const { updateTitle } = this.props;
+		updateTitle('Opciones de Pago');
+	}
+
+	static getDerivedStateFromProps = (props, state) => {
+		const { category } = props;
+		const { id } = state
+		if (category && category.id !== id) {
+			return {
+				checkedTransfer: category.bank_account !== '' ? true : false,
+				bankAccount: category.bank_account !== '' ? category.bank_account : ''
+			}
+		}
+		return null
+  }
 	
 	handleCheckboxChange = name => event => {
+		console.log(event.target.checked)
 		this.setState({ [name]: event.target.checked });
 	}
 
-  handleTextFieldChange = name => event => {
+  handleTextFieldChange = (event) => {
 		const target = event.target;
+		const name = target.name;
 		const value = target.value;
 		if ((name === 'bankAccount') && !value.match(/^(\s*|\d+)$/)) { return; }
 		this.setState({ [name]: value });
-  };
+	};
+	
+	handleSubmit = () => {
+		this.setState({ loading: true });
+		const { auth, category, onSubmit } = this.props;
+		console.log(category)
+		const { checkedTransfer, bankAccount } = this.state;
+		if (category && checkedTransfer) {
+			if (bankAccount !== '') {
+				category.bankAccount = bankAccount
+				updateCategory(auth, category)
+					.then(res => {
+						console.log(res);
+						if (res.data && res.data.id !== null) {
+							this.setState({ loading: false });
+							onSubmit(res.data);
+						}
+					})
+					.catch(err => {
+						console.log(err)
+					})
+			} else {
+				this.setState({ loading: false });
+				alert('Favor llenar campos requeridos.');
+			}
+		} else {
+			category.bankAccount = null
+			updateCategory(auth, category)
+				.then(res => {
+					console.log(res);
+					if (res.data && res.data.id !== null) {
+						this.setState({ loading: false });
+						onSubmit(res.data);
+					}
+				})
+				.catch(err => {
+					console.log(err)
+				})
+		}
+	}
 
   render() {
 		const {
@@ -216,7 +284,7 @@ class PaymentOptions extends Component {
 							required
 							fullWidth
 							margin='normal'
-							label='Numero de cuenta de banco'
+							label='Numero de cuenta bancaria'
 							name='bankAccount'
 							value={bankAccount} />
 					</form>
@@ -238,4 +306,15 @@ class PaymentOptions extends Component {
   }
 }
 
-export default PaymentOptions;
+const mapStateToProps = state => ({
+  // title: state.title.title
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  updateTitle: (title) => updateTitle(title)
+}, dispatch)
+
+export default connect(
+	null,
+	mapDispatchToProps
+)(PaymentOptions);

@@ -20,6 +20,7 @@ const styles = {
   },
   flex: {
     flex: 1,
+    fontSize: '1.2em'
   },
   menuButton: {
     marginLeft: -12,
@@ -60,9 +61,8 @@ class NavBar extends React.Component {
   }
 
   render() {
-    const { classes, title, category, onBack, onForward } = this.props
-    console.log(category)
-    console.log(title)
+    const { classes, title, category, products, onBack, onForward } = this.props
+    console.log(products)
     const { anchorEl } = this.state
     const open = Boolean(anchorEl)
     return (
@@ -142,18 +142,20 @@ class NavBar extends React.Component {
 
 NavBar.propTypes = {
   classes: PropTypes.object.isRequired,
-  title: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
+  products: PropTypes.array
 }
 
 const mapStateToProps = state => ({
-  title: state.title.title
+  title: state.title.title,
+  products: state.products.products
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   changePage: (route) => push(route)
-}, dispatch)
+}, dispatch);
 
 export default connect(
   mapStateToProps, 
   mapDispatchToProps
-)(withStyles(styles)(NavBar))
+)(withStyles(styles)(NavBar));

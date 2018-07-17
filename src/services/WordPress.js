@@ -27,6 +27,7 @@ export function createCategory(auth, data) {
 
 export function updateCategory(auth, data) {
 	const image = data.imageId ? { id: data.imageId } : data.image ? { id: data.image.id } : { src: data.businessLogo }
+	console.log(data)
 	const category = {
 		approved: data.approved,
 		name: data.businessName,
@@ -35,7 +36,7 @@ export function updateCategory(auth, data) {
 		dni: data.dni,
 		ruc: data.ruc,
 		phone: data.phone,
-		bank_account: data.bankAccount,
+		bank_account: data.bankAccount ? data.bankAccount : '',
 		logistic_provider: data.logisticProvider
 	}
 	return axios.put(`${url}/wp-json/wc/custom/products/categories/${data.id}`, category)
@@ -65,6 +66,20 @@ export function fetchCategories(auth) {
 // 	return axios.post(url + '/wp-json/wp/v2/users/' + auth.wp_user_id, user)
 // }
 
+export function uploadMedia(file) {
+	const stamp = Date.now()
+	var formData = new FormData()
+	formData.append('file', file)
+	formData.append('title', stamp)
+	formData.append('caption', 'test')
+
+	return axios.post(url + '/wp-json/wp/v2/media', formData, {
+		headers: {
+			'Content-Type': 'multipart/form-data'
+		}
+	})
+}
+
 export function createProduct(data) {
 	const id = {id: data.imageId, position: 0}
 	const src = {src: data.imageUrl, position: 0}
@@ -75,8 +90,8 @@ export function createProduct(data) {
 		short_description: data.description,
 		categories: [{id: data.category.id}],
 		images: [data.imageId ? id : src],
-		manage_stock: true,
-		stock_quantity: data.inventoryCount,
+		manage_stock: data.inventoryCount ? true : false,
+		stock_quantity: data.inventoryCount ? data.inventoryCount : 0,
 		in_stock: true,
 	}
 	const options = {
@@ -85,12 +100,13 @@ export function createProduct(data) {
 			password: process.env.REACT_APP_WOOCOMMERCE_PASSWORD
 		}
 	}
-	return axios.post(url + '/wp-json/wc/v2/products/', product, options)
-}
+  return axios.post(url + '/wp-json/wc/v2/products/', product, options)
+};
 
 export function updateProduct(data) {
 	const id = {id: data.imageId, position: 0}
 	const src = {src: data.imageUrl, position: 0}
+	
 	const product = {
 		name: data.name,
 		regular_price: data.cost,
@@ -98,8 +114,8 @@ export function updateProduct(data) {
 		short_description: data.description,
 		categories: [{id: data.category.id}],
 		images: [data.imageId ? id : src],
-		manage_stock: true,
-		stock_quantity: data.inventoryCount,
+		manage_stock:  data.inventoryCount ? true : false,
+		stock_quantity: data.inventoryCount ? data.inventoryCount : 0,
 		in_stock: true,
 	}
 	const options = {
@@ -132,20 +148,5 @@ export function fetchProducts(categoryId) {
 }
 
 export function fetchProductsAnalytics(productId, period) {
-	// productId = 219; // just for testing
 	return axios.get(url + '/wp-json/ga/v1/product/' + productId + '?period=' + period);
-}
-
-export function uploadMedia(file) {
-	const stamp = Date.now()
-	var formData = new FormData()
-	formData.append('file', file)
-	formData.append('title', stamp)
-	formData.append('caption', 'test')
-
-	return axios.post(url + '/wp-json/wp/v2/media', formData, {
-		headers: {
-			'Content-Type': 'multipart/form-data'
-		}
-	})
 }

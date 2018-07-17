@@ -16,7 +16,7 @@ class ProductForm extends Component {
 	constructor(props) {
 		super(props);
 
-		const { user, product, category } = this.props;
+		const { user, product } = this.props;
 		if (!user) this.props.onBack();
 
 		this.state = {
@@ -24,19 +24,20 @@ class ProductForm extends Component {
 			name: product ? product.name : '',
 			description: product ? product.description.replace(/<[^>]+>/g, '') : '',
 			cost: product ? product.price : '',
-			inventoryCount: product ? product.stock_quantity : '',
+			inventoryCount: product && product.stock_quantity ? product.stock_quantity : '',
 			imageUrl: product ? product.images[0].src : '',
 			imageId: product ? product.images[0].id : null,
 			imageFile: null,
 			uploadDialogOpen: false,
 			loading: false,
-			adding: false
-		};
+			adding: false,
+			keyboardOpen: false
+		}
 	}
 
 	componentDidMount() {
 		const { updateTitle, product } = this.props;
-		updateTitle(product ? 'Edita ' + product.name : 'Registra tu Producto');
+		updateTitle(product ? 'Edita ' + product.name : 'Crea Producto');
 	}
 
 	static getDerivedStateFromProps = (props, state) => {
@@ -48,7 +49,7 @@ class ProductForm extends Component {
 				name: product.name,
 				description: product.description.replace(/<[^>]+>/g, ''),
 				cost: product.price,
-				inventoryCount: product.stock_quantity,
+				inventoryCount: product.stock_quantity ? product.stock_quantity : '',
 				imageUrl: product.images[0].src,
 				imageId: product.images[0].id,
 				imageFile: null,
@@ -67,19 +68,16 @@ class ProductForm extends Component {
   }
 
 	handleUploadDialogClose = (value) => {
-		const { imageId } = this.state;
-		if (typeof(value) === 'object') {
+		if (typeof(value) === 'object' && value !== null) {
 			this.setState({
 				uploadDialogOpen: false,
-				imageUrl: value !== null ? value.imageUrl : '',
+				imageUrl: value.imageUrl,
 				imageId: null,
 				imageFile: value.imageFile
 			});
 		} else {
 			this.setState({
-				uploadDialogOpen: false,
-				imageUrl: value !== undefined ? value : '',
-				imageId: value !== undefined ? null : imageId
+				uploadDialogOpen: false
 			});
 		}
 	}
@@ -87,12 +85,11 @@ class ProductForm extends Component {
   handleSubmit = (type) => {
 		this.setState({ loading: true, adding: type === 'add' ? true : false });
 		const data = this.state;
-		const { name, description, cost, inventoryCount, imageUrl, imageFile } = this.state;
+		const { name, description, cost, imageUrl, imageFile } = this.state;
 		if (
 			name !== '' &&
 			description !== '' &&
 			cost !== '' &&
-			inventoryCount !== '' &&
 			imageUrl !== ''
 		) {
 			const { product, category } = this.props;
@@ -101,8 +98,9 @@ class ProductForm extends Component {
 			if (imageFile) {
 				uploadMedia(imageFile)
 					.then(res => {
-						console.log(res);
-						data.imageId = res.data.id;
+						console.log(res)
+						data.imageId = res.data.id
+						console.log(data.imageId)
 						callback(data)
 							.then(res => {
 								console.log(res);
@@ -162,20 +160,30 @@ class ProductForm extends Component {
 	}
   
 	handleInputChange = (event) => {
-	  const target = event.target;
-	  const value = target.type === 'checkbox' ? target.checked : target.value;	
-		const name = target.name;
-		if ((
-			name === 'cost' ||
-			name === 'inventoryCount'
-		) && !value.match(/^(\s*|\d+)$/)) { return }
-		if (name === 'description' && value.length >= 300) { return }
-	  this.setState({ [name]: value });
+	  const target = event.target
+	  var value = target.type === 'checkbox' ? target.checked : target.value	
+		const name = target.name
+		if (name === 'cost' && !value.match(/^\d*\.?\d*$/)) {
+			return
+		} else if	(name === 'inventoryCount' && !value.match(/^(\s*|\d+)$/)) {
+			 return
+		} else if (name === 'description' && value.length >= 300) {
+			return 
+		}
+	  this.setState({ [name]: value })
+	}
+
+	handleInputFocus = (event) => {
+		this.setState({ keyboardOpen: true})
+	}
+
+	handleInputBlur = (event) => {
+		this.setState({ keyboardOpen: false})
 	}
   
 	render() {
 		const { user, product, category } = this.props;
-		const { uploadDialogOpen, loading, adding } = this.state;
+		const { uploadDialogOpen, loading, adding, keyboardOpen } = this.state;
 	  return (
 			<div className='ProductForm' style={{paddingBottom: 'calc(75px + 2em'}}>
 				{uploadDialogOpen && (
@@ -187,6 +195,8 @@ class ProductForm extends Component {
 				<form
 					style={{textAlign:'left'}}
 					onChange={this.handleInputChange}
+					onFocus={this.handleInputFocus}
+					onBlur={this.handleInputBlur}
 					onSubmit={this.handleSubmit}>
 					<div className='UploadWrapper'>
 						<Button
@@ -212,7 +222,7 @@ class ProductForm extends Component {
 							required
 							style={{width: 'calc(100% - 104px'}}
 							margin='normal'
-							label='Nombre de producto'
+							label='Nombre del producto'
 							name='name'
 							value={this.state.name}
 							type='text' />
@@ -240,7 +250,11 @@ class ProductForm extends Component {
 						name='inventoryCount'
 						value={this.state.inventoryCount} />
 				</form>
-				<div className='AddButtonWrapper'>
+				<div
+					className='AddButtonWrapper'
+					style={{
+						opacity: keyboardOpen ? '0.25' : '1',
+					}}>
 					<Button
 						size='large'
 						variant='contained'
@@ -253,12 +267,16 @@ class ProductForm extends Component {
 					</Button>
 					{(loading && adding) && <CircularProgress size={24} className='ButtonProgress' />}
 				</div>
-				<div className='ShareButtonWrapper'>
+				<div
+					className='ShareButtonWrapper'
+					style={{
+						opacity: keyboardOpen ? '0.25' : '1',
+					}}>
 					<Button
 						size='large'
 						variant='contained'
 						color='primary'
-						className='SaveButton'
+						className='SaveButton ShareButton'
 						disabled={loading}
 						onClick={() => this.handleSubmit('finish')}
 					>

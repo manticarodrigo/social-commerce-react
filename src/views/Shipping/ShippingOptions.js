@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { updateTitle } from '../../actions/titleActions';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -25,16 +28,18 @@ class ShippingOptions extends Component {
 		loading: false
 	};
 	
+	componentDidMount() {
+		const { updateTitle } = this.props;
+		updateTitle('Opciones de Envio');
+	}
+	
 	handleCheckboxChange = name => event => {
 		this.setState({ [name]: event.target.checked });
 	}
 
-  handleTextFieldChange = name => event => {
-		const target = event.target;
-		const value = target.value;
-		if ((name === 'bankAccount') && !value.match(/^(\s*|\d+)$/)) { return; }
-		this.setState({ [name]: value });
-  };
+	handleSubmit = () => {
+		this.props.onSubmit(null)
+	}
 
   render() {
 		const {
@@ -165,4 +170,15 @@ class ShippingOptions extends Component {
   }
 }
 
-export default ShippingOptions;
+const mapStateToProps = state => ({
+  // title: state.title.title
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  updateTitle: (title) => updateTitle(title)
+}, dispatch)
+
+export default connect(
+	null,
+	mapDispatchToProps
+)(ShippingOptions);

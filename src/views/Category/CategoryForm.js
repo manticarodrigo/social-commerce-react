@@ -16,7 +16,7 @@ class CategoryForm extends Component {
 		super(props)
 		const { user, category } = props;
 		this.state = {
-			id: category ? category.id : false,
+			id: category ? category.id : null,
 			ownerId: user && user.profile.id ? user.profile.id : '',
 			businessName: category ? category.name : '',
 			businessLogo: category && category.image ? category.image.src : '',
@@ -28,7 +28,8 @@ class CategoryForm extends Component {
 			dni: category ? category.dni : '',
 			ruc: category ? category.ruc : '',
 			uploadDialogOpen: false,
-			loading: false
+			loading: false,
+			keyboardOpen: false
 		};
 	}
 
@@ -36,6 +37,30 @@ class CategoryForm extends Component {
 		const { updateTitle, category } = this.props;
 		updateTitle(category ? 'Edita ' + category.name : 'Registra tu Tienda');
 	}
+
+	static getDerivedStateFromProps = (props, state) => {
+		const { user, category } = props;
+		const { id } = state;
+		if ((user && category) && category.id !== id) {
+			return {
+				id: category.id,
+				ownerId: category.ownerId,
+				businessName: category.name,
+				businessLogo: category.image ? category.image.src : '',
+				imageId: category.image ? category.image.id : null,
+				imageFile: null,
+				name: user.profile.name,
+				email: user.profile.email,
+				phone: category.phone,
+				dni: category.dni,
+				ruc: category.ruc,
+				uploadDialogOpen: false,
+				loading: false,
+				keyboardOpen: false
+			}
+		}
+		return null
+  }
 	
 	handleUploadDialogOpen = () => {
     this.setState({
@@ -44,20 +69,16 @@ class CategoryForm extends Component {
   }
 
   handleUploadDialogClose = (value) => {
-		const { imageId } = this.state;
-		if (typeof(value) === 'object') {
-			console.log(value);
+		if (typeof(value) === 'object' && value !== null) {
 			this.setState({
 				uploadDialogOpen: false,
-				businessLogo: value !== null ? value.imageUrl : '',
+				businessLogo: value.imageUrl,
 				imageId: null,
 				imageFile: value.imageFile
 			});
 		} else {
 			this.setState({
-				uploadDialogOpen: false,
-				businessLogo: value !== undefined ? value : '',
-				imageId: value !== undefined ? null : imageId
+				uploadDialogOpen: false
 			});
 		}
 	}
@@ -131,10 +152,18 @@ class CategoryForm extends Component {
 		}
 		this.setState({ [name]: value });
 	}
+
+	handleInputFocus = (event) => {
+		this.setState({ keyboardOpen: true})
+	}
+
+	handleInputBlur = (event) => {
+		this.setState({ keyboardOpen: false})
+	}
   
 	render() {
 		const { user, category } = this.props;
-		const { uploadDialogOpen, loading, businessLogo } = this.state;
+		const { uploadDialogOpen, loading, businessLogo, keyboardOpen } = this.state;
 	  return (
 			<div className='CategoryForm' style={{paddingBottom: 'calc(30px + 2em'}}>
 				{uploadDialogOpen && (
@@ -146,6 +175,8 @@ class CategoryForm extends Component {
 				<form
 					style={{textAlign:'left'}}
 					onChange={this.handleInputChange}
+					onFocus={this.handleInputFocus}
+					onBlur={this.handleInputBlur}
 					onSubmit={this.handleSubmit}>
 					<div className='UploadWrapper'>
 						<Button
@@ -188,7 +219,7 @@ class CategoryForm extends Component {
 						required
 						fullWidth
 						margin='normal'
-						label='Correo electronico'
+						label='Correo electrónico'
 						name='email'
 						value={this.state.email}
 						type='email' />
@@ -196,24 +227,28 @@ class CategoryForm extends Component {
 						required
 						fullWidth
 						margin='normal'
-						label='Numero de telefono celular'
+						label='Número de teléfono celular'
 						name='phone'
 						value={this.state.phone} />
 					<TextField
 						required
 						fullWidth
 						margin='normal'
-						label='Numero de DNI'
+						label='Número de DNI'
 						name='dni'
 						value={this.state.dni} />
 					<TextField
 						fullWidth
 						margin='normal'
-						label='Numero RUC'
+						label='Número RUC'
 						name='ruc'
 						value={this.state.ruc} />
 				</form>
-				<div className='SaveButtonWrapper'>
+				<div
+					className='SaveButtonWrapper'
+					style={{
+						opacity: keyboardOpen ? '0.25' : '1',
+					}}>
 					<Button
 						size='large'
 						variant='contained'

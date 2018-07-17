@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import SocialButton from '../../components/SocialButton/SocialButton'
 import './Login.css'
+import Logo from '../../assets/png/Logo.png'
 
 import TermsDialog from '../../components/Dialog/TermsDialog'
 
@@ -35,9 +36,7 @@ class Login extends Component {
             termsDialogOpen: false
           })} />
         <div>
-          <h1 style={{color: '#fff'}}>
-            <span>HeyShopper</span>
-          </h1>
+          <img src={Logo} alt='HeyShopper Logo' />
           <SocialButton
             type='facebook'
             provider='facebook'

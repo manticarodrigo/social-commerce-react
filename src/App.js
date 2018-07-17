@@ -1,41 +1,44 @@
-import React, { Component } from 'react'
-import { Route, Switch, withRouter } from 'react-router-dom'
-import './App.css'
+import React, { Component } from 'react';
+import { Route, Switch, withRouter } from 'react-router-dom';
+import { push } from 'connected-react-router';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { fetchProducts } from './actions/productActions';
+import './App.css';
 
-import NavBar from './components/NavBar/NavBar'
+import NavBar from './components/NavBar/NavBar';
 
-import Error from './views/Error/Error'
-import Loading from './views/Loading/Loading'
-import Login from './views/Login/Login'
-import Dashboard from './views/Dashboard/Dashboard'
-import CategoryForm from './views/Category/CategoryForm'
-import PaymentOptions from './views/Payment/PaymentOptions'
-import ShippingOptions from './views/Shipping/ShippingOptions'
-import ProductForm from './views/Product/ProductForm'
-import ProductAnalytics from './views/ProductAnalytics/ProductAnalytics'
-import Catalog from './views/Catalog/Catalog'
+import Error from './views/Error/Error';
+import Loading from './views/Loading/Loading';
+import Login from './views/Login/Login';
+import Dashboard from './views/Dashboard/Dashboard';
+import CategoryForm from './views/Category/CategoryForm';
+import PaymentOptions from './views/Payment/PaymentOptions';
+import ShippingOptions from './views/Shipping/ShippingOptions';
+import ProductForm from './views/Product/ProductForm';
+import ProductAnalytics from './views/ProductAnalytics/ProductAnalytics';
+import Catalog from './views/Catalog/Catalog';
 
-import DeleteDialog from './components/Dialog/DeleteDialog'
+import DeleteDialog from './components/Dialog/DeleteDialog';
 
 import {
   facebookLogin,
   fetchCategories,
-  fetchProducts,
   deleteProduct,
   updateCategory,
   deleteCategory
-} from './services/WordPress'
+} from './services/WordPress';
 
 class App extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     
     // Check for current user
-    const response = JSON.parse(localStorage.getItem('user'))
+    const response = JSON.parse(localStorage.getItem('user'));
     if (response) {
-      this.processAuth(response)
+      this.processAuth(response);
     } else {
-      this.props.history.replace('/ingresar')
+      this.props.history.replace('/ingresar');
     }
 
     // Set initial app state
@@ -59,6 +62,8 @@ class App extends Component {
   }
 
   processAuth = (response) => {
+    const { fetchProducts } = this.props;
+    console.log(fetchProducts)
     // Use fb sdk response for wp auth
     facebookLogin(response.token.accessToken)
       .then(res => {
@@ -130,52 +135,98 @@ class App extends Component {
 
   updateProductLocations = (direction) => {
     const { products, currentProduct } = this.state
-    console.log(this.state)
-    if (products && direction === 'back') {
-      const index = currentProduct ? products.map(e => { return e.name }).indexOf(currentProduct.name) + 1 : 0
-      this.setState({ currentProduct: products[index], nextProduct: products[index - 1] ? products[index - 1] : null })
-    } else if (products) {
-      const index = currentProduct ? products.map(e => { return e.name }).indexOf(currentProduct.name) - 1 : products.length - 1
-      this.setState({ currentProduct: products[index], nextProduct: products[index - 1] ? products[index - 1] : null })
+    if (Boolean(products) && direction === 'back') {
+      var index = currentProduct ? (
+        products
+          .map(e => { return e.name })
+          .indexOf(currentProduct.name) + 1
+      ) : 0
+      this.setState({
+        currentProduct: products[index],
+        nextProduct: products[index - 1] ? products[index - 1] : null
+      })
+      return
+    }
+    if (Boolean(products)) {
+      index = currentProduct ? (
+        products
+          .map(e => { return e.name })
+          .indexOf(currentProduct.name) - 1
+      ) : products.length - 1
+      this.setState({
+        currentProduct: products[index !== -1 ? index : 0],
+        nextProduct: products[index - 1] ? products[index - 1] : null
+      })
+      return
     } else {
       this.setState({ currentProduct: null, nextProduct: null })
     }
   }
 
   handleBack = () => {
-    const { category, products, currentProduct } = this.state
+    const { pathname, category, products, currentProduct } = this.state;
+    this.setState({ navBarTitle: null });
     if (category && !category.approved) {
-      if (!Array.isArray(products) || !products.length) {
-        // Array does not exist, is not an array, or is empty
-        this.props.history.replace('/perfil')
-      } else {
-        // Go back an index
-        if (currentProduct === products[products.length - 1]) {
-          this.setState({ currentProduct: null, nextProduct: null, navBarTitle: null })
-          this.props.history.replace('/perfil')
-        } else {
-          this.updateProductLocations('back')
-          this.setState({ navBarTitle: null })
-          this.props.history.replace('/producto')
+      if (pathname === '/envios') {
+        console.log('back');
+        this.props.history.replace('/pagos');
+      }
+      if (pathname === '/pagos') {
+        this.props.history.replace('/perfil');
+      }
+      if (pathname === '/producto') {
+        if (!Array.isArray(products) || !products.length) {
+          // Array does not exist, is not an array, or is empty
+          this.updateProductLocations('back');
+          this.props.history.replace('/envios');
+          return;
+        } else if (currentProduct === products[products.length - 1]) {
+          // Last product in list
+          this.setState({ currentProduct: null, nextProduct: null });
+          this.props.history.replace('/envios');
+          return;
         }
+        this.updateProductLocations('back');
+        this.props.history.replace('/producto');
+      }
+      if (pathname === '/catalogo') {
+        this.updateProductLocations('back')
+        this.props.history.replace('/producto');
       }
     } else {
-      this.setState({ navBarTitle: null })
-      this.props.history.replace('/')
+      this.setState({ navBarTitle: null });
+      this.props.history.replace('/');
     }
   }
 
   handleForward = () => {
-    const { products } = this.state
-    if (!Array.isArray(products) || !products.length) {
-      // Array does not exist, is not an array, or is empty
-      this.setState({ currentProduct: null, nextProduct: null, navBarTitle: null })
+    const { pathname, products, currentProduct } = this.state
+    this.setState({ navBarTitle: null })
+    if (pathname === '/perfil') {
+      this.props.history.replace('/pagos')
+    }
+    if (pathname === '/pagos') {
+      this.props.history.replace('/envios')
+    }
+    if (pathname === '/envios') {
+      if (!Array.isArray(products) || !products.length) {
+        // Array does not exist, is not an array, or is empty
+        this.setState({ currentProduct: null, nextProduct: null, navBarTitle: null })
+      } else {
+        // Go forward an index
+        this.updateProductLocations('forward')
+      }
       this.props.history.replace('/producto')
-    } else {
-      // Go forward an index
-      this.updateProductLocations('forward')
-      this.setState({ navBarTitle: null })
-      this.props.history.replace('/producto')
+    }
+    if (pathname === '/producto') {
+      if (currentProduct == products[0]) {
+        // First product in list
+       this.updateProductLocations('forward')
+       this.props.history.replace('/catalogo')
+      } else {
+        this.updateProductLocations('forward')
+        this.props.history.replace('/producto')
+      }
     }
   }
 
@@ -198,17 +249,43 @@ class App extends Component {
   }
 
   handleCategorySubmit = (category) => {
-    this.setState({ category: category, navBarTitle: null })
+    this.setState({
+      category: category,
+      navBarTitle: null
+    })
     if (category.approved) {
       this.props.history.replace('/')
     } else {
-      this.updateProductLocations('forward')
-      this.props.history.replace('/producto')
+      // this.updateProductLocations('forward')
+      this.props.history.replace('/pagos')
     }
   }
 
   handleCategoryDelete = () => {
 		this.setState({ deleteCategoryOpen: true })
+  }
+
+  handlePaymentOptionsSubmit = (category) => {
+    this.setState({
+      category: category ? category : this.state.category ? this.state.category : null,
+      navBarTitle: null
+    })
+    if (category && category.approved) {
+      this.props.history.replace('/')
+    } else {
+      // this.updateProductLocations('forward')
+      this.props.history.replace('/envios')
+    }
+  }
+
+  handleShippingOptionsSubmit = (category) => {
+    this.setState({ category: category, navBarTitle: null })
+    if (category && category.approved) {
+      this.props.history.replace('/')
+    } else {
+      this.updateProductLocations('forward')
+      this.props.history.replace('/producto')
+    }
   }
 
   finishCategoryDelete = (category) => {
@@ -232,6 +309,7 @@ class App extends Component {
 
   handleProductSubmit = () => {
     const { category } = this.state
+    const { fetchProducts } = this.props;
     fetchProducts(category.id)
       .then(res => {
         console.log(res)
@@ -260,6 +338,7 @@ class App extends Component {
 
   handleProductDelete = (product) => {
     const { category } = this.state
+    const { fetchProducts } = this.props;
     deleteProduct(product.id)
       .then(res => {
         console.log(res)
@@ -296,7 +375,12 @@ class App extends Component {
         return true
       } else if (pathname === '/producto' && nextProduct) {
         return true
+      } else if (pathname === '/pagos') {
+        return true
+      } else if (pathname === '/envios') {
+        return true
       }
+      return false
     }
     return false
   }
@@ -312,11 +396,12 @@ class App extends Component {
       user,
       auth,
       category,
-      products,
       currentProduct,
       nextProduct,
       deleteCategoryOpen
     } = this.state
+    const { products } = this.props
+    console.log(products)
     return (
       <div className='App'>
         {category && (
@@ -374,13 +459,19 @@ class App extends Component {
               exact path='/pagos'
               render={() => (
                 <PaymentOptions
-                  onTitleChange={this.handleTitleChange} />
+                  onTitleChange={this.handleTitleChange}
+                  category={category}
+                  auth={auth}
+                  onSubmit={this.handlePaymentOptionsSubmit} />
             )} />
             <Route
               exact path='/envios'
               render={() => (
                 <ShippingOptions
-                  onTitleChange={this.handleTitleChange} />
+                  onTitleChange={this.handleTitleChange}
+                  category={category}
+                  auth={auth}
+                  onSubmit={this.handleShippingOptionsSubmit} />
             )} />
             <Route
               exact path='/producto'
@@ -425,17 +516,17 @@ class App extends Component {
   }
 }
 
-// const mapStateToProps = state => ({
-//   // title: state.title.title
-// });
+const mapStateToProps = state => ({
+  products: state.products.products
+});
 
-// const mapDispatchToProps = dispatch => bindActionCreators({
-//   updateTitle: (title) => updateTitle(title)
-// }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({
+  changePage: (route) => push(route),
+  fetchProducts
 
-// export default connect(
-// 	null,
-// 	mapDispatchToProps
-// )(Dashboard);
+}, dispatch);
 
-export default withRouter(App)
+export default connect(
+  mapStateToProps, 
+  mapDispatchToProps
+)((withRouter(App)));
