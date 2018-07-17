@@ -9,6 +9,7 @@ import {
   // DELETE_PRODUCT
 } from './types';
 
+const url = process.env.REACT_APP_BACKEND_URL;
 const options = {
 	auth: {
 		username: process.env.REACT_APP_WOOCOMMERCE_USERNAME,
@@ -17,7 +18,6 @@ const options = {
 }
 
 export const fetchProducts = (categoryId) => {
-	const url = process.env.REACT_APP_BACKEND_URL;
 	return (dispatch) => {
 		return axios.get(`${url}/wp-json/wc/v2/products/?category=${categoryId}`, options)
 			.then(res => {

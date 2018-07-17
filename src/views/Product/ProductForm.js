@@ -185,13 +185,12 @@ class ProductForm extends Component {
 	}
   
 	render() {
-		const { user, product, category } = this.props;
+		const { product, category } = this.props;
 		const { uploadDialogOpen, loading, adding, keyboardOpen } = this.state;
 	  return (
 			<div className='ProductForm' style={{paddingBottom: 'calc(75px + 2em'}}>
 				{uploadDialogOpen && (
 					<UploadDialog
-						user={user}
 						aspect={'1/1'}
 						onClose={this.handleUploadDialogClose} />
 				)}

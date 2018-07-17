@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Switch, withRouter } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { push } from 'connected-react-router';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -20,6 +20,10 @@ import Catalog from './views/Catalog/Catalog';
 
 import DeleteDialog from './components/Dialog/DeleteDialog';
 
+
+import {
+  facebookLogin
+} from './actions/authActions';
 import {
   updatePathname
 } from './actions/navActions';
@@ -34,7 +38,6 @@ import {
   resetProductLocations
 } from './actions/productActions';
 import {
-  facebookLogin,
   deleteProduct,
 } from './services/WordPress';
 
@@ -44,7 +47,6 @@ class App extends Component {
     this.state = {
       loading: false,
       user: null,
-      auth: null,
       deleteCategoryOpen: false
     };
   }
@@ -61,18 +63,22 @@ class App extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    props.updatePathname(props.location.pathname);
+    props.updatePathname(props.history.location.pathname);
     return null;
   }
 
   processAuth = (response) => {
-    const { fetchCategories, fetchProducts, changePage } = this.props;
+    const {
+      facebookLogin,
+      fetchCategories,
+      fetchProducts,
+      changePage
+    } = this.props;
     // Use fb sdk response for wp auth
-    facebookLogin(response.token.accessToken)
-      .then(res => {
-        console.log(res);
-        if (res.data.cookie) {
-          const auth = res.data;
+    facebookLogin(response)
+      .then(() => {
+        const { auth } = this.props;
+        if (auth) {
           // Check for existing categories for owner_id
           fetchCategories(auth)
             .then(() => {
@@ -81,11 +87,7 @@ class App extends Component {
                 // Check for existing products for category
                 fetchProducts(category.id)
                   .then(() => {
-                    this.setState({
-                      loading: false,
-                      user: response,
-                      auth: auth
-                    });
+                    this.setState({ loading: false });
                     const { pathname } = this.props;
                     if (pathname === '/ingresar' || pathname === '/') {
                       changePage(category.approved ? '/' : '/producto');
@@ -103,9 +105,6 @@ class App extends Component {
           this.setState({ loading: false });
           changePage('/ingresar');
         }
-      })
-      .catch(err => {
-        console.log(err);
       })
   }
 
@@ -141,14 +140,12 @@ class App extends Component {
       })
   }
 
-  handleCategorySubmit = (category) => {
-    this.setState({
-      category: category
-    });
+  handleCategorySubmit = () => {
+    const { category, changePage } = this.props;
     if (category.approved) {
-      this.props.changePage('/');
+      changePage('/');
     } else {
-      this.props.changePage('/pagos');
+      changePage('/pagos');
     }
   }
 
@@ -158,28 +155,31 @@ class App extends Component {
     })
   }
 
-  handlePaymentOptionsSubmit = (updatedCategory) => {
-    const { category } = this.props;
-    this.setState({
-      category: updatedCategory ? updatedCategory : category
-    });
+  handlePaymentOptionsSubmit = () => {
+    const {
+      category,
+      changePage
+    } = this.props;
     if (category && category.approved) {
-      this.props.changePage('/');
+      changePage('/');
     } else {
-      this.props.changePage('/envios');
+      changePage('/envios');
     }
   }
 
-  handleShippingOptionsSubmit = (updatedCategory) => {
-    const { category, products, currentProduct, updateProductLocations } = this.props;
-    this.setState({
-      category: updatedCategory ? updatedCategory : category
-    });
+  handleShippingOptionsSubmit = () => {
+    const {
+      category,
+      products,
+      currentProduct,
+      changePage,
+      updateProductLocations
+    } = this.props;
     if (category && category.approved) {
-      this.props.changePage('/');
+      changePage('/');
     } else {
       updateProductLocations('forward', products, currentProduct);
-      this.props.changePage('/producto');
+      changePage('/producto');
     }
   }
 
@@ -237,8 +237,6 @@ class App extends Component {
     } = this.props;
     const {
       loading,
-      user,
-      auth,
       deleteCategoryOpen
     } = this.state;
     return (
@@ -279,8 +277,6 @@ class App extends Component {
               exact path='/perfil'
               render={() => (
                 <CategoryForm
-                  user={user}
-                  auth={auth}
                   onBack={this.handleBack}
                   onForward={this.handleForward}
                   onSubmit={this.handleCategorySubmit} />
@@ -289,22 +285,18 @@ class App extends Component {
               exact path='/pagos'
               render={() => (
                 <PaymentOptions
-                  auth={auth}
                   onSubmit={this.handlePaymentOptionsSubmit} />
             )} />
             <Route
               exact path='/envios'
               render={() => (
                 <ShippingOptions
-                  auth={auth}
                   onSubmit={this.handleShippingOptionsSubmit} />
             )} />
             <Route
               exact path='/producto'
               render={() => (
                 <ProductForm
-                  user={user}
-                  auth={auth}
                   onAdd={this.handleProductAdd}
                   onBack={this.handleBack}
                   onDone={this.handleShare} />
@@ -313,7 +305,6 @@ class App extends Component {
               exact path='/producto/analisis'
               render={() => (
                 <ProductAnalytics
-                  user={user}
                   onBack={this.handleBack}
                 />
             )} />
@@ -412,6 +403,8 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
+  user: state.auth.user,
+  auth: state.auth.auth,
   category: state.categories.category,
   products: state.products.products,
   currentProduct: state.products.currentProduct,
@@ -421,6 +414,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   changePage: (route) => push(route),
+  facebookLogin,
   updatePathname,
   updateProductLocations,
   resetProductLocations,
@@ -433,4 +427,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 export default connect(
   mapStateToProps, 
   mapDispatchToProps
-)((withRouter(App)));
+)(App);

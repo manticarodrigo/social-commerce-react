@@ -111,15 +111,9 @@ class CategoryForm extends Component {
 						console.log(res);
 						data.imageId = res.data.id;
 						callback(auth, data)
-							.then(res => {
-								console.log(res);
-								if (res.data && res.data.id !== null) {
-									this.setState({ loading: false });
-									onSubmit(res.data);
-								}
-							})
-							.catch(err => {
-								console.log(err)
+							.then(() => {
+								this.setState({ loading: false });
+								onSubmit();
 							})
 					})
 					.catch(err => {
@@ -127,22 +121,16 @@ class CategoryForm extends Component {
 					});
 			} else {
 				callback(auth, data)
-					.then(res => {
-						console.log(res);
-						if (res.data && res.data.id !== null) {
-							this.setState({ loading: false });
-							onSubmit(res.data);
-						}
+					.then(() => {
+						this.setState({ loading: false });
+						onSubmit();
 					})
-					.catch(err => {
-						console.log(err);
-					});
 			}
 		} else {
 			this.setState({ loading: false });
 			alert('Favor llenar campos requeridos.');
 		}
-  }
+	}
   
 	handleInputChange = (event) => {
 		const { category, updateTitle } = this.props;
@@ -273,7 +261,9 @@ class CategoryForm extends Component {
 }
 
 const mapStateToProps = state => ({
-  // title: state.title.title
+	user: state.auth.user,
+  auth: state.auth.auth,
+	category: state.categories.category
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

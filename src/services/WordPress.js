@@ -2,14 +2,6 @@ import axios from 'axios'
 
 const url = process.env.REACT_APP_BACKEND_URL
 
-export function facebookLogin(accessToken) {
-	let base_url = url + '/?json=user.fb_connect&access_token=' + accessToken
-	if (process.env.REACT_APP_ENV !== 'production') {
-		base_url += '&insecure=cool'
-	}
-	return axios.get(base_url)
-}
-
 // export function updateUser(auth, data) {
 // 	const user = {
 // 		name: data.name,

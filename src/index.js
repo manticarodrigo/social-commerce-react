@@ -19,13 +19,13 @@ const theme = createMuiTheme({
 });
 
 ReactDOM.render(
-  <MuiThemeProvider theme={theme}>
-    <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <App />
-      </ConnectedRouter>
-    </Provider>
-  </MuiThemeProvider>,
+  <Provider store={store}>
+    <ConnectedRouter history={history}>
+      <MuiThemeProvider theme={theme}>
+        <App history={history} />
+      </MuiThemeProvider>
+    </ConnectedRouter>
+  </Provider>,
   document.getElementById('root')
 );
 registerServiceWorker();

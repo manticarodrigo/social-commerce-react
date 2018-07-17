@@ -1,3 +1,6 @@
+// AUTH
+export const LOGIN_WITH_FACEBOOK = 'LOGIN_WITH_FACEBOOK';
+
 // NAV
 export const UPDATE_TITLE = 'UPDATE_TITLE';
 export const UPDATE_PATHNAME = 'UPDATE_PATHNAME';
