@@ -10,47 +10,6 @@ export function facebookLogin(accessToken) {
 	return axios.get(base_url)
 }
 
-export function createCategory(auth, data) {
-	const image = data.imageId ? { id: data.imageId } : data.image ? { id: data.image.id } : { src: data.businessLogo }
-	const category = {
-		name: data.businessName,
-		owner_id: auth.wp_user_id,
-		image,
-		dni: data.dni,
-		ruc: data.ruc,
-		phone: data.phone,
-		bank_account: data.bankAccount,
-		logistic_provider: data.logisticProvider
-	}
-	return axios.post(url + '/wp-json/wc/custom/products/categories/', category)
-}
-
-export function updateCategory(auth, data) {
-	const image = data.imageId ? { id: data.imageId } : data.image ? { id: data.image.id } : { src: data.businessLogo }
-	console.log(data)
-	const category = {
-		approved: data.approved,
-		name: data.businessName,
-		owner_id: auth.wp_user_id,
-		image,
-		dni: data.dni,
-		ruc: data.ruc,
-		phone: data.phone,
-		bank_account: data.bankAccount ? data.bankAccount : '',
-		logistic_provider: data.logisticProvider
-	}
-	return axios.put(`${url}/wp-json/wc/custom/products/categories/${data.id}`, category)
-}
-
-export function deleteCategory(categoryId) {
-	return axios.delete(url + '/wp-json/wc/v2/products/categories/' + categoryId, { data: { force: true } })
-}
-
-export function fetchCategories(auth) {
-	const ownerId = auth.wp_user_id
-	return axios.get(`${url}/wp-json/wc/custom/products/categories/?owner_id=${ownerId}`)
-}
-
 // export function updateUser(auth, data) {
 // 	const user = {
 // 		name: data.name,

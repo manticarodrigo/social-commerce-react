@@ -1,6 +1,7 @@
 import {
   FETCH_PRODUCTS,
   UPDATE_PRODUCT_LOCATIONS,
+  RESET_PRODUCT_LOCATIONS,
   CREATE_PRODUCT
 } from '../actions/types';
 
@@ -23,6 +24,12 @@ export default function(state = initialState, action) {
         ...state,
         currentProduct: action.payload.currentProduct,
         nextProduct: action.payload.nextProduct
+      };
+    case RESET_PRODUCT_LOCATIONS:
+      return {
+        ...state,
+        currentProduct: null,
+        nextProduct: null
       };
     case CREATE_PRODUCT:
       return {

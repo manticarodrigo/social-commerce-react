@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { updateTitle } from '../../actions/navActions';
 import Loading from '../Loading/Loading';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -7,29 +10,32 @@ import './ProductAnalytics.css';
 import { fetchProductsAnalytics } from '../../services/WordPress';
 
 class ProductAnalytics extends Component {
-    constructor(props) {
-        super(props)
+	constructor(props) {
+			super(props)
+			const { user, product } = this.props;
+			this.state = {
+				id: product ? product.id : null,
+				title: product ? product.name : '',
+				totalRevenue: 0,
+				totalQuantity: 0,
+				currentTab: '1W',
+				labels: [],
+				values: [],
+				loading: true
+			};
 
-        const { user, product } = this.props;
-        
-        this.state = {
-            id: product ? product.id : null,
-            title: product ? product.name : '',
-            totalRevenue: 0,
-            totalQuantity: 0,
-            currentTab: '1W',
-            labels: [],
-            values: [],
-            loading: true
-        };
-
-        if (user && product.id != null) {
-            this.props.onTitleChange(product.name);
-            this.fetchData(product.id, this.state.currentTab);
-        } else {
-            this.props.onBack();
-        }
+			if (user && product.id != null) {
+				this.props.updateTitle(product.name);
+				this.fetchData(product.id, this.state.currentTab);
+			} else {
+				this.props.onBack();
+			}
     }
+
+  componentDidMount() {
+		const { updateTitle, product } = this.props;
+		updateTitle(product ? product.name : 'Tu Producto');
+	}
 
     fetchData = (productId, period) => {
         fetchProductsAnalytics(productId, period)
@@ -135,4 +141,15 @@ class ProductAnalytics extends Component {
     }
 }
 
-export default ProductAnalytics
+const mapStateToProps = state => ({
+  product: state.products.currentProduct
+});
+  
+const mapDispatchToProps = dispatch => bindActionCreators({
+	updateTitle
+}, dispatch)
+  
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(ProductAnalytics);

@@ -21,7 +21,9 @@ import Culqi from '../../assets/png/Culqi.png';
 import PagoFlash from '../../assets/png/PagoFlash.png';
 import './PaymentOptions.css';
 
-import { updateCategory } from '../../services/WordPress';
+import {
+	updateCategory
+} from '../../actions/categoryActions';
 
 class PaymentOptions extends Component {
 	constructor(props) {
@@ -75,7 +77,7 @@ class PaymentOptions extends Component {
 	
 	handleSubmit = () => {
 		this.setState({ loading: true });
-		const { auth, category, onSubmit } = this.props;
+		const { auth, category, onSubmit, updateCategory } = this.props;
 		const { checkedTransfer, bankAccount } = this.state;
 		if (category && checkedTransfer) {
 			if (bankAccount !== '') {
@@ -310,7 +312,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  updateTitle
+	updateTitle,
+	updateCategory
 }, dispatch)
 
 export default connect(

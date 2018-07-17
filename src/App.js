@@ -20,15 +20,22 @@ import Catalog from './views/Catalog/Catalog';
 
 import DeleteDialog from './components/Dialog/DeleteDialog';
 
-import { updatePathname } from './actions/navActions';
-import { fetchCategories } from './actions/categoryActions';
-import { fetchProducts, updateProductLocations } from './actions/productActions';
-
+import {
+  updatePathname
+} from './actions/navActions';
+import {
+  fetchCategories,
+  updateCategory,
+  deleteCategory
+} from './actions/categoryActions';
+import {
+  fetchProducts,
+  updateProductLocations,
+  resetProductLocations
+} from './actions/productActions';
 import {
   facebookLogin,
   deleteProduct,
-  updateCategory,
-  deleteCategory
 } from './services/WordPress';
 
 class App extends Component {
@@ -69,14 +76,11 @@ class App extends Component {
           // Check for existing categories for owner_id
           fetchCategories(auth)
             .then(() => {
-              const { categories } = this.props;
-              if (categories.length > 0) {
-                const category = categories[0];
+              const { category } = this.props;
+              if (category) {
                 // Check for existing products for category
                 fetchProducts(category.id)
                   .then(() => {
-                    const { products } = this.props;
-                    console.log(this.props);
                     this.setState({
                       loading: false,
                       user: response,
@@ -125,7 +129,7 @@ class App extends Component {
   }
 
   handleApprove = () => {
-    const { auth, category } = this.props;
+    const { auth, category, updateCategory } = this.props;
     category.approved = true;
     updateCategory(auth, category)
       .then(res => {
@@ -180,35 +184,14 @@ class App extends Component {
   }
 
   finishCategoryDelete = (category) => {
+    const { deleteCategory, changePage } = this.props;
     deleteCategory(category.id)
-      .then(res => {
-        console.log(res)
+      .then(() => {
         this.setState({
-          category: null,
-          products: null,
-          currentProduct: null,
-          nextProduct: null,
           deleteCategoryOpen: false
         })
-        this.props.changePage('/perfil')
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-
-  handleProductSubmit = () => {
-    const { category } = this.props
-    const { fetchProducts } = this.props;
-    fetchProducts(category.id)
-      .then(res => {
-        console.log(res)
-        const products = res.data
-        this.setState({ products: products })
-      })
-      .catch(err => {
-        console.log(err)
-      })
+        changePage('/perfil');
+      });
   }
 
   handleProductSelected = (product) => {
@@ -222,8 +205,9 @@ class App extends Component {
   }
 
   handleProductAdd = () => {
-    this.setState({ currentProduct: null, nextProduct: null })
-    this.props.changePage('/producto')
+    const { resetProductLocations, changePage } = this.props;
+    resetProductLocations()
+    changePage('/producto')
   }
 
   handleProductDelete = (product) => {
@@ -249,10 +233,7 @@ class App extends Component {
   render() {
     const {
       pathname,
-      category,
-      products,
-      currentProduct,
-      nextProduct
+      category
     } = this.props;
     const {
       loading,
@@ -265,14 +246,11 @@ class App extends Component {
         {category && (
           <DeleteDialog
             open={deleteCategoryOpen}
-            category={category}
             onClose={() => this.setState({ deleteCategoryOpen: false })}
             onConfirm={() => this.finishCategoryDelete(category)} />
         )}
         {pathname !== '/ingresar' && (
           <NavBar
-            category={category}
-            product={currentProduct}
             onBack={this.handleBack}
             onForward={this.handleForward}
             onDelete={this.handleCategoryDelete}/>
@@ -292,8 +270,6 @@ class App extends Component {
               exact path='/'
               render={() => (
                 <Dashboard
-                  category={category}
-                  products={products}
                   onSelect={this.handleProductSelected}
                   onAnalytics={this.handleProductAnalytics}
                   onAdd={this.handleProductAdd}
@@ -303,8 +279,6 @@ class App extends Component {
               exact path='/perfil'
               render={() => (
                 <CategoryForm
-                  category={category}
-                  products={products}
                   user={user}
                   auth={auth}
                   onBack={this.handleBack}
@@ -315,7 +289,6 @@ class App extends Component {
               exact path='/pagos'
               render={() => (
                 <PaymentOptions
-                  category={category}
                   auth={auth}
                   onSubmit={this.handlePaymentOptionsSubmit} />
             )} />
@@ -323,7 +296,6 @@ class App extends Component {
               exact path='/envios'
               render={() => (
                 <ShippingOptions
-                  category={category}
                   auth={auth}
                   onSubmit={this.handleShippingOptionsSubmit} />
             )} />
@@ -331,13 +303,9 @@ class App extends Component {
               exact path='/producto'
               render={() => (
                 <ProductForm
-                  category={category}
-                  product={currentProduct}
-                  nextProduct={nextProduct}
                   user={user}
                   auth={auth}
                   onAdd={this.handleProductAdd}
-                  onSubmit={this.handleProductSubmit}
                   onBack={this.handleBack}
                   onDone={this.handleShare} />
             )} />
@@ -346,7 +314,6 @@ class App extends Component {
               render={() => (
                 <ProductAnalytics
                   user={user}
-                  product={currentProduct}
                   onBack={this.handleBack}
                 />
             )} />
@@ -354,7 +321,6 @@ class App extends Component {
               exact path='/catalogo'
               render={() => (
                 <Catalog
-                  category={category}
                   onApprove={this.handleApprove}
                   onBack={this.handleBack} />
             )} />
@@ -366,7 +332,6 @@ class App extends Component {
   }
   
   handleBack = () => {
-    console.log('back')
     const { 
       pathname,
       category,
@@ -375,39 +340,42 @@ class App extends Component {
       changePage,
       updateProductLocations
     } = this.props;
-    console.log(this.props)
-    if (category && !category.approved) {
-      updateProductLocations('back', products, currentProduct);
-      switch (pathname) {
-        case '/envios':
-          changePage('/pagos');
-          break;
-        case '/pagos':
-          changePage('/perfil');
-          break;
-        case '/producto':
-          if (
-            !Array.isArray(products) ||
-            !products.length ||
-            (currentProduct === products[products.length - 1])
-          ) {
-            // Array does not exist, is not an array, or is empty
-            changePage('/envios');
-            break;
-          }
-          changePage('/producto');
-          break;
-        case '/catalogo':
-          changePage('/producto');
-          break;
-      }
-    } else {
+    if (category && category.approved) {
       this.props.changePage('/');
+      return;
+    }
+    updateProductLocations(
+      'back',
+      products,
+      currentProduct
+    );
+    switch (pathname) {
+      case '/envios':
+        changePage('/pagos');
+        break;
+      case '/pagos':
+        changePage('/perfil');
+        break;
+      case '/producto':
+        if (
+          !Array.isArray(products) || // does not exist || is not an array,
+          !products.length || // empty array
+          (currentProduct === products[products.length - 1]) // last in list
+        ) {
+          changePage('/envios');
+          break;
+        }
+        changePage('/producto');
+        break;
+      case '/catalogo':
+        changePage('/producto');
+        break;
+      default:
+        changePage('/producto');
     }
   }
   
   handleForward = () => {
-    console.log('forward')
     const { 
       pathname,
       products,
@@ -415,31 +383,35 @@ class App extends Component {
       changePage,
       updateProductLocations
     } = this.props;
-    console.log(this.props)
-    updateProductLocations('forward', products, currentProduct);
+    updateProductLocations(
+      'back',
+      products,
+      currentProduct
+    );
     switch (pathname) {
       case '/perfil':
-        changePage('/pagos')
+        changePage('/pagos');
         break;
       case '/pagos':
-        changePage('/envios')
+        changePage('/envios');
         break;
       case '/envios':
         changePage('/producto');
         break;
       case '/producto':
         if (currentProduct === products[0]) {
-          changePage('/catalogo') // first product in list
+          changePage('/catalogo'); // first product in list
           break;
         }
-        changePage('/producto')
+        changePage('/producto');
         break;
+      default:
+        changePage('/producto');
     }
   }
 }
 
 const mapStateToProps = state => ({
-  categories: state.categories.categories,
   category: state.categories.category,
   products: state.products.products,
   currentProduct: state.products.currentProduct,
@@ -451,7 +423,10 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   changePage: (route) => push(route),
   updatePathname,
   updateProductLocations,
+  resetProductLocations,
   fetchCategories,
+  updateCategory,
+  deleteCategory,
   fetchProducts
 }, dispatch);
 

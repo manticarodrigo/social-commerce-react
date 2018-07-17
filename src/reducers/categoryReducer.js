@@ -1,5 +1,8 @@
 import {
-  FETCH_CATEGORIES
+  FETCH_CATEGORIES,
+  CREATE_CATEGORY,
+  UPDATE_CATEGORY,
+  DELETE_CATEGORY
 } from '../actions/types';
 
 const initialState = {
@@ -13,7 +16,22 @@ export default function(state = initialState, action) {
       return {
         ...state,
         categories: action.payload,
-        category: action.payload.length > 0 ? action.payload[0] : null
+        category: action.payload[0] ? action.payload[0] : null
+      }
+    case CREATE_CATEGORY:
+      return {
+        ...state,
+        category: action.payload
+      }
+    case UPDATE_CATEGORY:
+      return {
+        ...state,
+        category: action.payload
+      }
+    case DELETE_CATEGORY:
+      return {
+        ...state,
+        category: null
       }
     default:
       return state;

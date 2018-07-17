@@ -9,7 +9,14 @@ import FileUpload from '@material-ui/icons/FileUpload';
 import './CategoryForm.css';
 
 import UploadDialog from '../../components/Dialog/UploadDialog';
-import { uploadMedia, createCategory, updateCategory } from '../../services/WordPress';
+
+import {
+	createCategory,
+	updateCategory
+} from '../../actions/categoryActions';
+import {
+	uploadMedia
+} from '../../services/WordPress';
 
 class CategoryForm extends Component {
 	constructor(props) {
@@ -88,7 +95,7 @@ class CategoryForm extends Component {
 		event.preventDefault();
 		const data = this.state;
 		const { businessName, businessLogo, imageFile, name, email, phone, dni } = this.state;
-		const { auth, category, onSubmit } = this.props;
+		const { auth, category, onSubmit, createCategory, updateCategory } = this.props;
 		if (
 			businessName !== '' &&
 			businessLogo !== '' &&
@@ -270,7 +277,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  updateTitle
+	updateTitle,
+	createCategory,
+	updateCategory
 }, dispatch)
 
 export default connect(

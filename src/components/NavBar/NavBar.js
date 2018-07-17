@@ -55,9 +55,9 @@ class NavBar extends React.Component {
   }
 
   handleLogout = () => {
-    this.handleClose()
-    localStorage.clear()
-    this.props.changePage('/ingresar')
+    this.handleClose();
+    localStorage.clear();
+    this.props.changePage('/ingresar');
   }
 
   backCase = () => {

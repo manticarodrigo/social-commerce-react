@@ -12,6 +12,11 @@ import UploadDialog from '../../components/Dialog/UploadDialog';
 
 import { uploadMedia, createProduct, updateProduct } from '../../services/WordPress';
 
+import {
+	fetchProducts,
+	resetProductLocations
+} from '../../actions/productActions';
+
 class ProductForm extends Component {
 	constructor(props) {
 		super(props);
@@ -102,7 +107,6 @@ class ProductForm extends Component {
 							.then(res => {
 								console.log(res);
 								this.setState({ loading: false });
-								this.props.onSubmit();
 								this.finishSubmit(type);
 							})
 							.catch(err => {
@@ -117,7 +121,6 @@ class ProductForm extends Component {
 					.then(res => {
 						console.log(res);
 						this.setState({ loading: false });
-						this.props.onSubmit();
 						this.finishSubmit(type);
 					})
 					.catch(err => {
@@ -131,29 +134,32 @@ class ProductForm extends Component {
 	}
 	
 	finishSubmit = (type) => {
-		const { category } = this.props;
-		if (type === 'add') {
-			this.props.onAdd();
-			this.setState({
-				id: '',
-				name: '',
-				description: '',
-				cost: '',
-				inventoryCount: '',
-				imageUrl: '',
-				imageId: null,
-				imageFile: null,
-				uploadDialogOpen: false,
-				loading: false,
-				adding: false
+		const { category, fetchProducts, resetProductLocations } = this.props;
+		fetchProducts(category.id)
+			.then(() => {
+				if (type === 'add') {
+					this.props.onAdd();
+					this.setState({
+						id: '',
+						name: '',
+						description: '',
+						cost: '',
+						inventoryCount: '',
+						imageUrl: '',
+						imageId: null,
+						imageFile: null,
+						uploadDialogOpen: false,
+						loading: false,
+						adding: false
+					});
+				} else {
+					if (category && category.approved) {
+						this.props.onBack();
+					} else {
+						this.props.onDone();
+					}
+				}
 			});
-		} else {
-			if (category && category.approved) {
-				this.props.onBack();
-			} else {
-				this.props.onDone();
-			}
-		}
 	}
   
 	handleInputChange = (event) => {
@@ -287,11 +293,14 @@ class ProductForm extends Component {
 }
 
 const mapStateToProps = state => ({
-  // title: state.title.title
+	category: state.categories.category,
+  product: state.products.currentProduct
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-	updateTitle
+	updateTitle,
+	fetchProducts,
+	resetProductLocations
 }, dispatch);
 
 export default connect(

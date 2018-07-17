@@ -1,7 +1,8 @@
 import axios from 'axios'
 import {
 	FETCH_PRODUCTS,
-	UPDATE_PRODUCT_LOCATIONS
+	UPDATE_PRODUCT_LOCATIONS,
+  RESET_PRODUCT_LOCATIONS
   // FETCH_PRODUCT_ANALYTICS,
   // CREATE_PRODUCT,
   // UPDATE_PRODUCT,
@@ -71,6 +72,15 @@ export const updateProductLocations = (direction, products, currentProduct) => {
         }
       });
     }
+  }
+}
+
+export const resetProductLocations = () => {
+  return (dispatch) => {
+    dispatch({
+      type: RESET_PRODUCT_LOCATIONS,
+      payload: null
+    })
   }
 }
 
