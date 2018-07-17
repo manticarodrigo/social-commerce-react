@@ -55,11 +55,11 @@ class App extends Component {
 
   static getDerivedStateFromProps(props, state) {
     props.updatePathname(props.location.pathname);
-    return null; // { pathname: props.location.pathname }
+    return null;
   }
 
   processAuth = (response) => {
-    const { fetchCategories, fetchProducts } = this.props;
+    const { fetchCategories, fetchProducts, changePage } = this.props;
     // Use fb sdk response for wp auth
     facebookLogin(response.token.accessToken)
       .then(res => {
@@ -80,28 +80,24 @@ class App extends Component {
                     this.setState({
                       loading: false,
                       user: response,
-                      auth: auth,
-                      category: category,
-                      products: products,
-                      currentProduct: products ? products[0] : null,
-                      nextProduct: null
+                      auth: auth
                     });
                     const { pathname } = this.props;
                     if (pathname === '/ingresar' || pathname === '/') {
-                      this.props.changePage(category.approved ? '/' : '/producto');
+                      changePage(category.approved ? '/' : '/producto');
                     } else {
-                      this.props.changePage(pathname);
+                      changePage(pathname);
                     }
                   })
               } else {
                 this.setState({ loading: false });
-                this.props.changePage('/perfil');
+                changePage('/perfil');
               }
             });
         } else {
           localStorage.clear();
           this.setState({ loading: false });
-          this.props.changePage('/ingresar');
+          changePage('/ingresar');
         }
       })
       .catch(err => {
@@ -381,6 +377,7 @@ class App extends Component {
     } = this.props;
     console.log(this.props)
     if (category && !category.approved) {
+      updateProductLocations('back', products, currentProduct);
       switch (pathname) {
         case '/envios':
           changePage('/pagos');
@@ -389,7 +386,6 @@ class App extends Component {
           changePage('/perfil');
           break;
         case '/producto':
-          updateProductLocations('back', products, currentProduct)
           if (
             !Array.isArray(products) ||
             !products.length ||
@@ -402,7 +398,6 @@ class App extends Component {
           changePage('/producto');
           break;
         case '/catalogo':
-          updateProductLocations('back', products, currentProduct)
           changePage('/producto');
           break;
       }
@@ -415,13 +410,13 @@ class App extends Component {
     console.log('forward')
     const { 
       pathname,
-      category,
       products,
       currentProduct,
       changePage,
       updateProductLocations
     } = this.props;
     console.log(this.props)
+    updateProductLocations('forward', products, currentProduct);
     switch (pathname) {
       case '/perfil':
         changePage('/pagos')
@@ -430,17 +425,14 @@ class App extends Component {
         changePage('/envios')
         break;
       case '/envios':
-        updateProductLocations('forward', products, currentProduct);
         changePage('/producto');
         break;
       case '/producto':
-        updateProductLocations('forward', products, currentProduct)
         if (currentProduct === products[0]) {
-          // First product in list
-          changePage('/catalogo')
-        } else {
-          changePage('/producto')
+          changePage('/catalogo') // first product in list
+          break;
         }
+        changePage('/producto')
         break;
     }
   }
