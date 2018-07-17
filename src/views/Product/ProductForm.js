@@ -92,6 +92,7 @@ class ProductForm extends Component {
 					.then(res => {
 						console.log(res)
 						data.imageId = res.data.id
+						console.log(data.imageId)
 						callback(data)
 							.then(res => {
 								console.log(res)

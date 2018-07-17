@@ -18,31 +18,79 @@ import Culqi from '../../assets/png/Culqi.png';
 import PagoFlash from '../../assets/png/PagoFlash.png';
 import './PaymentOptions.css';
 
+import { updateCategory } from '../../services/WordPress';
+
 class PaymentOptions extends Component {
-  state = {
-    checkedCash: true,
-    checkedTransfer: false,
-    checkedPayPal: false,
-		checkedBitcoin: false,
-		checkedMercadoPago: false,
-		checkedPayU: false,
-		checkedCulqi: false,
-		checkedPagoFlash: false,
-		checkedCard: false,
-		bankAccount: '',
-		loading: false
-	};
+	constructor(props) {
+		super(props)
+		const { category } = props
+		console.log(category)
+		this.state = {
+			checkedCash: true,
+			checkedTransfer: category && category.bank_account ? true : false,
+			checkedPayPal: false,
+			checkedBitcoin: false,
+			checkedMercadoPago: false,
+			checkedPayU: false,
+			checkedCulqi: false,
+			checkedPagoFlash: false,
+			checkedCard: false,
+			bankAccount: category && category.bank_account ? category.bank_account : '',
+			loading: false
+		};
+	}
+
+	static getDerivedStateFromProps = (props, state) => {
+		const { category } = props
+		if (category) {
+			return {
+				checkedTransfer: category && category.bank_account ? true : false,
+				bankAccount: category && category.bank_account ? category.bank_account : ''
+			}
+		}
+		return null
+  }
 	
 	handleCheckboxChange = name => event => {
 		this.setState({ [name]: event.target.checked });
 	}
 
-  handleTextFieldChange = name => event => {
+  handleTextFieldChange = (event) => {
 		const target = event.target;
+		const name = target.name;
 		const value = target.value;
 		if ((name === 'bankAccount') && !value.match(/^(\s*|\d+)$/)) { return; }
 		this.setState({ [name]: value });
-  };
+	};
+	
+	handleSubmit = () => {
+		this.setState({ loading: true });
+		const { auth, category, onSubmit } = this.props;
+		console.log(category)
+		const { checkedTransfer, bankAccount } = this.state;
+		if (category && checkedTransfer) {
+			if (bankAccount !== '') {
+				category.bankAccount = bankAccount
+				updateCategory(auth, category)
+					.then(res => {
+						console.log(res);
+						if (res.data && res.data.id !== null) {
+							this.setState({ loading: false });
+							onSubmit(res.data);
+						}
+					})
+					.catch(err => {
+						console.log(err)
+					})
+			} else {
+				this.setState({ loading: false });
+				alert('Favor llenar campos requeridos.');
+			}
+		} else {
+			this.setState({ loading: false });
+			onSubmit(null);
+		}
+	}
 
   render() {
 		const {
@@ -216,7 +264,7 @@ class PaymentOptions extends Component {
 							required
 							fullWidth
 							margin='normal'
-							label='Numero de Cuenta de Banco'
+							label='Numero de cuenta bancaria'
 							name='bankAccount'
 							value={bankAccount} />
 					</form>

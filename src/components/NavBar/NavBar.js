@@ -18,6 +18,7 @@ const styles = {
   },
   flex: {
     flex: 1,
+    fontSize: '1.2em'
   },
   menuButton: {
     marginLeft: -12,

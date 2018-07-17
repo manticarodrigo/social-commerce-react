@@ -29,12 +29,9 @@ class ShippingOptions extends Component {
 		this.setState({ [name]: event.target.checked });
 	}
 
-  handleTextFieldChange = name => event => {
-		const target = event.target;
-		const value = target.value;
-		if ((name === 'bankAccount') && !value.match(/^(\s*|\d+)$/)) { return; }
-		this.setState({ [name]: value });
-  };
+	handleSubmit = () => {
+		this.props.onSubmit(null)
+	}
 
   render() {
 		const {

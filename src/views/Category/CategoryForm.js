@@ -205,7 +205,7 @@ class CategoryForm extends Component {
 						required
 						fullWidth
 						margin='normal'
-						label='Número del negocio'
+						label='Nombre del negocio'
 						name='businessName'
 						value={this.state.businessName}
 						type='text' />
@@ -213,7 +213,7 @@ class CategoryForm extends Component {
 						required
 						fullWidth
 						margin='normal'
-						label='Número completo'
+						label='Nombre completo'
 						name='name'
 						value={this.state.name}
 						type='text' />
@@ -229,7 +229,7 @@ class CategoryForm extends Component {
 						required
 						fullWidth
 						margin='normal'
-						label='Número de Teléfono Celular'
+						label='Número de teléfono celular'
 						name='phone'
 						value={this.state.phone} />
 					<TextField

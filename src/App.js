@@ -157,20 +157,40 @@ class App extends Component {
   }
 
   handleBack = () => {
-    const { category, products, currentProduct } = this.state
+    const { pathname, category, products, currentProduct } = this.state
     if (category && !category.approved) {
       if (!Array.isArray(products) || !products.length) {
         // Array does not exist, is not an array, or is empty
-        this.props.history.replace('/perfil')
+        if (pathname === '/producto') {
+          this.props.history.replace('/envios')
+        }
+        if (pathname === '/envios') {
+          this.props.history.replace('/pagos')
+        }
+        if (pathname === '/pagos') {
+          this.props.history.replace('/perfil')
+        }
       } else {
         // Go back an index
         if (currentProduct === products[products.length - 1]) {
           this.setState({ currentProduct: null, nextProduct: null, navBarTitle: null })
-          this.props.history.replace('/perfil')
+          this.props.history.replace('/envios')
         } else {
-          this.updateProductLocations('back')
           this.setState({ navBarTitle: null })
-          this.props.history.replace('/producto')
+          if (pathname === '/producto') {
+            this.props.history.replace('/envios')
+          }
+          if (pathname === '/envios') {
+            console.log('back')
+            this.props.history.replace('/pagos')
+          }
+          if (pathname === '/pagos') {
+            this.props.history.replace('/perfil')
+          }
+          if (pathname === '/catalogo') {
+            this.updateProductLocations('back')
+            this.props.history.replace('/producto')
+          }
         }
       }
     } else {
@@ -180,15 +200,22 @@ class App extends Component {
   }
 
   handleForward = () => {
-    const { products } = this.state
-    if (!Array.isArray(products) || !products.length) {
-      // Array does not exist, is not an array, or is empty
-      this.setState({ currentProduct: null, nextProduct: null, navBarTitle: null })
-      this.props.history.replace('/producto')
-    } else {
-      // Go forward an index
-      this.updateProductLocations('forward')
-      this.setState({ navBarTitle: null })
+    const { pathname, products } = this.state
+    this.setState({ navBarTitle: null })
+    if (pathname === '/perfil') {
+      this.props.history.replace('/pagos')
+    }
+    if (pathname === '/pagos') {
+      this.props.history.replace('/envios')
+    }
+    if (pathname === '/envios') {
+      if (!Array.isArray(products) || !products.length) {
+        // Array does not exist, is not an array, or is empty
+        this.setState({ currentProduct: null, nextProduct: null, navBarTitle: null })
+      } else {
+        // Go forward an index
+        this.updateProductLocations('forward')
+      }
       this.props.history.replace('/producto')
     }
   }
@@ -216,13 +243,33 @@ class App extends Component {
     if (category.approved) {
       this.props.history.replace('/')
     } else {
-      this.updateProductLocations('forward')
-      this.props.history.replace('/producto')
+      // this.updateProductLocations('forward')
+      this.props.history.replace('/pagos')
     }
   }
 
   handleCategoryDelete = () => {
 		this.setState({ deleteCategoryOpen: true })
+  }
+
+  handlePaymentOptionsSubmit = (category) => {
+    this.setState({ category: category, navBarTitle: null })
+    if (category && category.approved) {
+      this.props.history.replace('/')
+    } else {
+      // this.updateProductLocations('forward')
+      this.props.history.replace('/envios')
+    }
+  }
+
+  handleShippingOptionsSubmit = (category) => {
+    this.setState({ category: category, navBarTitle: null })
+    if (category && category.approved) {
+      this.props.history.replace('/')
+    } else {
+      this.updateProductLocations('forward')
+      this.props.history.replace('/producto')
+    }
   }
 
   finishCategoryDelete = (category) => {
@@ -310,7 +357,12 @@ class App extends Component {
         return true
       } else if (pathname === '/producto' && nextProduct) {
         return true
+      } else if (pathname === '/pagos') {
+        return true
+      } else if (pathname === '/envios') {
+        return true
       }
+      return false
     }
     return false
   }
@@ -390,13 +442,19 @@ class App extends Component {
               exact path='/pagos'
               render={() => (
                 <PaymentOptions
-                  onTitleChange={this.handleTitleChange} />
+                  onTitleChange={this.handleTitleChange}
+                  category={category}
+                  auth={auth}
+                  onSubmit={this.handlePaymentOptionsSubmit} />
             )} />
             <Route
               exact path='/envios'
               render={() => (
                 <ShippingOptions
-                  onTitleChange={this.handleTitleChange} />
+                  onTitleChange={this.handleTitleChange}
+                  category={category}
+                  auth={auth}
+                  onSubmit={this.handleShippingOptionsSubmit} />
             )} />
             <Route
               exact path='/producto'
