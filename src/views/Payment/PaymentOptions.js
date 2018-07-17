@@ -89,8 +89,18 @@ class PaymentOptions extends Component {
 				alert('Favor llenar campos requeridos.');
 			}
 		} else {
-			this.setState({ loading: false });
-			onSubmit(null);
+			category.bankAccount = null
+			updateCategory(auth, category)
+				.then(res => {
+					console.log(res);
+					if (res.data && res.data.id !== null) {
+						this.setState({ loading: false });
+						onSubmit(res.data);
+					}
+				})
+				.catch(err => {
+					console.log(err)
+				})
 		}
 	}
 

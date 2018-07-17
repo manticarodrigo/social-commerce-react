@@ -158,8 +158,6 @@ class App extends Component {
 
   handleBack = () => {
     const { pathname, category, products, currentProduct } = this.state;
-    console.log(pathname);
-    console.log(currentProduct);
     this.setState({ navBarTitle: null });
     if (category && !category.approved) {
       if (pathname === '/envios') {
@@ -196,7 +194,6 @@ class App extends Component {
 
   handleForward = () => {
     const { pathname, products, currentProduct } = this.state
-    console.log(pathname)
     this.setState({ navBarTitle: null })
     if (pathname === '/perfil') {
       this.props.history.replace('/pagos')
@@ -245,7 +242,10 @@ class App extends Component {
   }
 
   handleCategorySubmit = (category) => {
-    this.setState({ category: category, navBarTitle: null })
+    this.setState({
+      category: category,
+      navBarTitle: null
+    })
     if (category.approved) {
       this.props.history.replace('/')
     } else {
@@ -259,7 +259,10 @@ class App extends Component {
   }
 
   handlePaymentOptionsSubmit = (category) => {
-    this.setState({ category: category, navBarTitle: null })
+    this.setState({
+      category: category ? category : this.state.category ? this.state.category : null,
+      navBarTitle: null
+    })
     if (category && category.approved) {
       this.props.history.replace('/')
     } else {
