@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -18,7 +21,12 @@ import Culqi from '../../assets/png/Culqi.png';
 import PagoFlash from '../../assets/png/PagoFlash.png';
 import './PaymentOptions.css';
 
-import { updateCategory } from '../../services/WordPress';
+import {
+	updateTitle
+} from '../../actions/navActions';
+import {
+	updateCategory
+} from '../../actions/categoryActions';
 
 class PaymentOptions extends Component {
 	constructor(props) {
@@ -40,20 +48,24 @@ class PaymentOptions extends Component {
 		};
 	}
 
+	componentDidMount() {
+		const { updateTitle } = this.props;
+		updateTitle('Opciones de Pago');
+	}
+
 	static getDerivedStateFromProps = (props, state) => {
 		const { category } = props;
-		const { id } = state
+		const { id } = state;
 		if (category && category.id !== id) {
 			return {
 				checkedTransfer: category.bank_account !== '' ? true : false,
 				bankAccount: category.bank_account !== '' ? category.bank_account : ''
-			}
+			};
 		}
-		return null
+		return null;
   }
 	
 	handleCheckboxChange = name => event => {
-		console.log(event.target.checked)
 		this.setState({ [name]: event.target.checked });
 	}
 
@@ -67,40 +79,39 @@ class PaymentOptions extends Component {
 	
 	handleSubmit = () => {
 		this.setState({ loading: true });
-		const { auth, category, onSubmit } = this.props;
-		console.log(category)
+		const { auth, category, updateCategory } = this.props;
 		const { checkedTransfer, bankAccount } = this.state;
 		if (category && checkedTransfer) {
 			if (bankAccount !== '') {
-				category.bankAccount = bankAccount
+				category.bankAccount = bankAccount;
 				updateCategory(auth, category)
-					.then(res => {
-						console.log(res);
-						if (res.data && res.data.id !== null) {
-							this.setState({ loading: false });
-							onSubmit(res.data);
-						}
-					})
-					.catch(err => {
-						console.log(err)
+					.then(() => {
+						this.setState({ loading: false });
+							this.finishSubmit();
 					})
 			} else {
 				this.setState({ loading: false });
 				alert('Favor llenar campos requeridos.');
 			}
 		} else {
-			category.bankAccount = null
+			category.bankAccount = '';
 			updateCategory(auth, category)
-				.then(res => {
-					console.log(res);
-					if (res.data && res.data.id !== null) {
-						this.setState({ loading: false });
-						onSubmit(res.data);
-					}
-				})
-				.catch(err => {
-					console.log(err)
-				})
+				.then(() => {
+					this.setState({ loading: false });
+					this.finishSubmit();
+				});
+		}
+	}
+
+	finishSubmit() {
+		const {
+			history,
+			category
+		} = this.props;
+		if (category && category.approved) {
+			history.replace('/');
+		} else {
+			history.replace('/envios');
 		}
 	}
 
@@ -117,7 +128,7 @@ class PaymentOptions extends Component {
 			checkedCard,
 			bankAccount,
 			loading
-		} = this.state
+		} = this.state;
     return (
 			<div className='PaymentOptions'>
 				<p style={{maxWidth: '250px', margin: '1em auto'}}>
@@ -152,7 +163,7 @@ class PaymentOptions extends Component {
 								value='checkedTransfer'
 							/>
 						}
-						label='Deposito'
+						label='Transferencia'
 					/>
 					<FormControlLabel
 						className='CheckBoxLabel'
@@ -298,4 +309,19 @@ class PaymentOptions extends Component {
   }
 }
 
-export default PaymentOptions;
+const mapStateToProps = state => ({
+	auth: state.auth.auth,
+  category: state.categories.category
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+	updateTitle,
+	updateCategory
+}, dispatch)
+
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(PaymentOptions)
+);

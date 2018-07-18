@@ -1,7 +1,16 @@
-import React, { Component } from 'react'
-import Button from '@material-ui/core/Button'
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import Button from '@material-ui/core/Button';
+import './Catalog.css';
 
-import './Catalog.css'
+import {
+	updateTitle
+} from '../../actions/navActions';
+import {
+  updateCategory
+} from '../../actions/categoryActions';
 
 const style = {
 	fullSize: {
@@ -12,8 +21,6 @@ const style = {
 class Catalog extends Component {
 	constructor(props) {
 		super(props)
-		const { category } = this.props
-		if (!category) this.props.onBack()
 		this.disableInputs()
 	}
 
@@ -35,6 +42,24 @@ class Catalog extends Component {
 			textareas[k].disabled = true;
 		}
 	}
+
+	componentDidMount() {
+		const { updateTitle } = this.props;
+		updateTitle('Tu Tienda');
+	}
+
+	handleApprove = () => {
+    const { history, auth, category, updateCategory } = this.props;
+    category.approved = true;
+    updateCategory(auth, category)
+      .then(res => {
+        console.log(res);
+        history.replace('/');
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
   
 	render() {
 		const { category } = this.props
@@ -48,7 +73,7 @@ class Catalog extends Component {
 								variant='contained'
 								color='primary'
 								className='ApproveButton'
-								onClick={this.props.onApprove}>
+								onClick={this.handleApprove}>
 								Aprobár
 							</Button>
 						)}
@@ -62,4 +87,19 @@ class Catalog extends Component {
 	}
 }
 
-export default Catalog
+const mapStateToProps = state => ({
+	auth: state.auth.auth,
+  category: state.categories.category
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+	updateTitle,
+  updateCategory
+}, dispatch);
+
+export default withRouter(
+  connect(
+    mapStateToProps, 
+    mapDispatchToProps
+  )(Catalog)
+);

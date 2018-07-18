@@ -1,11 +1,12 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { BrowserRouter } from 'react-router-dom'
-
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { BrowserRouter as Router } from 'react-router-dom'
+import store from './store';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import './index.css'
-import App from './App'
-import registerServiceWorker from './registerServiceWorker'
+import './index.css';
+import App from './App';
+import registerServiceWorker from './registerServiceWorker';
 
 
 const theme = createMuiTheme({
@@ -18,11 +19,13 @@ const theme = createMuiTheme({
 });
 
 ReactDOM.render(
-  <MuiThemeProvider theme={theme}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </MuiThemeProvider>,
+  <Provider store={store}>
+    <Router>
+      <MuiThemeProvider theme={theme}>
+        <App />
+      </MuiThemeProvider>
+    </Router>
+  </Provider>,
   document.getElementById('root')
-)
-registerServiceWorker()
+);
+registerServiceWorker();

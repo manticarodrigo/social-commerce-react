@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -14,6 +17,10 @@ import Urbaner from '../../assets/png/Urbaner.png';
 import Glovo from '../../assets/png/Glovo.png';
 import './ShippingOptions.css';
 
+import {
+	updateTitle
+} from '../../actions/navActions';
+
 class ShippingOptions extends Component {
   state = {
     checkedSelf: true,
@@ -25,13 +32,26 @@ class ShippingOptions extends Component {
 		loading: false
 	};
 	
+	componentDidMount() {
+		const { updateTitle } = this.props;
+		updateTitle('Opciones de Envio');
+	}
+	
 	handleCheckboxChange = name => event => {
 		this.setState({ [name]: event.target.checked });
 	}
 
 	handleSubmit = () => {
-		this.props.onSubmit(null)
-	}
+    const {
+      history,
+      category
+    } = this.props;
+    if (category && category.approved) {
+      history.replace('/');
+    } else {
+      history.replace('/producto');
+    }
+  }
 
   render() {
 		const {
@@ -42,7 +62,7 @@ class ShippingOptions extends Component {
 			checkedUrbaner,
 			checkedGlovo,
 			loading
-		} = this.state
+		} = this.state;
     return (
 			<div className='ShippingOptions'>
 				<p style={{maxWidth: '250px', margin: '1em auto'}}>
@@ -162,4 +182,17 @@ class ShippingOptions extends Component {
   }
 }
 
-export default ShippingOptions;
+const mapStateToProps = state => ({
+  category: state.categories.category
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+	updateTitle
+}, dispatch)
+
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(ShippingOptions)
+);

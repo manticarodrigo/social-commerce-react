@@ -1,16 +1,27 @@
-import React from 'react'
-import { withRouter } from 'react-router-dom'
-import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
-import ArrowBackIcon from '@material-ui/icons/ArrowBack'
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
-import MoreVert from '@material-ui/icons/MoreVert'
-import MenuItem from '@material-ui/core/MenuItem'
-import Menu from '@material-ui/core/Menu'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import MoreVert from '@material-ui/icons/MoreVert';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+
+import DeleteDialog from '../Dialog/DeleteDialog';
+
+import {
+  deleteCategory
+} from '../../actions/categoryActions';
+import {
+  updateProductLocations
+} from '../../actions/productActions';
 
 const styles = {
   root: {
@@ -24,105 +35,118 @@ const styles = {
     marginLeft: -12,
     marginRight: 0,
   },
-}
+};
 
 class NavBar extends React.Component {
   constructor(props) {
-    super(props)
-
+    super(props);
     this.state = {
-      pathname: props.location.pathname,
       anchorEl: null,
-    }
-
-    this.handleMenu = this.handleMenu.bind(this)
-    this.handleClose = this.handleClose.bind(this)
-    this.handleShareCategory = this.handleShareCategory.bind(this)
-    this.handleEditCategory = this.handleEditCategory.bind(this)
-    this.handleLogout = this.handleLogout.bind(this)
+      deleteDialogOpen: false
+    };
   }
 
-  static getDerivedStateFromProps(props, state) {
-    return { pathname: props.location.pathname }
-  }
-
-  handleMenu(event) {
+  handleMenu = (event) => {
     this.setState({ anchorEl: event.currentTarget })
   }
 
-  handleClose() {
+  handleClose = () => {
     this.setState({ anchorEl: null })
   }
 
-  handleEditCategory() {
+  handleEditCategory = () => {
     this.handleClose()
     this.props.history.replace('/perfil')
   }
 
-  handleShareCategory() {
+  handleShareCategory = () => {
     this.handleClose()
     this.props.history.replace('/catalogo')
   }
 
-  handleLogout() {
-    this.handleClose()
-    localStorage.clear()
-    this.props.history.replace('/ingresar')
+  handleDeleteCategory = () => {
+    this.setState({ deleteDialogOpen: true });
   }
 
-  getLocationTitle() {
-    const { pathname } = this.state
-    const { category, product } = this.props
-    switch (pathname) {
-      case '/':
-        return category ? category.name : 'Tu Tienda'
-      case '/perfil':
-        return category ? 'Edita tu Tienda' : 'Registra tu Tienda'
-      case '/pagos':
-        return 'Opciones de Pago'
-      case '/envios':
-        return 'Opciones de Envio'
-      case '/producto':
-        return product ? 'Edita tu Producto' : 'Crea tu Producto'
-      case '/catalogo':
-        return 'Tu Tienda'
-      default:
-        return 'Tu Tienda'
+  finishCategoryDelete = (category) => {
+    const { history, deleteCategory } = this.props;
+    deleteCategory(category.id)
+      .then(() => {
+        this.setState({
+          deleteDialogOpen: false
+        })
+        history.replace('/perfil');
+      });
+  }
+
+  handleLogout = () => {
+    this.handleClose();
+    localStorage.clear();
+    this.props.history.replace('/ingresar');
+  }
+
+  backCase = () => {
+    const { pathname, category } = this.props;
+    if (category && category.approved) {
+      return  pathname !== '/' ? true : false;
+    } else if (pathname !== '/perfil') {
+      return true;
     }
+    return false;
+  }
+  
+  forwardCase = () => {
+    const { pathname, category, nextProduct } = this.props;
+    if (category && !category.approved) {
+      if (pathname === '/perfil') {
+        return true;
+      } else if (pathname === '/producto' && nextProduct) {
+        return true;
+      } else if (pathname === '/pagos') {
+        return true;
+      } else if (pathname === '/envios') {
+        return true;
+      }
+      return false;
+    }
+    return false;
   }
 
   render() {
-    const { classes, title, category, onBack, onForward } = this.props
-    const { anchorEl } = this.state
-    const open = Boolean(anchorEl)
+    const { classes, title, category } = this.props;
+    const { anchorEl, deleteDialogOpen } = this.state;
     return (
       <div className={classes.root}>
+        <DeleteDialog
+					open={deleteDialogOpen}
+					category={category}
+					onClose={() => this.setState({ deleteDialogOpen: false })}
+					onConfirm={() => this.finishCategoryDelete(category)} />
         <AppBar position='fixed'>
           <Toolbar>
-            {onBack && (
+            {this.backCase() && (
               <IconButton
                 className={classes.menuButton}
                 color='inherit'
                 aria-label='Back'
-                disabled={!onBack}
-                onClick={this.props.onBack}>
+                onClick={this.handleBack}>
                   <ArrowBackIcon />
               </IconButton>
             )}
-            {onForward && (
+            {this.forwardCase() && (
               <IconButton
                 className={classes.menuButton}
                 color='inherit'
                 aria-label='Forward'
-                onClick={this.props.onForward}>
+                onClick={this.handleForward}>
                   <ArrowForwardIcon />
               </IconButton>
             )}
             <Typography variant='title' color='inherit' className={classes.flex}>
-              {title && (title !== null && title !== '') ? title : this.getLocationTitle()}
+              {title}
             </Typography>
             <IconButton
-              aria-owns={open ? 'menu-appbar' : null}
+              aria-owns={Boolean(anchorEl) ? 'menu-appbar' : null}
               aria-haspopup='true'
               onClick={this.handleMenu}
               color='inherit'
@@ -140,7 +164,7 @@ class NavBar extends React.Component {
                 vertical: 'top',
                 horizontal: 'right',
               }}
-              open={open}
+              open={Boolean(anchorEl)}
               onClose={this.handleClose}
             >
               <MenuItem
@@ -155,7 +179,7 @@ class NavBar extends React.Component {
               </MenuItem>
               <MenuItem
                 style={{display: category && category.approved ? 'block' : 'none'}}
-                onClick={this.props.onDelete}>
+                onClick={this.handleDeleteCategory}>
                 Eliminár Tienda
               </MenuItem>
               <MenuItem
@@ -168,10 +192,112 @@ class NavBar extends React.Component {
       </div>
     )
   }
+
+  handleBack = () => {
+    const {
+      history,
+      pathname,
+      category,
+      products,
+      currentProduct,
+      updateProductLocations
+    } = this.props;
+    if (category && category.approved) {
+      history.replace('/');
+      return;
+    }
+    updateProductLocations(
+      'back',
+      products,
+      currentProduct
+    );
+    switch (pathname) {
+      case '/envios':
+        history.replace('/pagos');
+        break;
+      case '/pagos':
+        history.replace('/perfil');
+        break;
+      case '/producto':
+        if (
+          !Array.isArray(products) || // does not exist || is not an array,
+          !products.length || // empty array
+          (currentProduct === products[products.length - 1]) // last in list
+        ) {
+          history.replace('/envios');
+          break;
+        }
+        history.replace('/producto');
+        break;
+      case '/catalogo':
+        history.replace('/producto');
+        break;
+      default:
+        history.replace('/producto');
+    }
+  }
+  
+  handleForward = () => {
+    const {
+      history,
+      pathname,
+      products,
+      currentProduct,
+      updateProductLocations
+    } = this.props;
+    updateProductLocations(
+      'forward',
+      products,
+      currentProduct
+    );
+    switch (pathname) {
+      case '/perfil':
+        history.replace('/pagos');
+        break;
+      case '/pagos':
+        history.replace('/envios');
+        break;
+      case '/envios':
+        history.replace('/producto');
+        break;
+      case '/producto':
+        if (currentProduct === products[0]) {
+          history.replace('/catalogo'); // first product in list
+          break;
+        }
+        history.replace('/producto');
+        break;
+      default:
+        history.replace('/producto');
+    }
+  }
 }
 
 NavBar.propTypes = {
   classes: PropTypes.object.isRequired,
+  title: PropTypes.string.isRequired,
+  category: PropTypes.object,
+  products: PropTypes.array,
+  pathname: PropTypes.string
 }
 
-export default withStyles(styles)(withRouter(NavBar))
+const mapStateToProps = state => ({
+  pathname: state.nav.pathname,
+  title: state.nav.title,
+  category: state.categories.category,
+  products: state.products.products,
+  currentProduct: state.products.currentProduct,
+  nextProduct: state.products.nextProduct
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  deleteCategory,
+  updateProductLocations
+}, dispatch);
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(withStyles(styles)(NavBar))
+);

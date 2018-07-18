@@ -1,21 +1,34 @@
-import React, { Component } from 'react'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import TextField from '@material-ui/core/TextField'
-import Button from '@material-ui/core/Button'
-import FileUpload from '@material-ui/icons/FileUpload'
-import './ProductForm.css'
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import FileUpload from '@material-ui/icons/FileUpload';
+import './ProductForm.css';
 
-import UploadDialog from '../../components/Dialog/UploadDialog'
+import UploadDialog from '../../components/Dialog/UploadDialog';
 
-import { uploadMedia, createProduct, updateProduct } from '../../services/WordPress'
+import {
+	updateTitle
+} from '../../actions/navActions';
+import {
+	createProduct,
+	updateProduct
+} from '../../actions/productActions';
+import {
+	uploadMedia
+} from '../../services/WordPress';
+
+import {
+	resetProductLocations
+} from '../../actions/productActions';
 
 class ProductForm extends Component {
 	constructor(props) {
-		super(props)
-
-		const { user, product } = this.props
-		if (!user) this.props.onBack()
-
+		super(props);
+		const { product } = this.props;
 		this.state = {
 			id: product ? product.id : '',
 			name: product ? product.name : '',
@@ -32,9 +45,23 @@ class ProductForm extends Component {
 		}
 	}
 
+	componentDidMount() {
+		const { updateTitle, product } = this.props;
+		updateTitle(product ? 'Edita ' + product.name : 'Crea Producto');
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		const { updateTitle, product } = this.props;
+		if (!product || !product.id) {
+			updateTitle('Crea Producto')
+		} else {
+			updateTitle(product ? 'Edita ' + product.name : 'Crea Producto')
+		}
+	}
+
 	static getDerivedStateFromProps = (props, state) => {
-		const { product } = props
-		const { id } = state
+		const { product } = props;
+		const { id } = state;
 		if (product && product.id !== id) {
 			return {
 				id: product.id,
@@ -50,13 +77,13 @@ class ProductForm extends Component {
 				adding: false
 			}
 		}
-		return null
-  }
+		return null;
+	}
 
 	handleUploadDialogOpen = () => {
     this.setState({
 			uploadDialogOpen: true
-		})
+		});
   }
 
 	handleUploadDialogClose = (value) => {
@@ -75,60 +102,53 @@ class ProductForm extends Component {
 	}
 	
   handleSubmit = (type) => {
-		this.setState({ loading: true, adding: type === 'add' ? true : false })
-		const data = this.state
-		const { name, description, cost, inventoryCount, imageUrl, imageFile } = this.state
+		this.setState({ loading: true, adding: type === 'add' ? true : false });
+		const data = this.state;
+		const { name, description, cost, imageUrl, imageFile } = this.state;
 		if (
 			name !== '' &&
 			description !== '' &&
 			cost !== '' &&
 			imageUrl !== ''
 		) {
-			const { product, category } = this.props
-			const callback = product ? updateProduct : createProduct
-			data.category = category
+			const { product, category, updateProduct, createProduct } = this.props;
+			const callback = product ? updateProduct : createProduct;
+			data.category = category;
 			if (imageFile) {
 				uploadMedia(imageFile)
 					.then(res => {
-						console.log(res)
-						data.imageId = res.data.id
-						console.log(data.imageId)
+						console.log(res);
+						data.imageId = res.data.id;
 						callback(data)
-							.then(res => {
-								console.log(res)
-								this.setState({ loading: false })
-								this.props.onSubmit()
-								this.finishSubmit(type)
-							})
-							.catch(err => {
-								console.log(err)
+							.then(() => {
+								this.setState({ loading: false });
+								this.finishSubmit(type);
 							})
 					})
 					.catch(err => {
-						console.log(err)
+						console.log(err);
 					})
 			} else {
 				callback(data)
-					.then(res => {
-						console.log(res)
-						this.setState({ loading: false })
-						this.props.onSubmit()
-						this.finishSubmit(type)
-					})
-					.catch(err => {
-						console.log(err)
+					.then(() => {
+						this.setState({ loading: false });
+						this.finishSubmit(type);
 					})
 			}
 		} else {
-			this.setState({ loading: false })
-			alert('Favor llenar campos requeridos.')
+			this.setState({ loading: false });
+			alert('Favor llenar campos requeridos.');
 		}
 	}
 	
 	finishSubmit = (type) => {
-		const { category } = this.props
+		const {
+			history,
+			category,
+			resetProductLocations
+		} = this.props;
 		if (type === 'add') {
-			this.props.onAdd()
+			resetProductLocations()
 			this.setState({
 				id: '',
 				name: '',
@@ -141,12 +161,15 @@ class ProductForm extends Component {
 				uploadDialogOpen: false,
 				loading: false,
 				adding: false
-			})
+			});
+			history.replace('/producto')
 		} else {
 			if (category && category.approved) {
-				this.props.onBack()
+				resetProductLocations()
+				history.replace('/')
 			} else {
-				this.props.onDone()
+				// resetProductLocations()
+				history.replace('/catalogo');
 			}
 		}
 	}
@@ -174,8 +197,8 @@ class ProductForm extends Component {
 	}
   
 	render() {
-		const { user, product, category } = this.props
-		const { uploadDialogOpen, loading, adding, keyboardOpen } = this.state
+		const { user, product, category } = this.props;
+		const { uploadDialogOpen, loading, adding, keyboardOpen } = this.state;
 	  return (
 			<div className='ProductForm' style={{paddingBottom: 'calc(75px + 2em'}}>
 				{uploadDialogOpen && (
@@ -281,4 +304,22 @@ class ProductForm extends Component {
 	}
 }
 
-export default ProductForm
+const mapStateToProps = state => ({
+	user: state.auth.user,
+	category: state.categories.category,
+  product: state.products.currentProduct
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+	updateTitle,
+	updateProduct,
+	createProduct,
+	resetProductLocations
+}, dispatch);
+
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(ProductForm)
+);

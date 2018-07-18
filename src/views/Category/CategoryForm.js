@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+import { updateTitle } from '../../actions/navActions';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -6,7 +10,14 @@ import FileUpload from '@material-ui/icons/FileUpload';
 import './CategoryForm.css';
 
 import UploadDialog from '../../components/Dialog/UploadDialog';
-import { uploadMedia, createCategory, updateCategory } from '../../services/WordPress';
+
+import {
+	createCategory,
+	updateCategory
+} from '../../actions/categoryActions';
+import {
+	uploadMedia
+} from '../../services/WordPress';
 
 class CategoryForm extends Component {
 	constructor(props) {
@@ -28,6 +39,20 @@ class CategoryForm extends Component {
 			loading: false,
 			keyboardOpen: false
 		};
+	}
+
+	componentDidMount() {
+		const { updateTitle, category } = this.props;
+		updateTitle(category ? 'Edita ' + category.name : 'Registra tu Tienda');
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		const { updateTitle, category } = this.props;
+		const { businessName } = this.state;
+		const prevBusinessName = prevState.businessName;
+		if (category && (((businessName === prevBusinessName) || (prevBusinessName === '')))) {
+			updateTitle(category ? 'Edita ' + category.name : 'Registra tu Tienda')
+		}
 	}
 
 	static getDerivedStateFromProps = (props, state) => {
@@ -53,16 +78,6 @@ class CategoryForm extends Component {
 		}
 		return null
   }
-
-	componentDidMount() {
-		const { onTitleChange, category } = this.props;
-		onTitleChange(category ? 'Edita ' + category.name : 'Registra tu Tienda');
-	}
-
-	componentWillUnmount() {
-		const { onTitleChange } = this.props;
-		onTitleChange(null);
-	}
 	
 	handleUploadDialogOpen = () => {
     this.setState({
@@ -90,7 +105,7 @@ class CategoryForm extends Component {
 		event.preventDefault();
 		const data = this.state;
 		const { businessName, businessLogo, imageFile, name, email, phone, dni } = this.state;
-		const { auth, category, onSubmit } = this.props;
+		const { auth, category, createCategory, updateCategory } = this.props;
 		if (
 			businessName !== '' &&
 			businessLogo !== '' &&
@@ -106,15 +121,9 @@ class CategoryForm extends Component {
 						console.log(res);
 						data.imageId = res.data.id;
 						callback(auth, data)
-							.then(res => {
-								console.log(res);
-								if (res.data && res.data.id !== null) {
-									this.setState({ loading: false });
-									onSubmit(res.data);
-								}
-							})
-							.catch(err => {
-								console.log(err)
+							.then(() => {
+								this.setState({ loading: false });
+								this.finishSubmit();
 							})
 					})
 					.catch(err => {
@@ -122,25 +131,29 @@ class CategoryForm extends Component {
 					});
 			} else {
 				callback(auth, data)
-					.then(res => {
-						console.log(res);
-						if (res.data && res.data.id !== null) {
-							this.setState({ loading: false });
-							onSubmit(res.data);
-						}
+					.then(() => {
+						this.setState({ loading: false });
+						this.finishSubmit();
 					})
-					.catch(err => {
-						console.log(err);
-					});
 			}
 		} else {
 			this.setState({ loading: false });
 			alert('Favor llenar campos requeridos.');
 		}
+	}
+
+	finishSubmit = () => {
+		console.log('yo')
+    const { category } = this.props;
+    if (category.approved) {
+      this.props.history.replace('/');
+    } else {
+      this.props.history.replace('/pagos');
+    }
   }
   
 	handleInputChange = (event) => {
-		const { category, onTitleChange } = this.props;
+		const { updateTitle, category } = this.props;
 		const target = event.target;
 		const name = target.name;
 		const value = target.value;
@@ -149,8 +162,8 @@ class CategoryForm extends Component {
 			name === 'dni' ||
 			name === 'ruc'
 		) && !value.match(/^(\s*|\d+)$/)) { return; }
-		if (name === 'businessName') {
-			onTitleChange(category ? 'Edita ' + value : 'Registra ' + value);
+		if ((name === 'businessName') && (!category || !category.approved)) {
+			updateTitle(category ? 'Edita ' + value : 'Registra ' + value);
 		}
 		this.setState({ [name]: value });
 	}
@@ -267,4 +280,19 @@ class CategoryForm extends Component {
 	}
 }
 
-export default CategoryForm;
+const mapStateToProps = state => ({
+	user: state.auth.user,
+  auth: state.auth.auth,
+	category: state.categories.category
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+	updateTitle,
+	createCategory,
+	updateCategory
+}, dispatch)
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(withRouter(CategoryForm));

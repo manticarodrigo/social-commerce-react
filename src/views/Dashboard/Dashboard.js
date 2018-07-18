@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -17,6 +20,15 @@ import MoreMenu from '../../components/Menu/MoreMenu';
 import DeleteDialog from '../../components/Dialog/DeleteDialog';
 import ShareDialog from '../../components/Dialog/ShareDialog';
 
+import {
+	updateTitle
+} from '../../actions/navActions';
+import {
+	updateCurrentProduct,
+	resetProductLocations,
+  deleteProduct
+} from '../../actions/productActions';
+
 class Dashboard extends Component {
 	constructor(props) {
 		super(props);
@@ -25,6 +37,16 @@ class Dashboard extends Component {
 			shareDialogOpen: false,
 			moreProduct: null
 		};
+	}
+
+	componentDidMount() {
+		const { updateTitle, category } = this.props;
+		updateTitle(category ? category.name : 'Tu Tienda');
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		const { updateTitle, category } = this.props;
+		updateTitle(category ? category.name : 'Tu Tienda');
 	}
 
 	handleMore = (event, product) => {
@@ -45,6 +67,12 @@ class Dashboard extends Component {
 		this.setState({ shareDialogOpen: true });
 	}
 
+	handleAdd = () => {
+		const { history, resetProductLocations } = this.props;
+		resetProductLocations();
+		history.replace('/producto');
+	}
+
 	handleProductShare = (product) => {
 		this.setState({ shareDialogOpen: true });
 	}
@@ -54,23 +82,51 @@ class Dashboard extends Component {
 	}
 
 	finishProductDelete = (product) => {
-		this.setState({ deleteDialogOpen: false });
-		this.props.onDelete(product);
+		const { deleteProduct } = this.props;
+		deleteProduct(product.id);
+		this.setState({
+			deleteDialogOpen: false,
+			moreProduct: null
+		});
 	}
 
 	handleProductSelected = (product) => {
-		this.props.onSelect(product);
-	}
+    const { history, updateCurrentProduct } = this.props;
+    updateCurrentProduct(product);
+    history.replace('/producto');
+  }
 
-	handleProductAnalytics = (product) => {
-		this.props.onAnalytics(product);
-	}
+  handleProductAnalytics = (product) => {
+    const { history, updateCurrentProduct } = this.props;
+    updateCurrentProduct(product);
+    history.replace('/producto/analisis');
+  }
   
 	render() {
 		const { category, products } = this.props;
 		const { deleteDialogOpen, shareDialogOpen, moreProduct } = this.state;
 	  return (
 			<div>
+				<MoreMenu
+					open={Boolean(moreProduct)}
+					anchorEl={moreProduct ? moreProduct.anchorEl : null}
+					product={moreProduct ? moreProduct.product : null}
+					onShare={this.handleProductShare}
+					onAnalytics={this.handleProductAnalytics}
+					onDelete={this.handleProductDelete}
+					onClose={this.handleMoreClose}
+				/>
+				<ShareDialog
+					open={shareDialogOpen}
+					category={moreProduct ? null : category}
+					product={moreProduct ? moreProduct.product : null}
+					onClose={() => this.setState({ shareDialogOpen: false })}
+					onConfirm={() => this.setState({ shareDialogOpen: false })} />
+				<DeleteDialog
+					open={deleteDialogOpen}
+					product={moreProduct ? moreProduct.product : null}
+					onClose={() => this.setState({ deleteDialogOpen: false })}
+					onConfirm={() => this.finishProductDelete(moreProduct ? moreProduct.product : null)} />
 				<List dense={false}>
 					{products && products.map(product => (
 						<ListItem
@@ -102,15 +158,6 @@ class Dashboard extends Component {
 								>
 									<MoreVertIcon />
 								</IconButton>
-								<MoreMenu
-									open={Boolean(moreProduct)}
-									anchorEl={moreProduct ? moreProduct.anchorEl : null}
-									product={moreProduct ? moreProduct.product : null}
-									onShare={this.handleProductShare}
-									onAnalytics={this.handleProductAnalytics}
-									onDelete={this.handleProductDelete}
-									onClose={this.handleMoreClose}
-								/>
 							</ListItemSecondaryAction>
 						</ListItem>
 					))}
@@ -128,23 +175,31 @@ class Dashboard extends Component {
 					color='primary'
 					aria-label='add'
 					className='AddFab'
-					onClick={this.props.onAdd}>
+					onClick={this.handleAdd}>
 					<AddIcon />
 				</Button>
-				<ShareDialog
-					open={shareDialogOpen}
-					category={moreProduct ? null : category}
-					product={moreProduct ? moreProduct.product : null}
-					onClose={() => this.setState({ shareDialogOpen: false })}
-					onConfirm={() => this.setState({ shareDialogOpen: false })} />
-				<DeleteDialog
-					open={deleteDialogOpen}
-					product={moreProduct ? moreProduct.product : null}
-					onClose={() => this.setState({ deleteDialogOpen: false })}
-					onConfirm={() => this.finishProductDelete(moreProduct ? moreProduct.product : null)} />
 			</div>
 	  )
 	}
 }
 
-export default Dashboard;
+const mapStateToProps = state => ({
+	user: state.auth.user,
+  auth: state.auth.auth,
+  category: state.categories.category,
+  products: state.products.products
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+	updateTitle,
+	updateCurrentProduct,
+	resetProductLocations,
+	deleteProduct
+}, dispatch);
+
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(Dashboard)
+);
