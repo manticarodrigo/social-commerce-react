@@ -91,32 +91,32 @@ const ShareDialog = ({ open, product, category, onClose}) => {
         </DialogContentText>
         <ul style={style.socialButtonList}>
           <li style={style.socialButton}>
-              <a href={`whatsapp://send?text=${obj.body}`}
+              <a href={encodeURI(`whatsapp://send?text=${obj.body}`)}
                  style={{...style.socialButtonItem, ...style.whatsapp}} target='_blank' title='Compartir en WhatsApp'>
                   <WhatsappIcon style={style.svgItem} />
               </a>
           </li>
           <li style={style.socialButton}>
-              <a href={`https://www.facebook.com/dialog/share?app_id=${facebook_app_id}&display=popup&href=${obj.url}&redirect_uri=${obj.url}`}
+              <a href={encodeURI(`https://www.facebook.com/dialog/share?app_id=${facebook_app_id}&display=popup&href=${obj.url}&redirect_uri=${obj.url}`)}
                  style={{...style.socialButtonItem, ...style.facebook}} target='_blank' title='Compartir en Facebook'>
                   <FacebookIcon style={style.svgItem} />
               </a>
           </li>
           <li style={style.socialButton}>
-              <a href={`https://twitter.com/share?text=${obj.subject}&url=${obj.url}&via=heyshopper`}
+              <a href={encodeURI(`https://twitter.com/share?text=${obj.subject}&url=${obj.url}&via=heyshopper`)}
                  style={{...style.socialButtonItem, ...style.twitter}} target='_blank' title='Compartir en Twitter'>
                   <TwitterIcon style={style.svgItem} />
               </a>
           </li>
           <li style={style.socialButton}>
-              <a href={`https://plus.google.com/share?url=${obj.url}`}
+              <a href={encodeURI(`https://plus.google.com/share?url=${obj.url}`)}
                  style={{...style.socialButtonItem, ...style.google}} target='_blank' title='Compartir en Google+'>
                   <GooglePlusIcon style={style.svgItem} />
               </a>
           </li>
           <li style={style.socialButton}>
-              <a href={`mailto:?subject=${obj.subject}&body=${obj.body}`}
-                 style={style.socialButtonItem} target='_blank' title='Compartir en Google+'>
+              <a href={encodeURI(`mailto:?subject=${obj.subject}&body=${obj.body}`)}
+                 style={style.socialButtonItem} title='Compartir en Google+'>
                   <EmailIcon style={style.svgItem} />
               </a>
           </li>
