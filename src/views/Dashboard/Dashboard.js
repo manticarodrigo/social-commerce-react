@@ -120,8 +120,7 @@ class Dashboard extends Component {
 					open={shareDialogOpen}
 					category={moreProduct ? null : category}
 					product={moreProduct ? moreProduct.product : null}
-					onClose={() => this.setState({ shareDialogOpen: false })}
-					onConfirm={() => this.setState({ shareDialogOpen: false })} />
+					onClose={() => this.setState({ shareDialogOpen: false })} />
 				<DeleteDialog
 					open={deleteDialogOpen}
 					product={moreProduct ? moreProduct.product : null}

@@ -6,86 +6,129 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 
-import {
-	FacebookShareButton,
-	FacebookIcon,
-	TwitterShareButton,
-	TwitterIcon,
-	WhatsappShareButton,
-	WhatsappIcon,
-	EmailShareButton,
-	EmailIcon
-} from 'react-share'
+import WhatsappIcon from 'mdi-material-ui/Whatsapp.js';
+import FacebookIcon from 'mdi-material-ui/Facebook';
+import TwitterIcon from 'mdi-material-ui/Twitter';
+import GooglePlusIcon from 'mdi-material-ui/GooglePlus';
+import EmailIcon from 'mdi-material-ui/Email';
 
 const style = {
+  socialButtonList: {
+    listStyleType: 'none',
+    margin: 0,
+    padding: 0,
+    textAlign: 'center'
+  },
   socialButton: {
     display: 'inline-block',
-    padding: '1em 0.5em 0 0'
+    padding: '1em 0.5em 0 0',
   },
-  socialButtonDiv: {
-    display: 'inline',
-    textAlign: 'center',
+  socialButtonItem: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'gray',
+    borderRadius: '50%', 
+    display: 'block',
+    color: 'white'
+  },
+  svgItem: {
+    padding: 8
+  },
+  whatsapp: {
+    backgroundColor: '#07b556'
+  },
+  facebook: {
+    backgroundColor: '#3f5fa3'
+  },
+  twitter: {
+    backgroundColor: '#63b3ef'
+  },
+  google: {
+    backgroundColor: '#ed3035'
   }
 }
 
-class ShareDialog extends React.Component {
+const ShareDialog = ({ open, product, category, onClose}) => {
 
-  handleClose = () => {
-    this.props.onClose()
+  let obj = {
+    'kind': '',
+    'name': '',
+    'subject': '',
+    'url': '',
+    'body': ''
+  };
+  if (product) {
+    obj = {
+      'kind': 'Producto',
+      'name': product.name,
+      'subject': `Compra ${product.name} en heyshopper.co`,
+      'url': product.permalink,
+      'body': `Compra el producto ${product.name} aquí: ${product.permalink}`
+    }
+  } else if (category) {
+    obj = {
+      'kind': 'Tienda',
+      'name': category.name,
+      'subject': `Visita mi Tienda ${category.name} | heyshopper.co`,
+      'url': category.term_link,
+      'body': `Mira el catálogo de mi tienda ${category.name} aquí: ${category.term_link}`
+    }
   }
 
-  handleConfirm = () => {
-    this.props.onClose()
-  }
+  const facebook_app_id = process.env.REACT_APP_FACEBOOK_APP_ID;
 
-  render() {
-    const { open, category, product } = this.props
-    return (
-      <Dialog
-        open={open}
-        onClose={this.handleClose}
-        aria-labelledby='share-dialog-title'
-        aria-describedby='share-dialog-description'
-      >
-        <DialogTitle id='share-dialog-title'>Comparte Tu {category ? 'Tienda' : product ? 'Producto' : null}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id='share-dialog-description'>
-            Selecciona una red en donde compartír {category ? category.name : product ? product.name : null}.
-          </DialogContentText>
-          <div style={style.socialButtonDiv}>
-            <WhatsappShareButton
-              style={style.socialButton}
-              url={category ? category.term_link : product ? product.permalink : null}
-              title={category ? 'Tienda ' + category.name : product ? 'Producto ' + product.name : null}
-              children={<WhatsappIcon size={32} round={true} />} />
-            <FacebookShareButton
-              style={style.socialButton}
-              url={category ? category.term_link : product ? product.permalink : null}
-              quote={category ? 'Tienda ' + category.name : product ? 'Producto ' + product.name : null}
-              hashtag={category ? category.term_name : product ? product.name : null}
-              children={<FacebookIcon size={32} round={true} />} />
-            <TwitterShareButton
-              style={style.socialButton}
-              url={category ? category.term_link : product ? product.permalink : null}
-              title={category ? 'Tienda ' + category.name : product ? 'Producto ' + product.name : null}
-              hashtags={[category ? category.term_name : product ? product.name : null]}
-              children={<TwitterIcon size={32} round={true} />} />
-            <EmailShareButton
-              style={style.socialButton}
-              url={category ? category.term_link : product ? product.permalink : null}
-              subject={category ? 'Tienda ' + category.name : product? 'Producto ' + product.name : null}
-              body={category ? 'Conoce la tienda ' + category.name + ' visitando la pagina ' + category.term_link : product ? 'Conoce el producto ' + product.name + ' visitando la pagina ' + product.permalink : null}
-              children={<EmailIcon size={32} round={true} />} />
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={this.handleConfirm} color='primary' autoFocus>
-            Cerrar
-          </Button>
-        </DialogActions>
-      </Dialog>
-    )
-  }
+  return (
+    <Dialog
+      open={open}
+      onClose={onClose}
+      aria-labelledby='share-dialog-title'
+      aria-describedby='share-dialog-description'
+    >
+      <DialogTitle id='share-dialog-title'>Comparte {obj.name}</DialogTitle>
+      <DialogContent>
+        <DialogContentText id='share-dialog-description'>
+          Selecciona una red en donde compartír {obj.name}.
+        </DialogContentText>
+        <ul style={style.socialButtonList}>
+          <li style={style.socialButton}>
+              <a href={`whatsapp://send?text=${obj.body}`}
+                 style={{...style.socialButtonItem, ...style.whatsapp}} target='_blank' title='Compartir en WhatsApp'>
+                  <WhatsappIcon style={style.svgItem} />
+              </a>
+          </li>
+          <li style={style.socialButton}>
+              <a href={`https://www.facebook.com/dialog/share?app_id=${facebook_app_id}&display=popup&href=${obj.url}&redirect_uri=${obj.url}`}
+                 style={{...style.socialButtonItem, ...style.facebook}} target='_blank' title='Compartir en Facebook'>
+                  <FacebookIcon style={style.svgItem} />
+              </a>
+          </li>
+          <li style={style.socialButton}>
+              <a href={`https://twitter.com/share?text=${obj.subject}&url=${obj.url}&via=heyshopper`}
+                 style={{...style.socialButtonItem, ...style.twitter}} target='_blank' title='Compartir en Twitter'>
+                  <TwitterIcon style={style.svgItem} />
+              </a>
+          </li>
+          <li style={style.socialButton}>
+              <a href={`https://plus.google.com/share?url=${obj.url}`}
+                 style={{...style.socialButtonItem, ...style.google}} target='_blank' title='Compartir en Google+'>
+                  <GooglePlusIcon style={style.svgItem} />
+              </a>
+          </li>
+          <li style={style.socialButton}>
+              <a href={`mailto:?subject=${obj.subject}&body=${obj.body}`}
+                 style={style.socialButtonItem} target='_blank' title='Compartir en Google+'>
+                  <EmailIcon style={style.svgItem} />
+              </a>
+          </li>
+        </ul>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} color='primary' autoFocus>
+          Cerrar
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
 }
 
 export default ShareDialog

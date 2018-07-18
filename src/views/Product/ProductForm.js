@@ -204,7 +204,7 @@ class ProductForm extends Component {
 	}
   
 	render() {
-		const { user, product, category } = this.props;
+		const { user, product } = this.props;
 		const { uploadDialogOpen, loading, adding, keyboardOpen } = this.state;
 	  return (
 			<div className='ProductForm' style={{paddingBottom: 'calc(75px + 2em'}}>
