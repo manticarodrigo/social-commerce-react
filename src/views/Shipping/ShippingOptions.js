@@ -7,15 +7,14 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
-import {
-	Truck
-} from 'mdi-material-ui';
+import './ShippingOptions.css';
+
+import Truck from 'mdi-material-ui/Truck';
 import Cabify from '../../assets/png/Cabify.png';
 import DHL from '../../assets/png/DHL.png';
 import MRW from '../../assets/png/MRW.png';
 import Urbaner from '../../assets/png/Urbaner.png';
 import Glovo from '../../assets/png/Glovo.png';
-import './ShippingOptions.css';
 
 import {
 	updateTitle

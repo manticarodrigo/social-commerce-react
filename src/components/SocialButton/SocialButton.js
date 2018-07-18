@@ -1,11 +1,12 @@
-import React from 'react'
-import SocialLogin from 'react-social-login'
-import { Button } from '@material-ui/core'
-import { Facebook, Google } from 'mdi-material-ui'
-import './SocialButton.css'
+import React from 'react';
+import SocialLogin from 'react-social-login';
+import { Button } from '@material-ui/core';
+import Facebook from 'mdi-material-ui/Facebook';
+import Google from 'mdi-material-ui/Google';
+import './SocialButton.css';
 
 const SocialButton = ({ children, triggerLogin, ...props }) => {
-  const { type } = props
+  const { type } = props;
   return (
     <Button
       className='SocialButton'
@@ -20,4 +21,4 @@ const SocialButton = ({ children, triggerLogin, ...props }) => {
   )
 } 
  
-export default SocialLogin(SocialButton)
+export default SocialLogin(SocialButton);
