@@ -59,11 +59,6 @@ class NavBar extends React.Component {
     this.props.history.replace('/perfil')
   }
 
-  handleShareCategory = () => {
-    this.handleClose()
-    this.props.history.replace('/catalogo')
-  }
-
   handleDeleteCategory = () => {
     this.setState({ deleteDialogOpen: true });
   }
@@ -170,7 +165,12 @@ class NavBar extends React.Component {
               <MenuItem
                 style={{display: category && category.approved ? 'block' : 'none'}}
                 onClick={this.handleShareCategory}>
+                <a
+                  style={{ textDecoration: 'none', color: 'rgba(0, 0, 0, 0.87)'}}
+                  target='_blank'
+                  href={category && category.term_link}>
                 Ver Tienda
+                </a>
               </MenuItem>
               <MenuItem
                 style={{display: category && category.approved ? 'block' : 'none'}}
@@ -229,9 +229,6 @@ class NavBar extends React.Component {
         }
         history.replace('/producto');
         break;
-      case '/catalogo':
-        history.replace('/producto');
-        break;
       default:
         history.replace('/producto');
     }
@@ -261,10 +258,6 @@ class NavBar extends React.Component {
         history.replace('/producto');
         break;
       case '/producto':
-        if (currentProduct === products[0]) {
-          history.replace('/catalogo'); // first product in list
-          break;
-        }
         history.replace('/producto');
         break;
       default:

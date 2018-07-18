@@ -15,7 +15,6 @@ import PaymentOptions from './views/Payment/PaymentOptions';
 import ShippingOptions from './views/Shipping/ShippingOptions';
 import ProductForm from './views/Product/ProductForm';
 import ProductAnalytics from './views/ProductAnalytics/ProductAnalytics';
-import Catalog from './views/Catalog/Catalog';
 
 import {
   facebookLogin
@@ -135,7 +134,6 @@ class App extends Component {
             <Route exact path='/envios' component={ShippingOptions} />
             <Route exact path='/producto' component={ProductForm} />
             <Route exact path='/producto/analisis' component={ProductAnalytics} />
-            <Route exact path='/catalogo' component={Catalog} />
             <Route component={Error} />
           </Switch>
         </div>

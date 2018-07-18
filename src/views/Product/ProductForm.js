@@ -20,7 +20,9 @@ import {
 import {
 	uploadMedia
 } from '../../services/WordPress';
-
+import {
+  updateCategory
+} from '../../actions/categoryActions';
 import {
 	resetProductLocations
 } from '../../actions/productActions';
@@ -144,7 +146,9 @@ class ProductForm extends Component {
 	finishSubmit = (type) => {
 		const {
 			history,
+			auth,
 			category,
+			updateCategory,
 			resetProductLocations
 		} = this.props;
 		if (type === 'add') {
@@ -164,15 +168,18 @@ class ProductForm extends Component {
 			});
 			history.replace('/producto')
 		} else {
-			if (category && category.approved) {
-				resetProductLocations()
-				history.replace('/')
-			} else {
-				// resetProductLocations()
-				history.replace('/catalogo');
-			}
+			category.approved = true;
+			updateCategory(auth, category)
+				.then(() => {
+					resetProductLocations()
+					history.replace('/');
+				})
 		}
 	}
+
+	handleApprove = () => {
+    
+  }
   
 	handleInputChange = (event) => {
 	  const target = event.target
@@ -295,7 +302,7 @@ class ProductForm extends Component {
 						disabled={loading}
 						onClick={() => this.handleSubmit('finish')}
 					>
-						{product ? 'Guardar' : 'Crear'} y {category && category.approved ? 'Finalizar' : 'Compartir'}
+						{product ? 'Guardar' : 'Crear'} y Finalizar
 					</Button>
 					{(loading && !adding) && <CircularProgress size={24} className='ButtonProgress' />}
 				</div>
@@ -306,12 +313,14 @@ class ProductForm extends Component {
 
 const mapStateToProps = state => ({
 	user: state.auth.user,
+	auth: state.auth.auth,
 	category: state.categories.category,
   product: state.products.currentProduct
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
 	updateTitle,
+	updateCategory,
 	updateProduct,
 	createProduct,
 	resetProductLocations
