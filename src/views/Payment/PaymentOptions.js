@@ -8,18 +8,17 @@ import Checkbox from '@material-ui/core/Checkbox';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import {
-	Cash,
-	Bank,
-	Paypal,
-	Bitcoin,
-	CreditCard
-} from 'mdi-material-ui';
+import './PaymentOptions.css';
+
+import Cash from 'mdi-material-ui/Cash';
+import Bank from 'mdi-material-ui/Bank';
+import Paypal from 'mdi-material-ui/Paypal';
+import Bitcoin from 'mdi-material-ui/Bitcoin';
+import CreditCard from 'mdi-material-ui/CreditCard';
 import MercadoPago from '../../assets/png/MercadoPago.png';
 import PayU from '../../assets/png/PayU.png';
 import Culqi from '../../assets/png/Culqi.png';
 import PagoFlash from '../../assets/png/PagoFlash.png';
-import './PaymentOptions.css';
 
 import {
 	updateTitle
