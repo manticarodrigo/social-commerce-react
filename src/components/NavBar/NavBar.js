@@ -14,6 +14,11 @@ import MoreVert from '@material-ui/icons/MoreVert';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 
+import DeleteDialog from '../Dialog/DeleteDialog';
+
+import {
+  deleteCategory
+} from '../../actions/categoryActions';
 import {
   updateProductLocations
 } from '../../actions/productActions';
@@ -37,6 +42,7 @@ class NavBar extends React.Component {
     super(props);
     this.state = {
       anchorEl: null,
+      deleteDialogOpen: false
     };
   }
 
@@ -56,6 +62,10 @@ class NavBar extends React.Component {
   handleShareCategory = () => {
     this.handleClose()
     this.props.history.replace('/catalogo')
+  }
+
+  handleDeleteCategory = () => {
+    this.setState({ deleteDialogOpen: true });
   }
 
   handleLogout = () => {
@@ -91,11 +101,27 @@ class NavBar extends React.Component {
     return false;
   }
 
+  finishCategoryDelete = (category) => {
+    const { history, deleteCategory } = this.props;
+    deleteCategory(category.id)
+      .then(() => {
+        this.setState({
+          deleteCategoryOpen: false
+        })
+        history.replace('/perfil');
+      });
+  }
+
   render() {
     const { classes, title, category } = this.props;
-    const { anchorEl } = this.state;
+    const { anchorEl, deleteDialogOpen } = this.state;
     return (
       <div className={classes.root}>
+        <DeleteDialog
+					open={deleteDialogOpen}
+					category={category}
+					onClose={() => this.setState({ deleteDialogOpen: false })}
+					onConfirm={() => this.finishCategoryDelete(category)} />
         <AppBar position='fixed'>
           <Toolbar>
             {this.backCase() && (
@@ -153,7 +179,7 @@ class NavBar extends React.Component {
               </MenuItem>
               <MenuItem
                 style={{display: category && category.approved ? 'block' : 'none'}}
-                onClick={this.props.onDelete}>
+                onClick={this.handleDeleteCategory}>
                 Eliminár Tienda
               </MenuItem>
               <MenuItem
@@ -265,6 +291,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
+  deleteCategory,
   updateProductLocations
 }, dispatch);
 

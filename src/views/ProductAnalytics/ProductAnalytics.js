@@ -45,7 +45,6 @@ class ProductAnalytics extends Component {
 
 	fetchData = (productId, period) => {
 		const { fetchProductAnalytics } = this.props;
-		console.log(this.props)
 		fetchProductAnalytics(productId, period)
 			.then(() => {
 				const { analytics } = this.props;

@@ -3,7 +3,9 @@ import {
   FETCH_PRODUCT_ANALYTICS,
   UPDATE_PRODUCT_LOCATIONS,
   RESET_PRODUCT_LOCATIONS,
-  CREATE_PRODUCT
+  CREATE_PRODUCT,
+  UPDATE_PRODUCT,
+  DELETE_PRODUCT
 } from '../actions/types';
 
 const initialState = {
@@ -14,6 +16,8 @@ const initialState = {
 };
 
 export default function(state = initialState, action) {
+  var products = state.products;
+  var index;
   switch (action.type) {
     case FETCH_PRODUCTS:
       return {
@@ -39,10 +43,41 @@ export default function(state = initialState, action) {
         nextProduct: null
       };
     case CREATE_PRODUCT:
+      console.log(state)
+      console.log(action)
+      products.push(action.payload)
       return {
         ...state,
-        products: state.products.push(action.payload)
+        products: products
       };
+    case UPDATE_PRODUCT:
+      index = (
+        products
+          .map(e => { return e.id })
+          .indexOf(action.payload.id)
+      );
+      products[index] = action.payload;
+      console.log(state)
+      console.log(action)
+      return {
+        ...state,
+        products: products
+      };
+      case DELETE_PRODUCT:
+        index = (
+          products
+            .map(e => { return e.id })
+            .indexOf(action.payload.id)
+        );
+        if (index > -1) {
+          products.splice(index, 1);
+        }
+        console.log(state)
+        console.log(action)
+        return {
+          ...state,
+          products: products
+        };
     default:
       return state;
   }

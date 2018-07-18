@@ -92,6 +92,18 @@ export const updateProductLocations = (direction, products, currentProduct) => {
   }
 }
 
+export const updateCurrentProduct = (currentProduct) => {
+  return (dispatch) => {
+    dispatch({
+      type: UPDATE_PRODUCT_LOCATIONS,
+      payload: {
+        currentProduct: currentProduct,
+        nextProduct: null
+      }
+    });
+  }
+}
+
 export const resetProductLocations = () => {
   return (dispatch) => {
     dispatch({

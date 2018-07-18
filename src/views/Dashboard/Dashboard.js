@@ -24,9 +24,7 @@ import {
 	updateTitle
 } from '../../actions/navActions';
 import {
-  deleteCategory
-} from '../../actions/categoryActions';
-import {
+	updateCurrentProduct,
   deleteProduct
 } from '../../actions/productActions';
 
@@ -34,11 +32,20 @@ class Dashboard extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			deleteCategoryOpen: false,
 			deleteDialogOpen: false,
 			shareDialogOpen: false,
 			moreProduct: null
 		};
+	}
+
+	componentDidMount() {
+		const { updateTitle, category } = this.props;
+		updateTitle(category ? category.name : 'Tu Tienda');
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		const { updateTitle, category } = this.props;
+		updateTitle(category ? category.name : 'Tu Tienda')
 	}
 
 	handleMore = (event, product) => {
@@ -72,44 +79,37 @@ class Dashboard extends Component {
 			deleteProduct(product.id)
 				.then(() => {
 					fetchProducts(category.id)
-				})
+				});
 	}
 
 	handleProductSelected = (product) => {
-    const { history } = this.props;
-    // this.setState({ currentProduct: product })
-    history.replace('/producto')
+    const { history, updateCurrentProduct } = this.props;
+    updateCurrentProduct(product);
+    history.replace('/producto');
   }
 
   handleProductAnalytics = (product) => {
-    const { history } = this.props;
-    // this.setState({ currentProduct: product })
-    history.replace('/producto/analisis')
-  }
-
-	finishCategoryDelete = (category) => {
-    const { history, deleteCategory } = this.props;
-    deleteCategory(category.id)
-      .then(() => {
-        this.setState({
-          deleteCategoryOpen: false
-        })
-        history.replace('/perfil');
-      });
+    const { history, updateCurrentProduct } = this.props;
+    updateCurrentProduct(product);
+    history.replace('/producto/analisis');
   }
   
 	render() {
-		const { category, updateTitle, products } = this.props;
-		updateTitle(category ? category.name : 'Tu Tienda'); // move from render
-		const { deleteCategoryOpen, deleteDialogOpen, shareDialogOpen, moreProduct } = this.state;
+		const { category, products } = this.props;
+		const { deleteDialogOpen, shareDialogOpen, moreProduct } = this.state;
 	  return (
 			<div>
-				{category && (
-          <DeleteDialog
-            open={deleteCategoryOpen}
-            onClose={() => this.setState({ deleteCategoryOpen: false })}
-            onConfirm={() => this.finishCategoryDelete(category)} />
-        )}
+				<ShareDialog
+					open={shareDialogOpen}
+					category={moreProduct ? null : category}
+					product={moreProduct ? moreProduct.product : null}
+					onClose={() => this.setState({ shareDialogOpen: false })}
+					onConfirm={() => this.setState({ shareDialogOpen: false })} />
+				<DeleteDialog
+					open={deleteDialogOpen}
+					product={moreProduct ? moreProduct.product : null}
+					onClose={() => this.setState({ deleteDialogOpen: false })}
+					onConfirm={() => this.finishProductDelete(moreProduct ? moreProduct.product : null)} />
 				<List dense={false}>
 					{products && products.map(product => (
 						<ListItem
@@ -170,17 +170,6 @@ class Dashboard extends Component {
 					onClick={this.props.onAdd}>
 					<AddIcon />
 				</Button>
-				<ShareDialog
-					open={shareDialogOpen}
-					category={moreProduct ? null : category}
-					product={moreProduct ? moreProduct.product : null}
-					onClose={() => this.setState({ shareDialogOpen: false })}
-					onConfirm={() => this.setState({ shareDialogOpen: false })} />
-				<DeleteDialog
-					open={deleteDialogOpen}
-					product={moreProduct ? moreProduct.product : null}
-					onClose={() => this.setState({ deleteDialogOpen: false })}
-					onConfirm={() => this.finishProductDelete(moreProduct ? moreProduct.product : null)} />
 			</div>
 	  )
 	}
@@ -190,15 +179,12 @@ const mapStateToProps = state => ({
 	user: state.auth.user,
   auth: state.auth.auth,
   category: state.categories.category,
-  products: state.products.products,
-  currentProduct: state.products.currentProduct,
-  nextProduct: state.products.nextProduct,
-  pathname: state.nav.pathname
+  products: state.products.products
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
 	updateTitle,
-	deleteCategory,
+	updateCurrentProduct,
 	deleteProduct
 }, dispatch);
 
