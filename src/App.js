@@ -83,7 +83,7 @@ class App extends Component {
                     } else {
                       history.replace(pathname);
                     }
-                  })
+                  });
               } else {
                 this.setState({ loading: false });
                 history.replace('/perfil');

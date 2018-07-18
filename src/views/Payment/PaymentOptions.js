@@ -176,7 +176,7 @@ class PaymentOptions extends Component {
 								value='checkedTransfer'
 							/>
 						}
-						label='Deposito'
+						label='Transferencia'
 					/>
 					<FormControlLabel
 						className='CheckBoxLabel'

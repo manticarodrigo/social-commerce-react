@@ -1,5 +1,6 @@
 import {
   FETCH_PRODUCTS,
+  FETCH_PRODUCT_ANALYTICS,
   UPDATE_PRODUCT_LOCATIONS,
   RESET_PRODUCT_LOCATIONS,
   CREATE_PRODUCT
@@ -8,7 +9,8 @@ import {
 const initialState = {
   products: null,
   currentProduct: null,
-  nextProduct: null
+  nextProduct: null,
+  analytics: null
 };
 
 export default function(state = initialState, action) {
@@ -19,6 +21,11 @@ export default function(state = initialState, action) {
         products: action.payload,
         currentProduct: action.payload[0]
       };
+    case FETCH_PRODUCT_ANALYTICS:
+      return {
+        ...state,
+        analytics: action.payload
+      }
     case UPDATE_PRODUCT_LOCATIONS:
       return {
         ...state,

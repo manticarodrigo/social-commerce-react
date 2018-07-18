@@ -34,6 +34,23 @@ export const fetchProducts = (categoryId) => {
 	};
 }
 
+export const fetchProductAnalytics = (productId, period) => {
+  return (dispatch) => {
+		return axios.get(url + '/wp-json/ga/v1/product/' + productId + '?period=' + period)
+			.then(res => {
+				console.log(res);
+				const analytics = res.data;
+				dispatch({
+					type: FETCH_PRODUCT_ANALYTICS,
+					payload: analytics
+				});
+			})
+			.catch(err => {
+				console.log(err);
+			});
+	};
+}
+
 export const updateProductLocations = (direction, products, currentProduct) => {
   return (dispatch) => {
     if (Boolean(products) && direction === 'back') {
@@ -84,24 +101,7 @@ export const resetProductLocations = () => {
   }
 }
 
-export const fetchProductsAnalytics = (productId, period) => dispatch => {
-  return (dispatch) => {
-		return axios.get(url + '/wp-json/ga/v1/product/' + productId + '?period=' + period)
-			.then(res => {
-				console.log(res);
-				const products = res.data;
-				dispatch({
-					type: FETCH_PRODUCT_ANALYTICS,
-					payload: products
-				});
-			})
-			.catch(err => {
-				console.log(err);
-			});
-	};
-}
-
-export const createProduct = data => dispatch => {
+export const createProduct = (data) => {
 	const id = { id: data.imageId, position: 0 };
 	const src = { src: data.imageUrl, position: 0 };
 	const product = {
@@ -134,7 +134,6 @@ export const createProduct = data => dispatch => {
 export const updateProduct = (data) => {
 	const id = {id: data.imageId, position: 0}
 	const src = {src: data.imageUrl, position: 0}
-	
 	const product = {
 		name: data.name,
 		regular_price: data.cost,
