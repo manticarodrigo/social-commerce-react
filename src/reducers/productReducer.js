@@ -9,14 +9,14 @@ import {
 } from '../actions/types';
 
 const initialState = {
-  products: null,
+  products: [],
   currentProduct: null,
   nextProduct: null,
   analytics: null
 };
 
 export default function(state = initialState, action) {
-  var products = state.products;
+  var products = JSON.parse(JSON.stringify(state.products));
   var index;
   switch (action.type) {
     case FETCH_PRODUCTS:

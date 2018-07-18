@@ -1,21 +1,21 @@
-import React, { Component } from 'react'
-import SocialButton from '../../components/SocialButton/SocialButton'
-import './Login.css'
-import Logo from '../../assets/png/Logo.png'
+import React, { Component } from 'react';
+import SocialButton from '../../components/SocialButton/SocialButton';
+import './Login.css';
+import Logo from '../../assets/png/Logo.png';
 
-import TermsDialog from '../../components/Dialog/TermsDialog'
+import TermsDialog from '../../components/Dialog/TermsDialog';
 
 class Login extends Component {
 	constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       login: true,
       termsDialogOpen: false
-    }
+    };
   }
   
   toggleLogin = () => {
-    this.setState({login: !this.state.login})
+    this.setState({login: !this.state.login});
   }
 
   handleTerms = () => {
@@ -23,11 +23,11 @@ class Login extends Component {
   }
 
   handleResponse = (response) => {
-    this.props.onResponse(response)
+    this.props.onResponse(response);
   }
   
 	render() {
-    const { termsDialogOpen } = this.state
+    const { termsDialogOpen } = this.state;
 	  return (
 			<div className='Login'>
         <TermsDialog
@@ -73,4 +73,4 @@ class Login extends Component {
 	}
 }
 
-export default Login
+export default Login;
