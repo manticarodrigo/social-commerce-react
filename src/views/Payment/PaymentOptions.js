@@ -66,7 +66,6 @@ class PaymentOptions extends Component {
   }
 	
 	handleCheckboxChange = name => event => {
-		console.log(event.target.checked);
 		this.setState({ [name]: event.target.checked });
 	}
 

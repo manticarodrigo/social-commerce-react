@@ -165,7 +165,7 @@ class ProductForm extends Component {
 				} else {
 					if (category && category.approved) {
 						resetProductLocations()
-						history.replace('/producto')
+						history.replace('/')
 					} else {
 						// resetProductLocations()
     				history.replace('/catalogo');

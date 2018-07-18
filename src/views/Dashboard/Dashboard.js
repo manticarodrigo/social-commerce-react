@@ -99,6 +99,15 @@ class Dashboard extends Component {
 		const { deleteDialogOpen, shareDialogOpen, moreProduct } = this.state;
 	  return (
 			<div>
+				<MoreMenu
+					open={Boolean(moreProduct)}
+					anchorEl={moreProduct ? moreProduct.anchorEl : null}
+					product={moreProduct ? moreProduct.product : null}
+					onShare={this.handleProductShare}
+					onAnalytics={this.handleProductAnalytics}
+					onDelete={this.handleProductDelete}
+					onClose={this.handleMoreClose}
+				/>
 				<ShareDialog
 					open={shareDialogOpen}
 					category={moreProduct ? null : category}
@@ -141,15 +150,6 @@ class Dashboard extends Component {
 								>
 									<MoreVertIcon />
 								</IconButton>
-								<MoreMenu
-									open={Boolean(moreProduct)}
-									anchorEl={moreProduct ? moreProduct.anchorEl : null}
-									product={moreProduct ? moreProduct.product : null}
-									onShare={this.handleProductShare}
-									onAnalytics={this.handleProductAnalytics}
-									onDelete={this.handleProductDelete}
-									onClose={this.handleMoreClose}
-								/>
 							</ListItemSecondaryAction>
 						</ListItem>
 					))}
