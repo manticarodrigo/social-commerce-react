@@ -59,6 +59,16 @@ class NavBar extends React.Component {
     this.props.history.replace('/perfil')
   }
 
+  handleEditPayments = () => {
+    this.handleClose()
+    this.props.history.replace('/pagos')
+  }
+
+  handleEditShipping = () => {
+    this.handleClose()
+    this.props.history.replace('/envios')
+  }
+
   handleDeleteCategory = () => {
     this.setState({ deleteDialogOpen: true });
   }
@@ -176,6 +186,16 @@ class NavBar extends React.Component {
                 style={{display: category && category.approved ? 'block' : 'none'}}
                 onClick={this.handleEditCategory}>
                 Editar Tienda
+              </MenuItem>
+              <MenuItem
+                style={{display: category && category.approved ? 'block' : 'none'}}
+                onClick={this.handleEditPayments}>
+                Editar Pagos
+              </MenuItem>
+              <MenuItem
+                style={{display: category && category.approved ? 'block' : 'none'}}
+                onClick={this.handleEditShipping}>
+                Editar Envios
               </MenuItem>
               <MenuItem
                 style={{display: category && category.approved ? 'block' : 'none'}}
