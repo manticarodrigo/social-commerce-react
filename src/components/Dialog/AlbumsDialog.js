@@ -18,7 +18,8 @@ class AlbumsDialog extends Component {
     this.state = {
       albums: [],
       currentAlbums: [],
-      searchInput: ''
+      searchInput: '',
+      loading: true,
     }
     this.fetchFacebookAlbums()
   }
@@ -28,7 +29,12 @@ class AlbumsDialog extends Component {
     getAlbums(id, token)
     .then(res => {
       console.log(res)
-      this.setState({ albums: res, currentAlbums: res })
+      this.setState({ albums: res, currentAlbums: res, loading: false })
+    }).catch( err => {
+      console.log(err);
+      this.setState({
+        loading: false,
+      });
     })
   }
 
@@ -56,7 +62,13 @@ class AlbumsDialog extends Component {
 
   render() {
     const { open } = this.props
-    const { currentAlbums, searchInput } = this.state
+    const { currentAlbums, searchInput, loading } = this.state
+    
+    let message = 'Cargando...'; 
+    if (!loading && currentAlbums.length === 0) {
+      message = 'Ups.. parece que no encontramos ningún album';
+    }
+
     return (
       <Dialog
         open={open}
@@ -79,27 +91,29 @@ class AlbumsDialog extends Component {
             ),
           }} />
         </DialogTitle>
-        <div>
-          {currentAlbums.map(album => (
-            <GridList key={album.id} cellHeight={180}>
-              <GridListTile key={album.id} cols={2} style={{height: 'auto'}}>
-                <ListSubheader component='div'>{album.name}</ListSubheader>
-              </GridListTile>
-              {album.photos && album.photos.data.map(img => (
-                <GridListTile key={img.id}>
-                  <img
-                    src={img.source}
-                    alt={img.name != null ? img.name : img.source}
-                    onClick={() => this.handleListItemClick(img.source)} />
-                  <GridListTileBar
-                    title={img.name != null ? img.name : 'Sin titulo'}
-                    subtitle={<span>{album.name}</span>}
-                  />
+          <div>
+            {loading || currentAlbums.length === 0 ? 
+              <div style={{padding: '1em'}}>{message}</div>
+            : currentAlbums.map(album => (
+              <GridList key={album.id} cellHeight={180}>
+                <GridListTile key={album.id} cols={2} style={{height: 'auto'}}>
+                  <ListSubheader component='div'>{album.name}</ListSubheader>
                 </GridListTile>
-              ))}
-            </GridList>
-          ))}
-        </div>
+                {album.photos && album.photos.data.map(img => (
+                  <GridListTile key={img.id}>
+                    <img
+                      src={img.source}
+                      alt={img.name != null ? img.name : img.source}
+                      onClick={() => this.handleListItemClick(img.source)} />
+                    <GridListTileBar
+                      title={img.name != null ? img.name : 'Sin titulo'}
+                      subtitle={<span>{album.name}</span>}
+                    />
+                  </GridListTile>
+                ))}
+              </GridList>
+            ))}
+          </div>
       </Dialog>
     )
   }

@@ -17,7 +17,11 @@ export function getAlbums(id, accessToken) {
 	return new Promise((resolve, reject) => {
 		axios.get(`https://graph.facebook.com/${id}?fields=albums.fields(id,name,photos.fields(name,picture,source))&access_token=${accessToken}`)
 		.then(res => {
-			resolve(res.data.albums.data)
+			if ( res.data.albums ) {
+				resolve(res.data.albums.data)
+			} else {
+				resolve([]);
+			}
 		})
 		.catch(err => {
 			console.log(err)
