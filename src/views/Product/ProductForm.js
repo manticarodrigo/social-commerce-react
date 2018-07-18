@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
-import { updateTitle } from '../../actions/navActions';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -10,6 +10,9 @@ import './ProductForm.css';
 
 import UploadDialog from '../../components/Dialog/UploadDialog';
 
+import {
+	updateTitle
+} from '../../actions/navActions';
 import {
 	createProduct,
 	updateProduct
@@ -140,7 +143,7 @@ class ProductForm extends Component {
 	}
 	
 	finishSubmit = (type) => {
-		const { category, fetchProducts, resetProductLocations } = this.props;
+		const { history, category, fetchProducts, resetProductLocations } = this.props;
 		fetchProducts(category.id)
 			.then(() => {
 				if (type === 'add') {
@@ -160,9 +163,11 @@ class ProductForm extends Component {
 					});
 				} else {
 					if (category && category.approved) {
-						this.props.onBack();
+						resetProductLocations()
+						history.replace('/producto')
 					} else {
-						this.props.onDone();
+						// resetProductLocations()
+    				history.replace('/catalogo');
 					}
 				}
 			});
@@ -299,6 +304,7 @@ class ProductForm extends Component {
 }
 
 const mapStateToProps = state => ({
+	user: state.auth.user,
 	category: state.categories.category,
   product: state.products.currentProduct
 });
@@ -309,7 +315,9 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 	resetProductLocations
 }, dispatch);
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(ProductForm);
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(ProductForm)
+);

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { push } from 'connected-react-router';
+import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { updateTitle } from '../../actions/navActions';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -146,9 +146,9 @@ class CategoryForm extends Component {
 		console.log('yo')
     const { category, changePage } = this.props;
     if (category.approved) {
-      changePage('/');
+      this.props.history.replace('/');
     } else {
-      changePage('/pagos');
+      this.props.history.replace('/pagos');
     }
   }
   
@@ -287,7 +287,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-	changePage: (route) => push(route),
 	updateTitle,
 	createCategory,
 	updateCategory
@@ -296,4 +295,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(CategoryForm);
+)(withRouter(CategoryForm));

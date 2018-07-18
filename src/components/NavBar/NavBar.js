@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { push } from 'connected-react-router';
+import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
@@ -13,6 +13,10 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import MoreVert from '@material-ui/icons/MoreVert';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
+
+import {
+  updateProductLocations
+} from '../../actions/productActions';
 
 const styles = {
   root: {
@@ -46,18 +50,18 @@ class NavBar extends React.Component {
 
   handleEditCategory = () => {
     this.handleClose()
-    this.props.changePage('/perfil')
+    this.props.history.replace('/perfil')
   }
 
   handleShareCategory = () => {
     this.handleClose()
-    this.props.changePage('/catalogo')
+    this.props.history.replace('/catalogo')
   }
 
   handleLogout = () => {
     this.handleClose();
     localStorage.clear();
-    this.props.changePage('/ingresar');
+    this.props.history.replace('/ingresar');
   }
 
   backCase = () => {
@@ -99,7 +103,7 @@ class NavBar extends React.Component {
                 className={classes.menuButton}
                 color='inherit'
                 aria-label='Back'
-                onClick={this.props.onBack}>
+                onClick={this.handleBack}>
                   <ArrowBackIcon />
               </IconButton>
             )}
@@ -108,7 +112,7 @@ class NavBar extends React.Component {
                 className={classes.menuButton}
                 color='inherit'
                 aria-label='Forward'
-                onClick={this.props.onForward}>
+                onClick={this.handleForward}>
                   <ArrowForwardIcon />
               </IconButton>
             )}
@@ -162,6 +166,85 @@ class NavBar extends React.Component {
       </div>
     )
   }
+
+  handleBack = () => {
+    const {
+      history,
+      pathname,
+      category,
+      products,
+      currentProduct,
+      updateProductLocations
+    } = this.props;
+    if (category && category.approved) {
+      history.replace('/');
+      return;
+    }
+    updateProductLocations(
+      'back',
+      products,
+      currentProduct
+    );
+    switch (pathname) {
+      case '/envios':
+        history.replace('/pagos');
+        break;
+      case '/pagos':
+        history.replace('/perfil');
+        break;
+      case '/producto':
+        if (
+          !Array.isArray(products) || // does not exist || is not an array,
+          !products.length || // empty array
+          (currentProduct === products[products.length - 1]) // last in list
+        ) {
+          history.replace('/envios');
+          break;
+        }
+        history.replace('/producto');
+        break;
+      case '/catalogo':
+        history.replace('/producto');
+        break;
+      default:
+        history.replace('/producto');
+    }
+  }
+  
+  handleForward = () => {
+    const {
+      history,
+      pathname,
+      products,
+      currentProduct,
+      updateProductLocations
+    } = this.props;
+    updateProductLocations(
+      'back',
+      products,
+      currentProduct
+    );
+    switch (pathname) {
+      case '/perfil':
+        history.replace('/pagos');
+        break;
+      case '/pagos':
+        history.replace('/envios');
+        break;
+      case '/envios':
+        history.replace('/producto');
+        break;
+      case '/producto':
+        if (currentProduct === products[0]) {
+          history.replace('/catalogo'); // first product in list
+          break;
+        }
+        history.replace('/producto');
+        break;
+      default:
+        history.replace('/producto');
+    }
+  }
 }
 
 NavBar.propTypes = {
@@ -173,17 +256,21 @@ NavBar.propTypes = {
 }
 
 const mapStateToProps = state => ({
+  pathname: state.nav.pathname,
   title: state.nav.title,
   category: state.categories.category,
   products: state.products.products,
-  pathname: state.nav.pathname
+  currentProduct: state.products.currentProduct,
+  nextProduct: state.products.nextProduct
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  changePage: (route) => push(route)
+  updateProductLocations
 }, dispatch);
 
-export default connect(
-  mapStateToProps, 
-  mapDispatchToProps
-)(withStyles(styles)(NavBar));
+export default withRouter(
+  connect(
+    mapStateToProps, 
+    mapDispatchToProps
+  )(withStyles(styles)(NavBar))
+);

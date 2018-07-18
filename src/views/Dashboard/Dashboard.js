@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { push } from 'connected-react-router';
 import { bindActionCreators } from 'redux';
-import { updateTitle } from '../../actions/navActions';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -21,6 +20,15 @@ import MoreMenu from '../../components/Menu/MoreMenu';
 import DeleteDialog from '../../components/Dialog/DeleteDialog';
 import ShareDialog from '../../components/Dialog/ShareDialog';
 
+import {
+	updateTitle
+} from '../../actions/navActions';
+import {
+  deleteCategory
+} from '../../actions/categoryActions';
+import {
+  deleteProduct
+} from '../../actions/productActions';
 
 class Dashboard extends Component {
 	constructor(props) {
@@ -68,21 +76,25 @@ class Dashboard extends Component {
 	}
 
 	handleProductSelected = (product) => {
-		this.props.onSelect(product);
-	}
+    const { history } = this.props;
+    // this.setState({ currentProduct: product })
+    history.replace('/producto')
+  }
 
-	handleProductAnalytics = (product) => {
-		this.props.onAnalytics(product);
-	}
+  handleProductAnalytics = (product) => {
+    const { history } = this.props;
+    // this.setState({ currentProduct: product })
+    history.replace('/producto/analisis')
+  }
 
 	finishCategoryDelete = (category) => {
-    const { deleteCategory, changePage } = this.props;
+    const { history, deleteCategory } = this.props;
     deleteCategory(category.id)
       .then(() => {
         this.setState({
           deleteCategoryOpen: false
         })
-        changePage('/perfil');
+        history.replace('/perfil');
       });
   }
   
@@ -185,11 +197,14 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-	changePage: (route) => push(route),
-  updateTitle
+	updateTitle,
+	deleteCategory,
+	deleteProduct
 }, dispatch);
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Dashboard);
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(Dashboard)
+);

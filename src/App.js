@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Switch } from 'react-router-dom';
-import { push } from 'connected-react-router';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import './App.css';
@@ -25,15 +24,10 @@ import {
   updatePathname
 } from './actions/navActions';
 import {
-  fetchCategories,
-  updateCategory,
-  deleteCategory
+  fetchCategories
 } from './actions/categoryActions';
 import {
-  fetchProducts,
-  updateProductLocations,
-  resetProductLocations,
-  deleteProduct
+  fetchProducts
 } from './actions/productActions';
 
 class App extends Component {
@@ -41,8 +35,7 @@ class App extends Component {
     super(props);
     this.state = {
       loading: false,
-      user: null,
-      deleteCategoryOpen: false
+      user: null
     };
   }
 
@@ -53,21 +46,22 @@ class App extends Component {
       this.setState({ loading: true })
       this.processAuth(response);
     } else {
-      this.props.changePage('/ingresar');
+      const { history } = this.props;
+      history.replace('/ingresar');
     }
   }
 
   static getDerivedStateFromProps = (props, state) => {
-    props.updatePathname(props.history.location.pathname);
+    props.updatePathname(props.location.pathname);
     return null;
   }
 
   processAuth = (response) => {
     const {
+      history,
       facebookLogin,
       fetchCategories,
-      fetchProducts,
-      changePage
+      fetchProducts
     } = this.props;
     // Use fb sdk response for wp auth
     facebookLogin(response)
@@ -85,20 +79,20 @@ class App extends Component {
                     this.setState({ loading: false });
                     const { pathname } = this.props;
                     if (pathname === '/ingresar' || pathname === '/') {
-                      changePage(category.approved ? '/' : '/producto');
+                      history.replace(category.approved ? '/' : '/producto');
                     } else {
-                      changePage(pathname);
+                      history.replace(pathname);
                     }
                   })
               } else {
                 this.setState({ loading: false });
-                changePage('/perfil');
+                history.replace('/perfil');
               }
             });
         } else {
           localStorage.clear();
           this.setState({ loading: false });
-          changePage('/ingresar');
+          history.replace('/ingresar');
         }
       })
   }
@@ -117,92 +111,32 @@ class App extends Component {
     }
   }
 
-  handleShare = () => {
-    this.setState({ currentProduct: null, nextProduct: null });
-    this.props.changePage('/catalogo');
-  }
-
-  handleApprove = () => {
-    const { auth, category, updateCategory } = this.props;
-    category.approved = true;
-    updateCategory(auth, category)
-      .then(res => {
-        console.log(res);
-        this.props.changePage('/');
-      })
-      .catch(err => {
-        console.log(err);
-      })
-  }
-
-  handleCategoryDelete = () => {
-		this.setState({
-      deleteCategoryOpen: true
-    });
-  }
-
   handlePaymentOptionsSubmit = () => {
     const {
-      category,
-      changePage
+      history,
+      category
     } = this.props;
     if (category && category.approved) {
-      changePage('/');
+      history.replace('/');
     } else {
-      changePage('/envios');
+      history.replace('/envios');
     }
   }
 
   handleShippingOptionsSubmit = () => {
     const {
+      history,
       category,
       products,
       currentProduct,
-      changePage,
       updateProductLocations
     } = this.props;
     if (category && category.approved) {
-      changePage('/');
+      history.replace('/');
     } else {
       updateProductLocations('forward', products, currentProduct);
-      changePage('/producto');
+      history.replace('/producto');
     }
-  }
-
-  handleProductSelected = (product) => {
-    this.setState({ currentProduct: product })
-    this.props.changePage('/producto')
-  }
-
-  handleProductAnalytics = (product) => {
-    this.setState({ currentProduct: product })
-    this.props.changePage('/producto/analisis')
-  }
-
-  handleProductAdd = () => {
-    const { resetProductLocations, changePage } = this.props;
-    resetProductLocations()
-    changePage('/producto')
-  }
-
-  handleProductDelete = (product) => {
-    const { deleteProduct, fetchProducts, category } = this.props;
-    deleteProduct(product.id)
-      .then(res => {
-        console.log(res)
-        fetchProducts(category.id)
-          .then(res => {
-            console.log(res)
-            const products = res.data
-            this.setState({ products: products })
-          })
-          .catch(err => {
-            console.log(err)
-          })
-      })
-      .catch(err => {
-        console.log(err)
-      })
   }
 
   render() {
@@ -210,10 +144,7 @@ class App extends Component {
     return (
       <div className='App'>
         {this.props.pathname !== '/ingresar' && (
-          <NavBar
-            onBack={this.handleBack}
-            onForward={this.handleForward}
-            onDelete={this.handleCategoryDelete}/>
+          <NavBar />
         )}
         {loading && (
           <Loading />
@@ -226,23 +157,8 @@ class App extends Component {
                 <Login
                   onResponse={this.handleAuthResponse} />
               )} />
-            <Route
-              exact path='/'
-              render={() => (
-                <Dashboard
-                  onSelect={this.handleProductSelected}
-                  onAnalytics={this.handleProductAnalytics}
-                  onAdd={this.handleProductAdd}
-                  onDelete={this.handleProductDelete} />
-            )} />
-            <Route
-              exact path='/perfil'
-              render={() => (
-                <CategoryForm
-                  onBack={this.handleBack}
-                  onForward={this.handleForward}
-                  onSubmit={this.handleCategorySubmit} />
-            )} />
+            <Route exact path='/' component={Dashboard} />
+            <Route exact path='/perfil' component={CategoryForm} />
             <Route
               exact path='/pagos'
               render={() => (
@@ -255,139 +171,37 @@ class App extends Component {
                 <ShippingOptions
                   onSubmit={this.handleShippingOptionsSubmit} />
             )} />
-            <Route
-              exact path='/producto'
-              render={() => (
-                <ProductForm
-                  onAdd={this.handleProductAdd}
-                  onBack={this.handleBack}
-                  onDone={this.handleShare} />
-            )} />
-            <Route
-              exact path='/producto/analisis'
-              render={() => (
-                <ProductAnalytics
-                  onBack={this.handleBack}
-                />
-            )} />
-            <Route
-              exact path='/catalogo'
-              render={() => (
-                <Catalog
-                  onApprove={this.handleApprove}
-                  onBack={this.handleBack} />
-            )} />
+            <Route exact path='/producto' component={ProductForm} />
+            <Route exact path='/producto/analisis' component={ProductAnalytics} />
+            <Route exact path='/catalogo' component={Catalog} />
             <Route component={Error} />
           </Switch>
         </div>
       </div>
     )
-  }
-  
-  handleBack = () => {
-    const { 
-      pathname,
-      category,
-      products,
-      currentProduct,
-      changePage,
-      updateProductLocations
-    } = this.props;
-    if (category && category.approved) {
-      this.props.changePage('/');
-      return;
-    }
-    updateProductLocations(
-      'back',
-      products,
-      currentProduct
-    );
-    switch (pathname) {
-      case '/envios':
-        changePage('/pagos');
-        break;
-      case '/pagos':
-        changePage('/perfil');
-        break;
-      case '/producto':
-        if (
-          !Array.isArray(products) || // does not exist || is not an array,
-          !products.length || // empty array
-          (currentProduct === products[products.length - 1]) // last in list
-        ) {
-          changePage('/envios');
-          break;
-        }
-        changePage('/producto');
-        break;
-      case '/catalogo':
-        changePage('/producto');
-        break;
-      default:
-        changePage('/producto');
-    }
-  }
-  
-  handleForward = () => {
-    const { 
-      pathname,
-      products,
-      currentProduct,
-      changePage,
-      updateProductLocations
-    } = this.props;
-    updateProductLocations(
-      'back',
-      products,
-      currentProduct
-    );
-    switch (pathname) {
-      case '/perfil':
-        changePage('/pagos');
-        break;
-      case '/pagos':
-        changePage('/envios');
-        break;
-      case '/envios':
-        changePage('/producto');
-        break;
-      case '/producto':
-        if (currentProduct === products[0]) {
-          changePage('/catalogo'); // first product in list
-          break;
-        }
-        changePage('/producto');
-        break;
-      default:
-        changePage('/producto');
-    }
-  }
+  }s
 }
 
 const mapStateToProps = state => ({
+  pathname: state.nav.pathname,
   user: state.auth.user,
   auth: state.auth.auth,
   category: state.categories.category,
   products: state.products.products,
   currentProduct: state.products.currentProduct,
-  nextProduct: state.products.nextProduct,
-  pathname: state.nav.pathname
+  nextProduct: state.products.nextProduct
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  changePage: (route) => push(route),
   facebookLogin,
   updatePathname,
-  updateProductLocations,
-  resetProductLocations,
   fetchCategories,
-  updateCategory,
-  deleteCategory,
   fetchProducts,
-  deleteProduct
 }, dispatch);
 
-export default connect(
-  mapStateToProps, 
-  mapDispatchToProps
-)(App);
+export default withRouter(
+  connect(
+    mapStateToProps, 
+    mapDispatchToProps
+  )(App)
+);
