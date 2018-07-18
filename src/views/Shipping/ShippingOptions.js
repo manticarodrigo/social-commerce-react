@@ -84,12 +84,15 @@ class ShippingOptions extends Component {
 						}
 						label='Envio Propio'
 					/>
+				</FormGroup>
+				<p style={{marginTop: '2em'}}>Proximamente</p>
+				<FormGroup row>
 					<FormControlLabel
 						className='CheckBoxLabel'
 						control={
 							<Checkbox
 								disabled
-								className={'CheckBox' + (checkedCabify ? ' Checked' : '')}
+								className={'CheckBox Disabled' + (checkedCabify ? ' Checked' : '')}
 								color='primary'
 								icon={<img alt='Cabify' className='CheckBoxIcon' src={Cabify} />}
 								checkedIcon={<img alt='Cabify' className='CheckBoxIcon' src={Cabify} />}
@@ -98,14 +101,14 @@ class ShippingOptions extends Component {
 								value='checkedCabify'
 							/>
 						}
-						label='Cabify (proximamente)'
+						label='Cabify'
 					/>
 					<FormControlLabel
 						className='CheckBoxLabel'
 						control={
 							<Checkbox
 								disabled
-								className={'CheckBox' + (checkedDHL ? ' Checked' : '')}
+								className={'CheckBox Disabled' + (checkedDHL ? ' Checked' : '')}
 								color='primary'
 								icon={<img alt='DHL' className='CheckBoxIcon' src={DHL} />}
 								checkedIcon={<img alt='DHL' className='CheckBoxIcon' src={DHL} />}
@@ -114,14 +117,14 @@ class ShippingOptions extends Component {
 								value='checkedDHL'
 							/>
 						}
-						label='DHL (proximamente)'
+						label='DHL'
 					/>
 					<FormControlLabel
 						className='CheckBoxLabel'
 						control={
 							<Checkbox
 								disabled
-								className={'CheckBox' + (checkedMRW ? ' Checked' : '')}
+								className={'CheckBox Disabled' + (checkedMRW ? ' Checked' : '')}
 								color='primary'
 								icon={<img alt='MRW' className='CheckBoxIcon' src={MRW} />}
 								checkedIcon={<img alt='MRW' className='CheckBoxIcon' src={MRW} />}
@@ -130,14 +133,14 @@ class ShippingOptions extends Component {
 								value='checkedMRW'
 							/>
 						}
-						label='MRW (proximamente)'
+						label='MRW'
 					/>
 					<FormControlLabel
 						className='CheckBoxLabel'
 						control={
 							<Checkbox
 								disabled
-								className={'CheckBox' + (checkedUrbaner ? ' Checked' : '')}
+								className={'CheckBox Disabled' + (checkedUrbaner ? ' Checked' : '')}
 								color='primary'
 								icon={<img alt='Urbaner' className='CheckBoxIcon' src={Urbaner} />}
 								checkedIcon={<img alt='Urbaner' className='CheckBoxIcon' src={Urbaner} />}
@@ -146,14 +149,14 @@ class ShippingOptions extends Component {
 								value='checkedUrbaner'
 							/>
 						}
-						label='Urbaner (proximamente)'
+						label='Urbaner'
 					/>
 					<FormControlLabel
 						className='CheckBoxLabel'
 						control={
 							<Checkbox
 								disabled
-								className={'CheckBox' + (checkedGlovo ? ' Checked' : '')}
+								className={'CheckBox Disabled' + (checkedGlovo ? ' Checked' : '')}
 								color='primary'
 								icon={<img alt='Glovo' className='CheckBoxIcon' src={Glovo} />}
 								checkedIcon={<img alt='Glovo' className='CheckBoxIcon' src={Glovo} />}
@@ -162,7 +165,7 @@ class ShippingOptions extends Component {
 								value='checkedGlovo'
 							/>
 						}
-						label='Glovo (proximamente)'
+						label='Glovo'
 					/>
 				</FormGroup>
 				<div className='SaveButtonWrapper'>

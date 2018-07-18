@@ -196,7 +196,7 @@ class PaymentOptions extends Component {
 							value={bankAccount} />
 					</form>
 				)}
-				<p>Proximamente</p>
+				<p style={{marginTop: '2em'}}>Proximamente</p>
 				<FormGroup row>
 					<FormControlLabel
 						className='CheckBoxLabel'

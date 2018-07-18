@@ -27,6 +27,16 @@
   background-color: #3f51b5;
 }
 
+.PaymentOptions .CheckBoxLabel .CheckBox.Disabled::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
 .PaymentOptions .CheckBoxLabel .CheckBoxIcon {
   width: 1.5em;
   height: 1.5em;
@@ -39,16 +49,6 @@
   color: #fff;
   -webkit-filter: brightness(400%); /* Safari 6.0 - 9.0 */
   filter: brightness(400%);
-}
-
-.PaymentOptions .CheckBoxLabel .CheckBox.Disabled::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.15);
 }
 
 .PaymentOptions .SaveButtonWrapper {
