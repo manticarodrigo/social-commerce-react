@@ -43,8 +43,9 @@ class PaymentOptions extends Component {
 			checkedCulqi: false,
 			checkedPagoFlash: false,
 			checkedCard: false,
-			bankAccount: category && category.bank_account !== '' ? category.bank_account : '',
-			loading: false
+			bankAccount: category ? category.bank_account : '',
+			loading: false,
+			keyboardOpen: false
 		};
 	}
 
@@ -58,14 +59,18 @@ class PaymentOptions extends Component {
 		const { id } = state;
 		if (category && category.id !== id) {
 			return {
+				id: category.id,
 				checkedTransfer: category.bank_account !== '' ? true : false,
-				bankAccount: category.bank_account !== '' ? category.bank_account : ''
+				bankAccount: category.bank_account
 			};
 		}
 		return null;
   }
 	
 	handleCheckboxChange = name => event => {
+		console.log(name)
+		console.log(event.target.checked)
+		console.log(this.state)
 		this.setState({ [name]: event.target.checked });
 	}
 
@@ -115,6 +120,14 @@ class PaymentOptions extends Component {
 		}
 	}
 
+	handleInputFocus = (event) => {
+		this.setState({ keyboardOpen: true})
+	}
+
+	handleInputBlur = (event) => {
+		this.setState({ keyboardOpen: false})
+	}
+
   render() {
 		const {
 			checkedCash,
@@ -127,7 +140,8 @@ class PaymentOptions extends Component {
 			checkedPagoFlash,
 			checkedCard,
 			bankAccount,
-			loading
+			loading,
+			keyboardOpen
 		} = this.state;
     return (
 			<div className='PaymentOptions'>
@@ -165,123 +179,13 @@ class PaymentOptions extends Component {
 						}
 						label='Transferencia'
 					/>
-					<FormControlLabel
-						className='CheckBoxLabel'
-						control={
-							<Checkbox
-								disabled
-								className={'CheckBox' + (checkedCard ? ' Checked' : '')}
-								color='primary'
-								icon={<CreditCard className='CheckBoxIcon' />}
-								checkedIcon={<CreditCard className='CheckBoxIcon' />}
-								checked={checkedCard}
-								onChange={this.handleCheckboxChange('checkedCard')}
-								value='checkedCard'
-							/>
-						}
-						label='Debito/Credito (proximamente)'
-					/>
-					<FormControlLabel
-						className='CheckBoxLabel'
-						control={
-							<Checkbox
-								disabled
-								className={'CheckBox' + (checkedPayPal ? ' Checked' : '')}
-								color='primary'
-								icon={<Paypal className='CheckBoxIcon' />}
-								checkedIcon={<Paypal className='CheckBoxIcon' />}
-								checked={checkedPayPal}
-								onChange={this.handleCheckboxChange('checkedPayPal')}
-								value='checkedPayPal'
-							/>
-						}
-						label='PayPal (proximamente)'
-					/>
-					<FormControlLabel
-						className='CheckBoxLabel'
-						control={
-							<Checkbox
-								disabled
-								className={'CheckBox' + (checkedBitcoin ? ' Checked' : '')}
-								color='primary'
-								icon={<Bitcoin className='CheckBoxIcon' />}
-								checkedIcon={<Bitcoin className='CheckBoxIcon' />}
-								checked={checkedBitcoin}
-								onChange={this.handleCheckboxChange('checkedBitcoin')}
-								value='checkedBitcoin'
-							/>
-						}
-						label='Bitcoin (proximamente)'
-					/>
-					<FormControlLabel
-						className='CheckBoxLabel'
-						control={
-							<Checkbox
-								disabled
-								className={'CheckBox' + (checkedMercadoPago ? ' Checked' : '')}
-								color='primary'
-								icon={<img alt='MercadoPago' className='CheckBoxIcon' src={MercadoPago} />}
-								checkedIcon={<img alt='MercadoPago' className='CheckBoxIcon' src={MercadoPago} />}
-								checked={checkedMercadoPago}
-								onChange={this.handleCheckboxChange('checkedMercadoPago')}
-								value='checkedMercadoPago'
-							/>
-						}
-						label='MercadoPago (proximamente)'
-					/>
-					<FormControlLabel
-						className='CheckBoxLabel'
-						control={
-							<Checkbox
-								disabled
-								className={'CheckBox' + (checkedPayU ? ' Checked' : '')}
-								color='primary'
-								icon={<img alt='PayU' className='CheckBoxIcon' src={PayU} />}
-								checkedIcon={<img alt='PayU' className='CheckBoxIcon' src={PayU} />}
-								checked={checkedPayU}
-								onChange={this.handleCheckboxChange('checkedPayU')}
-								value='checkedPayU'
-							/>
-						}
-						label='PayU (proximamente)'
-					/>
-					<FormControlLabel
-						className='CheckBoxLabel'
-						control={
-							<Checkbox
-								disabled
-								className={'CheckBox' + (checkedCulqi ? ' Checked' : '')}
-								color='primary'
-								icon={<img alt='Culqi' className='CheckBoxIcon' src={Culqi} />}
-								checkedIcon={<img alt='Culqi' className='CheckBoxIcon' src={Culqi} />}
-								checked={checkedCulqi}
-								onChange={this.handleCheckboxChange('checkedCulqi')}
-								value='checkedCulqi'
-							/>
-						}
-						label='Culqi (proximamente)'
-					/>
-					<FormControlLabel
-						className='CheckBoxLabel'
-						control={
-							<Checkbox
-								disabled
-								className={'CheckBox' + (checkedPagoFlash ? ' Checked' : '')}
-								color='primary'
-								icon={<img alt='PagoFlash' className='CheckBoxIcon' src={PagoFlash} />}
-								checkedIcon={<img alt='PagoFlash' className='CheckBoxIcon' src={PagoFlash} />}
-								checked={checkedPagoFlash}
-								onChange={this.handleCheckboxChange('checkedPagoFlash')}
-								value='checkedPagoFlash'
-							/>
-						}
-						label='PagoFlash (proximamente)'
-					/>
 				</FormGroup>
 				{checkedTransfer && (
 					<form
 						style={{textAlign:'left'}}
 						onChange={this.handleTextFieldChange}
+						onFocus={this.handleInputFocus}
+						onBlur={this.handleBlur}
 						onSubmit={this.handleSubmit}>
 						<TextField
 							required
@@ -292,7 +196,126 @@ class PaymentOptions extends Component {
 							value={bankAccount} />
 					</form>
 				)}
-				<div className='SaveButtonWrapper'>
+				<p>Proximamente</p>
+				<FormGroup row>
+					<FormControlLabel
+						className='CheckBoxLabel'
+						control={
+							<Checkbox
+								disabled
+								className={'CheckBox Disabled' + (checkedCard ? ' Checked' : '')}
+								color='primary'
+								icon={<CreditCard className='CheckBoxIcon' />}
+								checkedIcon={<CreditCard className='CheckBoxIcon' />}
+								checked={checkedCard}
+								onChange={this.handleCheckboxChange('checkedCard')}
+								value='checkedCard'
+							/>
+						}
+						label='Debito/Credito'
+					/>
+					<FormControlLabel
+						className='CheckBoxLabel'
+						control={
+							<Checkbox
+								disabled
+								className={'CheckBox Disabled' + (checkedPayPal ? ' Checked' : '')}
+								color='primary'
+								icon={<Paypal className='CheckBoxIcon' />}
+								checkedIcon={<Paypal className='CheckBoxIcon' />}
+								checked={checkedPayPal}
+								onChange={this.handleCheckboxChange('checkedPayPal')}
+								value='checkedPayPal'
+							/>
+						}
+						label='PayPal'
+					/>
+					<FormControlLabel
+						className='CheckBoxLabel'
+						control={
+							<Checkbox
+								disabled
+								className={'CheckBox Disabled' + (checkedBitcoin ? ' Checked' : '')}
+								color='primary'
+								icon={<Bitcoin className='CheckBoxIcon' />}
+								checkedIcon={<Bitcoin className='CheckBoxIcon' />}
+								checked={checkedBitcoin}
+								onChange={this.handleCheckboxChange('checkedBitcoin')}
+								value='checkedBitcoin'
+							/>
+						}
+						label='Bitcoin'
+					/>
+					<FormControlLabel
+						className='CheckBoxLabel'
+						control={
+							<Checkbox
+								disabled
+								className={'CheckBox Disabled' + (checkedMercadoPago ? ' Checked' : '')}
+								color='primary'
+								icon={<img alt='MercadoPago' className='CheckBoxIcon' src={MercadoPago} />}
+								checkedIcon={<img alt='MercadoPago' className='CheckBoxIcon' src={MercadoPago} />}
+								checked={checkedMercadoPago}
+								onChange={this.handleCheckboxChange('checkedMercadoPago')}
+								value='checkedMercadoPago'
+							/>
+						}
+						label='MercadoPago'
+					/>
+					<FormControlLabel
+						className='CheckBoxLabel'
+						control={
+							<Checkbox
+								disabled
+								className={'CheckBox Disabled' + (checkedPayU ? ' Checked' : '')}
+								color='primary'
+								icon={<img alt='PayU' className='CheckBoxIcon' src={PayU} />}
+								checkedIcon={<img alt='PayU' className='CheckBoxIcon' src={PayU} />}
+								checked={checkedPayU}
+								onChange={this.handleCheckboxChange('checkedPayU')}
+								value='checkedPayU'
+							/>
+						}
+						label='PayU'
+					/>
+					<FormControlLabel
+						className='CheckBoxLabel'
+						control={
+							<Checkbox
+								disabled
+								className={'CheckBox Disabled' + (checkedCulqi ? ' Checked' : '')}
+								color='primary'
+								icon={<img alt='Culqi' className='CheckBoxIcon' src={Culqi} />}
+								checkedIcon={<img alt='Culqi' className='CheckBoxIcon' src={Culqi} />}
+								checked={checkedCulqi}
+								onChange={this.handleCheckboxChange('checkedCulqi')}
+								value='checkedCulqi'
+							/>
+						}
+						label='Culqi'
+					/>
+					<FormControlLabel
+						className='CheckBoxLabel'
+						control={
+							<Checkbox
+								disabled
+								className={'CheckBox Disabled' + (checkedPagoFlash ? ' Checked' : '')}
+								color='primary'
+								icon={<img alt='PagoFlash' className='CheckBoxIcon' src={PagoFlash} />}
+								checkedIcon={<img alt='PagoFlash' className='CheckBoxIcon' src={PagoFlash} />}
+								checked={checkedPagoFlash}
+								onChange={this.handleCheckboxChange('checkedPagoFlash')}
+								value='checkedPagoFlash'
+							/>
+						}
+						label='PagoFlash'
+					/>
+				</FormGroup>
+				<div
+					className='SaveButtonWrapper'
+					style={{
+						opacity: keyboardOpen ? '0.25' : '1',
+					}}>
 					<Button
 						size='large'
 						variant='contained'

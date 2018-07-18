@@ -20,6 +20,7 @@
   left: calc(50% - 1.25em);
   padding: 0.25em;
   background-color: rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
 .PaymentOptions .CheckBoxLabel .CheckBox.Checked {
@@ -40,11 +41,22 @@
   filter: brightness(400%);
 }
 
+.PaymentOptions .CheckBoxLabel .CheckBox.Disabled::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
 .PaymentOptions .SaveButtonWrapper {
+  background-color: #F0F0F0;
   position: fixed;
   bottom: 0;
   left: 0;
-  width: 100%
+  width: 100%;
 }
 
 .PaymentOptions .SaveButton {

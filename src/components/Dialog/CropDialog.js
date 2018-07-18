@@ -74,10 +74,8 @@ class CropDialog extends React.Component {
   handleConfirm = () => {
     this.setState({ loading: true });
     const { image, pixelCrop } = this.state;
-    console.log(this.state);
     this.getCroppedImg(image, pixelCrop, Date.now())
       .then(res => {
-        console.log(res)
         this.setState({ open: false, loading: false })
         this.props.onClose(res)
       })
@@ -144,7 +142,7 @@ class CropDialog extends React.Component {
               onChange={this.handleCropChange}/>
           )}
           {loading && (
-            <div className='Loading'>
+            <div className='CropLoading'>
               <CircularProgress size={50} />
             </div>
           )}

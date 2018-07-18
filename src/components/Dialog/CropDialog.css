@@ -2,7 +2,7 @@
   touch-action: manipulation !important;
 }
 
-.Loading {
+.CropLoading {
 	position: absolute;
 	top: 0;
 	left: 0;

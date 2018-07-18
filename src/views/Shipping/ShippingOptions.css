@@ -41,10 +41,11 @@
 }
 
 .ShippingOptions .SaveButtonWrapper {
+  background-color: #F0F0F0;
   position: fixed;
   bottom: 0;
   left: 0;
-  width: 100%
+  width: 100%;
 }
 
 .ShippingOptions .SaveButton {
