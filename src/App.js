@@ -111,34 +111,6 @@ class App extends Component {
     }
   }
 
-  handlePaymentOptionsSubmit = () => {
-    const {
-      history,
-      category
-    } = this.props;
-    if (category && category.approved) {
-      history.replace('/');
-    } else {
-      history.replace('/envios');
-    }
-  }
-
-  handleShippingOptionsSubmit = () => {
-    const {
-      history,
-      category,
-      products,
-      currentProduct,
-      updateProductLocations
-    } = this.props;
-    if (category && category.approved) {
-      history.replace('/');
-    } else {
-      updateProductLocations('forward', products, currentProduct);
-      history.replace('/producto');
-    }
-  }
-
   render() {
     const { loading } = this.state;
     return (
@@ -159,18 +131,8 @@ class App extends Component {
               )} />
             <Route exact path='/' component={Dashboard} />
             <Route exact path='/perfil' component={CategoryForm} />
-            <Route
-              exact path='/pagos'
-              render={() => (
-                <PaymentOptions
-                  onSubmit={this.handlePaymentOptionsSubmit} />
-            )} />
-            <Route
-              exact path='/envios'
-              render={() => (
-                <ShippingOptions
-                  onSubmit={this.handleShippingOptionsSubmit} />
-            )} />
+            <Route exact path='/pagos' component={PaymentOptions} />
+            <Route exact path='/envios' component={ShippingOptions} />
             <Route exact path='/producto' component={ProductForm} />
             <Route exact path='/producto/analisis' component={ProductAnalytics} />
             <Route exact path='/catalogo' component={Catalog} />
@@ -184,19 +146,15 @@ class App extends Component {
 
 const mapStateToProps = state => ({
   pathname: state.nav.pathname,
-  user: state.auth.user,
   auth: state.auth.auth,
-  category: state.categories.category,
-  products: state.products.products,
-  currentProduct: state.products.currentProduct,
-  nextProduct: state.products.nextProduct
+  category: state.categories.category
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   facebookLogin,
   updatePathname,
   fetchCategories,
-  fetchProducts,
+  fetchProducts
 }, dispatch);
 
 export default withRouter(

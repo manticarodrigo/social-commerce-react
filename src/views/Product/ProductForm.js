@@ -112,14 +112,14 @@ class ProductForm extends Component {
 			cost !== '' &&
 			imageUrl !== ''
 		) {
-			const { product, category } = this.props;
+			const { product, category, updateProduct, createProduct } = this.props;
 			const callback = product ? updateProduct : createProduct;
 			data.category = category;
 			if (imageFile) {
 				uploadMedia(imageFile)
 					.then(res => {
-						console.log(res)
-						data.imageId = res.data.id
+						console.log(res);
+						data.imageId = res.data.id;
 						callback(data)
 							.then(() => {
 								this.setState({ loading: false });
@@ -147,7 +147,7 @@ class ProductForm extends Component {
 		fetchProducts(category.id)
 			.then(() => {
 				if (type === 'add') {
-					this.props.onAdd();
+					resetProductLocations()
 					this.setState({
 						id: '',
 						name: '',
@@ -161,6 +161,7 @@ class ProductForm extends Component {
 						loading: false,
 						adding: false
 					});
+					history.replace('/producto')
 				} else {
 					if (category && category.approved) {
 						resetProductLocations()
@@ -312,6 +313,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
 	updateTitle,
 	fetchProducts,
+	updateProduct,
+	createProduct,
 	resetProductLocations
 }, dispatch);
 

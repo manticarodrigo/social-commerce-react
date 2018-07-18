@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { updateTitle } from '../../actions/navActions';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -21,6 +21,9 @@ import Culqi from '../../assets/png/Culqi.png';
 import PagoFlash from '../../assets/png/PagoFlash.png';
 import './PaymentOptions.css';
 
+import {
+	updateTitle
+} from '../../actions/navActions';
 import {
 	updateCategory
 } from '../../actions/categoryActions';
@@ -77,7 +80,7 @@ class PaymentOptions extends Component {
 	
 	handleSubmit = () => {
 		this.setState({ loading: true });
-		const { auth, category, onSubmit, updateCategory } = this.props;
+		const { auth, category, updateCategory } = this.props;
 		const { checkedTransfer, bankAccount } = this.state;
 		if (category && checkedTransfer) {
 			if (bankAccount !== '') {
@@ -87,7 +90,7 @@ class PaymentOptions extends Component {
 						console.log(res);
 						if (res.data && res.data.id !== null) {
 							this.setState({ loading: false });
-							onSubmit(res.data);
+							this.finishSubmit();
 						}
 					})
 					.catch(err => {
@@ -104,12 +107,24 @@ class PaymentOptions extends Component {
 					console.log(res);
 					if (res.data && res.data.id !== null) {
 						this.setState({ loading: false });
-						onSubmit(res.data);
+						this.finishSubmit();
 					}
 				})
 				.catch(err => {
 					console.log(err);
 				});
+		}
+	}
+
+	finishSubmit() {
+		const {
+			history,
+			category
+		} = this.props;
+		if (category && category.approved) {
+			history.replace('/');
+		} else {
+			history.replace('/envios');
 		}
 	}
 
@@ -308,7 +323,7 @@ class PaymentOptions extends Component {
 }
 
 const mapStateToProps = state => ({
-  // title: state.title.title
+  category: state.categories.category
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -316,7 +331,9 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 	updateCategory
 }, dispatch)
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(PaymentOptions);
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(PaymentOptions)
+);

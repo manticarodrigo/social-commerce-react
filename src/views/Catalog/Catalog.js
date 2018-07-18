@@ -10,7 +10,7 @@ import {
 } from '../../actions/navActions';
 import {
   updateCategory
-} from './actions/categoryActions';
+} from '../../actions/categoryActions';
 
 const style = {
 	fullSize: {

@@ -105,7 +105,7 @@ class CategoryForm extends Component {
 		event.preventDefault();
 		const data = this.state;
 		const { businessName, businessLogo, imageFile, name, email, phone, dni } = this.state;
-		const { auth, category, onSubmit, createCategory, updateCategory } = this.props;
+		const { auth, category, createCategory, updateCategory } = this.props;
 		if (
 			businessName !== '' &&
 			businessLogo !== '' &&
@@ -144,7 +144,7 @@ class CategoryForm extends Component {
 
 	finishSubmit = () => {
 		console.log('yo')
-    const { category, changePage } = this.props;
+    const { category } = this.props;
     if (category.approved) {
       this.props.history.replace('/');
     } else {

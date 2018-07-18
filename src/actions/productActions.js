@@ -91,7 +91,7 @@ export const fetchProductsAnalytics = (productId, period) => dispatch => {
 				console.log(res);
 				const products = res.data;
 				dispatch({
-					type: FETCH_PRODUCTS,
+					type: FETCH_PRODUCT_ANALYTICS,
 					payload: products
 				});
 			})
@@ -119,19 +119,19 @@ export const createProduct = data => dispatch => {
 		return axios.post(url + '/wp-json/wc/v2/products/', product, options)
       .then(res => {
         console.log(res);
-        const products = res.data;
+        const product = res.data;
         dispatch({
           type: CREATE_PRODUCT,
-          payload: products
+          payload: product
         });
       })
       .catch(err => {
         console.log(err);
-      })
+      });
 	};
 };
 
-export function updateProduct(data) {
+export const updateProduct = (data) => {
 	const id = {id: data.imageId, position: 0}
 	const src = {src: data.imageUrl, position: 0}
 	
@@ -145,10 +145,36 @@ export function updateProduct(data) {
 		manage_stock:  data.inventoryCount ? true : false,
 		stock_quantity: data.inventoryCount ? data.inventoryCount : 0,
 		in_stock: true,
-	}
-	return axios.put(url + '/wp-json/wc/v2/products/' + data.id, product, options)
+  }
+  return (dispatch) => {
+    return axios.put(url + '/wp-json/wc/v2/products/' + data.id, product, options)
+      .then(res => {
+        console.log(res);
+        const product = res.data;
+        dispatch({
+          type: UPDATE_PRODUCT,
+          payload: product
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
 }
 
-export function deleteProduct(productId) {
-	return axios.delete(url + '/wp-json/wc/v2/products/' + productId, options)
+export const deleteProduct = (productId) => {
+  return (dispatch) => {
+    return axios.delete(url + '/wp-json/wc/v2/products/' + productId, options)
+      .then(res => {
+        console.log(res);
+        const product = res.data;
+        dispatch({
+          type: DELETE_PRODUCT,
+          payload: product
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
 }

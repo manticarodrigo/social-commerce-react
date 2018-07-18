@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { updateTitle } from '../../actions/navActions';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -16,6 +16,13 @@ import MRW from '../../assets/png/MRW.png';
 import Urbaner from '../../assets/png/Urbaner.png';
 import Glovo from '../../assets/png/Glovo.png';
 import './ShippingOptions.css';
+
+import {
+	updateTitle
+} from '../../actions/navActions';
+import {
+	updateProductLocations
+} from '../../actions/productActions';
 
 class ShippingOptions extends Component {
   state = {
@@ -38,8 +45,20 @@ class ShippingOptions extends Component {
 	}
 
 	handleSubmit = () => {
-		this.props.onSubmit(null);
-	}
+    const {
+      history,
+      category,
+      products,
+      currentProduct,
+      updateProductLocations
+    } = this.props;
+    if (category && category.approved) {
+      history.replace('/');
+    } else {
+      updateProductLocations('forward', products, currentProduct);
+      history.replace('/producto');
+    }
+  }
 
   render() {
 		const {
@@ -171,14 +190,17 @@ class ShippingOptions extends Component {
 }
 
 const mapStateToProps = state => ({
-  // title: state.title.title
+  category: state.categories.category
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  updateTitle
+	updateTitle,
+	updateProductLocations
 }, dispatch)
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(ShippingOptions);
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(ShippingOptions)
+);
