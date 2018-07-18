@@ -85,32 +85,20 @@ class PaymentOptions extends Component {
 			if (bankAccount !== '') {
 				category.bankAccount = bankAccount;
 				updateCategory(auth, category)
-					.then(res => {
-						console.log(res);
-						if (res.data && res.data.id !== null) {
-							this.setState({ loading: false });
+					.then(() => {
+						this.setState({ loading: false });
 							this.finishSubmit();
-						}
-					})
-					.catch(err => {
-						console.log(err);
 					})
 			} else {
 				this.setState({ loading: false });
 				alert('Favor llenar campos requeridos.');
 			}
 		} else {
-			category.bankAccount = null;
+			category.bankAccount = '';
 			updateCategory(auth, category)
-				.then(res => {
-					console.log(res);
-					if (res.data && res.data.id !== null) {
-						this.setState({ loading: false });
-						this.finishSubmit();
-					}
-				})
-				.catch(err => {
-					console.log(err);
+				.then(() => {
+					this.setState({ loading: false });
+					this.finishSubmit();
 				});
 		}
 	}
@@ -322,6 +310,7 @@ class PaymentOptions extends Component {
 }
 
 const mapStateToProps = state => ({
+	auth: state.auth.auth,
   category: state.categories.category
 });
 

@@ -22,7 +22,6 @@ import {
 } from '../../services/WordPress';
 
 import {
-	fetchProducts,
 	resetProductLocations
 } from '../../actions/productActions';
 
@@ -143,35 +142,36 @@ class ProductForm extends Component {
 	}
 	
 	finishSubmit = (type) => {
-		const { history, category, fetchProducts, resetProductLocations } = this.props;
-		fetchProducts(category.id)
-			.then(() => {
-				if (type === 'add') {
-					resetProductLocations()
-					this.setState({
-						id: '',
-						name: '',
-						description: '',
-						cost: '',
-						inventoryCount: '',
-						imageUrl: '',
-						imageId: null,
-						imageFile: null,
-						uploadDialogOpen: false,
-						loading: false,
-						adding: false
-					});
-					history.replace('/producto')
-				} else {
-					if (category && category.approved) {
-						resetProductLocations()
-						history.replace('/')
-					} else {
-						// resetProductLocations()
-    				history.replace('/catalogo');
-					}
-				}
+		const {
+			history,
+			category,
+			resetProductLocations
+		} = this.props;
+		if (type === 'add') {
+			resetProductLocations()
+			this.setState({
+				id: '',
+				name: '',
+				description: '',
+				cost: '',
+				inventoryCount: '',
+				imageUrl: '',
+				imageId: null,
+				imageFile: null,
+				uploadDialogOpen: false,
+				loading: false,
+				adding: false
 			});
+			history.replace('/producto')
+		} else {
+			if (category && category.approved) {
+				resetProductLocations()
+				history.replace('/')
+			} else {
+				// resetProductLocations()
+				history.replace('/catalogo');
+			}
+		}
 	}
   
 	handleInputChange = (event) => {
@@ -312,7 +312,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
 	updateTitle,
-	fetchProducts,
 	updateProduct,
 	createProduct,
 	resetProductLocations

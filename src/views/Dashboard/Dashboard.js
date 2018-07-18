@@ -25,6 +25,7 @@ import {
 } from '../../actions/navActions';
 import {
 	updateCurrentProduct,
+	resetProductLocations,
   deleteProduct
 } from '../../actions/productActions';
 
@@ -45,7 +46,7 @@ class Dashboard extends Component {
 
 	componentDidUpdate(prevProps, prevState) {
 		const { updateTitle, category } = this.props;
-		updateTitle(category ? category.name : 'Tu Tienda')
+		updateTitle(category ? category.name : 'Tu Tienda');
 	}
 
 	handleMore = (event, product) => {
@@ -66,6 +67,12 @@ class Dashboard extends Component {
 		this.setState({ shareDialogOpen: true });
 	}
 
+	handleAdd = () => {
+		const { history, resetProductLocations } = this.props;
+		resetProductLocations();
+		history.replace('/producto');
+	}
+
 	handleProductShare = (product) => {
 		this.setState({ shareDialogOpen: true });
 	}
@@ -75,11 +82,12 @@ class Dashboard extends Component {
 	}
 
 	finishProductDelete = (product) => {
-		const { deleteProduct, fetchProducts, category } = this.props;
-			deleteProduct(product.id)
-				.then(() => {
-					fetchProducts(category.id)
-				});
+		const { deleteProduct } = this.props;
+		deleteProduct(product.id);
+		this.setState({
+			deleteDialogOpen: false,
+			moreProduct: null
+		});
 	}
 
 	handleProductSelected = (product) => {
@@ -167,7 +175,7 @@ class Dashboard extends Component {
 					color='primary'
 					aria-label='add'
 					className='AddFab'
-					onClick={this.props.onAdd}>
+					onClick={this.handleAdd}>
 					<AddIcon />
 				</Button>
 			</div>
@@ -185,6 +193,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
 	updateTitle,
 	updateCurrentProduct,
+	resetProductLocations,
 	deleteProduct
 }, dispatch);
 

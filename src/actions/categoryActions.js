@@ -56,7 +56,6 @@ export const createCategory = (auth, data) => {
 
 export const updateCategory = (auth, data) => {
 	const image = data.imageId ? { id: data.imageId } : data.image ? { id: data.image.id } : { src: data.businessLogo }
-	console.log(data)
 	const category = {
 		approved: data.approved,
 		name: data.businessName,
@@ -65,7 +64,7 @@ export const updateCategory = (auth, data) => {
 		dni: data.dni,
 		ruc: data.ruc,
 		phone: data.phone,
-		bank_account: data.bankAccount ? data.bankAccount : '',
+		bank_account: data.bankAccount,
 		logistic_provider: data.logisticProvider
 	}
 	return (dispatch) => {

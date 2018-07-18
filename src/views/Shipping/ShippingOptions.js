@@ -20,9 +20,6 @@ import './ShippingOptions.css';
 import {
 	updateTitle
 } from '../../actions/navActions';
-import {
-	updateProductLocations
-} from '../../actions/productActions';
 
 class ShippingOptions extends Component {
   state = {
@@ -47,15 +44,11 @@ class ShippingOptions extends Component {
 	handleSubmit = () => {
     const {
       history,
-      category,
-      products,
-      currentProduct,
-      updateProductLocations
+      category
     } = this.props;
     if (category && category.approved) {
       history.replace('/');
     } else {
-      updateProductLocations('forward', products, currentProduct);
       history.replace('/producto');
     }
   }
@@ -194,8 +187,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-	updateTitle,
-	updateProductLocations
+	updateTitle
 }, dispatch)
 
 export default withRouter(

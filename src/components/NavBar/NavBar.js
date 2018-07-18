@@ -68,6 +68,17 @@ class NavBar extends React.Component {
     this.setState({ deleteDialogOpen: true });
   }
 
+  finishCategoryDelete = (category) => {
+    const { history, deleteCategory } = this.props;
+    deleteCategory(category.id)
+      .then(() => {
+        this.setState({
+          deleteDialogOpen: false
+        })
+        history.replace('/perfil');
+      });
+  }
+
   handleLogout = () => {
     this.handleClose();
     localStorage.clear();
@@ -85,9 +96,9 @@ class NavBar extends React.Component {
   }
   
   forwardCase = () => {
-    const { pathname, category, products, nextProduct } = this.props;
+    const { pathname, category, nextProduct } = this.props;
     if (category && !category.approved) {
-      if (pathname === '/perfil' && products) {
+      if (pathname === '/perfil') {
         return true;
       } else if (pathname === '/producto' && nextProduct) {
         return true;
@@ -99,17 +110,6 @@ class NavBar extends React.Component {
       return false;
     }
     return false;
-  }
-
-  finishCategoryDelete = (category) => {
-    const { history, deleteCategory } = this.props;
-    deleteCategory(category.id)
-      .then(() => {
-        this.setState({
-          deleteCategoryOpen: false
-        })
-        history.replace('/perfil');
-      });
   }
 
   render() {
@@ -246,7 +246,7 @@ class NavBar extends React.Component {
       updateProductLocations
     } = this.props;
     updateProductLocations(
-      'back',
+      'forward',
       products,
       currentProduct
     );
@@ -297,7 +297,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 
 export default withRouter(
   connect(
-    mapStateToProps, 
+    mapStateToProps,
     mapDispatchToProps
   )(withStyles(styles)(NavBar))
 );

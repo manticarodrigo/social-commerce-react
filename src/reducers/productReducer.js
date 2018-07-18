@@ -43,8 +43,6 @@ export default function(state = initialState, action) {
         nextProduct: null
       };
     case CREATE_PRODUCT:
-      console.log(state)
-      console.log(action)
       products.push(action.payload)
       return {
         ...state,
@@ -57,8 +55,6 @@ export default function(state = initialState, action) {
           .indexOf(action.payload.id)
       );
       products[index] = action.payload;
-      console.log(state)
-      console.log(action)
       return {
         ...state,
         products: products
@@ -72,8 +68,6 @@ export default function(state = initialState, action) {
         if (index > -1) {
           products.splice(index, 1);
         }
-        console.log(state)
-        console.log(action)
         return {
           ...state,
           products: products
