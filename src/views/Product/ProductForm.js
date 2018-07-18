@@ -10,7 +10,13 @@ import './ProductForm.css';
 
 import UploadDialog from '../../components/Dialog/UploadDialog';
 
-import { uploadMedia, createProduct, updateProduct } from '../../services/WordPress';
+import {
+	createProduct,
+	updateProduct
+} from '../../actions/productActions';
+import {
+	uploadMedia
+} from '../../services/WordPress';
 
 import {
 	fetchProducts,
@@ -42,6 +48,15 @@ class ProductForm extends Component {
 		updateTitle(product ? 'Edita ' + product.name : 'Crea Producto');
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		const { updateTitle, product } = this.props;
+		if (!product || !product.id) {
+			updateTitle('Crea Producto')
+		} else {
+			updateTitle(product ? 'Edita ' + product.name : 'Crea Producto')
+		}
+	}
+
 	static getDerivedStateFromProps = (props, state) => {
 		const { product } = props;
 		const { id } = state;
@@ -61,7 +76,7 @@ class ProductForm extends Component {
 			}
 		}
 		return null;
-  }
+	}
 
 	handleUploadDialogOpen = () => {
     this.setState({
@@ -102,15 +117,10 @@ class ProductForm extends Component {
 					.then(res => {
 						console.log(res)
 						data.imageId = res.data.id
-						console.log(data.imageId)
 						callback(data)
-							.then(res => {
-								console.log(res);
+							.then(() => {
 								this.setState({ loading: false });
 								this.finishSubmit(type);
-							})
-							.catch(err => {
-								console.log(err);
 							})
 					})
 					.catch(err => {
@@ -118,13 +128,9 @@ class ProductForm extends Component {
 					})
 			} else {
 				callback(data)
-					.then(res => {
-						console.log(res);
+					.then(() => {
 						this.setState({ loading: false });
 						this.finishSubmit(type);
-					})
-					.catch(err => {
-						console.log(err);
 					})
 			}
 		} else {
@@ -185,12 +191,13 @@ class ProductForm extends Component {
 	}
   
 	render() {
-		const { product, category } = this.props;
+		const { user, product, category } = this.props;
 		const { uploadDialogOpen, loading, adding, keyboardOpen } = this.state;
 	  return (
 			<div className='ProductForm' style={{paddingBottom: 'calc(75px + 2em'}}>
 				{uploadDialogOpen && (
 					<UploadDialog
+						user={user}
 						aspect={'1/1'}
 						onClose={this.handleUploadDialogClose} />
 				)}

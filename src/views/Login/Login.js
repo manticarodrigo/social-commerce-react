@@ -64,8 +64,7 @@ class Login extends Component {
               {!this.state.login ? 'Ingresa acá.' : 'Registra acá.'}
             </a>
           </p>
-          <p
-            style={{color: '#fff', fontSize: '14px'}}>
+          <p style={{color: '#fff', fontSize: '14px'}}>
             Al ingresar esta indicando que ha leido<br />y acepta nuestros <a onClick={this.handleTerms}>Terminos y Condiciones</a>.
           </p>
         </div>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { push } from 'connected-react-router';
 import { bindActionCreators } from 'redux';
 import { updateTitle } from '../../actions/navActions';
 import List from '@material-ui/core/List';
@@ -20,10 +21,12 @@ import MoreMenu from '../../components/Menu/MoreMenu';
 import DeleteDialog from '../../components/Dialog/DeleteDialog';
 import ShareDialog from '../../components/Dialog/ShareDialog';
 
+
 class Dashboard extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			deleteCategoryOpen: false,
 			deleteDialogOpen: false,
 			shareDialogOpen: false,
 			moreProduct: null
@@ -57,8 +60,11 @@ class Dashboard extends Component {
 	}
 
 	finishProductDelete = (product) => {
-		this.setState({ deleteDialogOpen: false });
-		this.props.onDelete(product);
+		const { deleteProduct, fetchProducts, category } = this.props;
+			deleteProduct(product.id)
+				.then(() => {
+					fetchProducts(category.id)
+				})
 	}
 
 	handleProductSelected = (product) => {
@@ -68,13 +74,30 @@ class Dashboard extends Component {
 	handleProductAnalytics = (product) => {
 		this.props.onAnalytics(product);
 	}
+
+	finishCategoryDelete = (category) => {
+    const { deleteCategory, changePage } = this.props;
+    deleteCategory(category.id)
+      .then(() => {
+        this.setState({
+          deleteCategoryOpen: false
+        })
+        changePage('/perfil');
+      });
+  }
   
 	render() {
 		const { category, updateTitle, products } = this.props;
-		updateTitle(category ? category.name : 'Tu Tienda') // move from render
-		const { deleteDialogOpen, shareDialogOpen, moreProduct } = this.state;
+		updateTitle(category ? category.name : 'Tu Tienda'); // move from render
+		const { deleteCategoryOpen, deleteDialogOpen, shareDialogOpen, moreProduct } = this.state;
 	  return (
 			<div>
+				{category && (
+          <DeleteDialog
+            open={deleteCategoryOpen}
+            onClose={() => this.setState({ deleteCategoryOpen: false })}
+            onConfirm={() => this.finishCategoryDelete(category)} />
+        )}
 				<List dense={false}>
 					{products && products.map(product => (
 						<ListItem
@@ -152,10 +175,17 @@ class Dashboard extends Component {
 }
 
 const mapStateToProps = state => ({
-  // title: state.title.title
+	user: state.auth.user,
+  auth: state.auth.auth,
+  category: state.categories.category,
+  products: state.products.products,
+  currentProduct: state.products.currentProduct,
+  nextProduct: state.products.nextProduct,
+  pathname: state.nav.pathname
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
+	changePage: (route) => push(route),
   updateTitle
 }, dispatch);
 

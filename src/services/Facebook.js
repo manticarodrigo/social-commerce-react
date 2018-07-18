@@ -1,16 +1,16 @@
-import axios from 'axios'
+import axios from 'axios';
 
 export function getPages(accessToken) {
 	return new Promise((resolve, reject) => {
 		axios.get('https://graph.facebook.com/me/accounts?access_token=' + accessToken)
 		.then(res => {
-			resolve(res.data.data)
+			resolve(res.data.data);
 		})
 		.catch(err => {
-			console.log(err)
-			reject(err)
-		})
-	})
+			console.log(err);
+			reject(err);
+		});
+	});
 }
 
 export function getAlbums(id, accessToken) {
@@ -22,6 +22,6 @@ export function getAlbums(id, accessToken) {
 		.catch(err => {
 			console.log(err)
 			reject(err)
-		})
-	})
+		});
+	});
 }

@@ -7,7 +7,9 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import ChartistGraph from 'react-chartist';
 import './ProductAnalytics.css';
-import { fetchProductsAnalytics } from '../../services/WordPress';
+import {
+    fetchProductsAnalytics
+} from '../../actions/productActions';
 
 class ProductAnalytics extends Component {
 	constructor(props) {
@@ -142,11 +144,13 @@ class ProductAnalytics extends Component {
 }
 
 const mapStateToProps = state => ({
+  user: state.auth.user,
   product: state.products.currentProduct
 });
   
 const mapDispatchToProps = dispatch => bindActionCreators({
-	updateTitle
+	updateTitle,
+	fetchProductsAnalytics
 }, dispatch)
   
 export default connect(

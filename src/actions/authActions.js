@@ -31,7 +31,7 @@ export const facebookLogin = (response) => {
         }
       })
       .catch(err => {
-        throw(err);
+        console.log(err);
       })
   }
 }

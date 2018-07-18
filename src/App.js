@@ -18,9 +18,6 @@ import ProductForm from './views/Product/ProductForm';
 import ProductAnalytics from './views/ProductAnalytics/ProductAnalytics';
 import Catalog from './views/Catalog/Catalog';
 
-import DeleteDialog from './components/Dialog/DeleteDialog';
-
-
 import {
   facebookLogin
 } from './actions/authActions';
@@ -35,11 +32,9 @@ import {
 import {
   fetchProducts,
   updateProductLocations,
-  resetProductLocations
+  resetProductLocations,
+  deleteProduct
 } from './actions/productActions';
-import {
-  deleteProduct,
-} from './services/WordPress';
 
 class App extends Component {
   constructor(props) {
@@ -62,7 +57,7 @@ class App extends Component {
     }
   }
 
-  static getDerivedStateFromProps(props, state) {
+  static getDerivedStateFromProps = (props, state) => {
     props.updatePathname(props.history.location.pathname);
     return null;
   }
@@ -140,19 +135,10 @@ class App extends Component {
       })
   }
 
-  handleCategorySubmit = () => {
-    const { category, changePage } = this.props;
-    if (category.approved) {
-      changePage('/');
-    } else {
-      changePage('/pagos');
-    }
-  }
-
   handleCategoryDelete = () => {
 		this.setState({
       deleteCategoryOpen: true
-    })
+    });
   }
 
   handlePaymentOptionsSubmit = () => {
@@ -183,17 +169,6 @@ class App extends Component {
     }
   }
 
-  finishCategoryDelete = (category) => {
-    const { deleteCategory, changePage } = this.props;
-    deleteCategory(category.id)
-      .then(() => {
-        this.setState({
-          deleteCategoryOpen: false
-        })
-        changePage('/perfil');
-      });
-  }
-
   handleProductSelected = (product) => {
     this.setState({ currentProduct: product })
     this.props.changePage('/producto')
@@ -211,7 +186,7 @@ class App extends Component {
   }
 
   handleProductDelete = (product) => {
-    const { category, fetchProducts } = this.props;
+    const { deleteProduct, fetchProducts, category } = this.props;
     deleteProduct(product.id)
       .then(res => {
         console.log(res)
@@ -231,23 +206,10 @@ class App extends Component {
   }
 
   render() {
-    const {
-      pathname,
-      category
-    } = this.props;
-    const {
-      loading,
-      deleteCategoryOpen
-    } = this.state;
+    const { loading } = this.state;
     return (
       <div className='App'>
-        {category && (
-          <DeleteDialog
-            open={deleteCategoryOpen}
-            onClose={() => this.setState({ deleteCategoryOpen: false })}
-            onConfirm={() => this.finishCategoryDelete(category)} />
-        )}
-        {pathname !== '/ingresar' && (
+        {this.props.pathname !== '/ingresar' && (
           <NavBar
             onBack={this.handleBack}
             onForward={this.handleForward}
@@ -421,7 +383,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   fetchCategories,
   updateCategory,
   deleteCategory,
-  fetchProducts
+  fetchProducts,
+  deleteProduct
 }, dispatch);
 
 export default connect(

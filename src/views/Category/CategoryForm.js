@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { push } from 'connected-react-router';
 import { bindActionCreators } from 'redux';
 import { updateTitle } from '../../actions/navActions';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -43,6 +44,15 @@ class CategoryForm extends Component {
 	componentDidMount() {
 		const { updateTitle, category } = this.props;
 		updateTitle(category ? 'Edita ' + category.name : 'Registra tu Tienda');
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		const { updateTitle, category } = this.props;
+		const { businessName } = this.state;
+		const prevBusinessName = prevState.businessName;
+		if (category && (((businessName === prevBusinessName) || (prevBusinessName === '')))) {
+			updateTitle(category ? 'Edita ' + category.name : 'Registra tu Tienda')
+		}
 	}
 
 	static getDerivedStateFromProps = (props, state) => {
@@ -113,7 +123,7 @@ class CategoryForm extends Component {
 						callback(auth, data)
 							.then(() => {
 								this.setState({ loading: false });
-								onSubmit();
+								this.finishSubmit();
 							})
 					})
 					.catch(err => {
@@ -123,7 +133,7 @@ class CategoryForm extends Component {
 				callback(auth, data)
 					.then(() => {
 						this.setState({ loading: false });
-						onSubmit();
+						this.finishSubmit();
 					})
 			}
 		} else {
@@ -131,9 +141,19 @@ class CategoryForm extends Component {
 			alert('Favor llenar campos requeridos.');
 		}
 	}
+
+	finishSubmit = () => {
+		console.log('yo')
+    const { category, changePage } = this.props;
+    if (category.approved) {
+      changePage('/');
+    } else {
+      changePage('/pagos');
+    }
+  }
   
 	handleInputChange = (event) => {
-		const { category, updateTitle } = this.props;
+		const { updateTitle, category } = this.props;
 		const target = event.target;
 		const name = target.name;
 		const value = target.value;
@@ -142,7 +162,7 @@ class CategoryForm extends Component {
 			name === 'dni' ||
 			name === 'ruc'
 		) && !value.match(/^(\s*|\d+)$/)) { return; }
-		if (name === 'businessName') {
+		if ((name === 'businessName') && (!category || !category.approved)) {
 			updateTitle(category ? 'Edita ' + value : 'Registra ' + value);
 		}
 		this.setState({ [name]: value });
@@ -267,6 +287,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
+	changePage: (route) => push(route),
 	updateTitle,
 	createCategory,
 	updateCategory

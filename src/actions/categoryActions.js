@@ -96,7 +96,7 @@ export const deleteCategory = (categoryId) => {
 				});
 			})
 			.catch(err => {
-				throw(err);
+				console.log(err);
 			});
 	}
 }
