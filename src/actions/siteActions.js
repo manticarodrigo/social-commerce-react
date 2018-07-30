@@ -31,11 +31,11 @@ export const createSite = (auth, data) => {
 	// const image = data.imageId ? { id: data.imageId } : data.image ? { id: data.image.id } : { src: data.businessLogo }
 	const site = {
 		user_id: auth.wp_user_id,
-		title: data.businessName,
-		site_name: data.businessName.toLowerCase(),
-		ruc: data.ruc,
-		user_dni: data.dni,
-		user_cellphone: data.phone
+		user_dni: data.userDni,
+		user_cellphone: data.userPhone,
+		title: data.title,
+		site_name: data.title.toLowerCase(),
+		ruc: data.ruc
 	}
 	return (dispatch) => {
 		return axios.post(`${url}/wp-json/multisite/v1/sites/`, site)
@@ -58,11 +58,11 @@ export const updateSite = (auth, data) => {
 	const site = {
 		id: data.id,
 		user_id: auth.wp_user_id,
+		user_dni: data.userDni,
+		user_cellphone: data.userPhone,
 		approved: data.approved,
-		title: data.businessName,
+		title: data.title,
 		ruc: data.ruc,
-		user_dni: data.dni,
-		user_cellphone: data.phone,
 		bank_account: data.bankAccount,
 		logistic_provider: data.logisticProvider
 	}
