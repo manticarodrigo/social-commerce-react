@@ -7,34 +7,34 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FileUpload from '@material-ui/icons/FileUpload';
-import './CategoryForm.css';
+import './SiteForm.css';
 
 import UploadDialog from '../../components/Dialog/UploadDialog';
 
 import {
-	createCategory,
-	updateCategory
-} from '../../actions/categoryActions';
+	createSite,
+	updateSite
+} from '../../actions/siteActions';
 import {
 	uploadMedia
 } from '../../services/WordPress';
 
-class CategoryForm extends Component {
+class SiteForm extends Component {
 	constructor(props) {
 		super(props)
-		const { user, category } = props;
+		const { user, site } = props;
 		this.state = {
-			id: category ? category.id : null,
-			ownerId: user && user.profile.id ? user.profile.id : '',
-			businessName: category ? category.name : '',
-			businessLogo: category && category.image ? category.image.src : '',
-			imageId: category && category.image ? category.image.id : null,
-			imageFile: null,
-			name: user && user.profile.name ? user.profile.name : '',
-			email: user && user.profile.email ? user.profile.email : '',
-			phone: category ? category.phone : '',
-			dni: category ? category.dni : '',
-			ruc: category ? category.ruc : '',
+			id: site ? site.id : null,
+			userId: user && user.profile.id ? user.profile.id : '',
+			userName: user && user.profile.name ? user.profile.name : '',
+			userEmail: user && user.profile.email ? user.profile.email : '',
+			userPhone: site ? site.userPhone : '',
+			userDni: site ? site.userDni : '',
+			title: site ? site.name : '',
+			bannerUrl: site && site.image ? site.image.src : '',
+			bannerId: site && site.image ? site.image.id : null,
+			bannerFile: null,
+			ruc: site ? site.ruc : '',
 			uploadDialogOpen: false,
 			loading: false,
 			keyboardOpen: false
@@ -42,38 +42,45 @@ class CategoryForm extends Component {
 	}
 
 	componentDidMount() {
-		const { updateTitle, category } = this.props;
-		updateTitle(category ? 'Edita ' + category.name : 'Registra tu Tienda');
+		const { updateTitle, site } = this.props;
+		updateTitle(site ? 'Edita ' + site.name : 'Registra tu Tienda');
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		const { updateTitle, category } = this.props;
-		const { businessName } = this.state;
-		const prevBusinessName = prevState.businessName;
-		if (category && (((businessName === prevBusinessName) || (prevBusinessName === '')))) {
-			updateTitle(category ? 'Edita ' + category.name : 'Registra tu Tienda')
+		const { updateTitle, site } = this.props;
+		const { title } = this.state;
+		const prevBusinessName = prevState.title;
+		if (site && (((title === prevBusinessName) || (prevBusinessName === '')))) {
+			updateTitle(site ? 'Edita ' + site.name : 'Registra tu Tienda')
 		}
 	}
 
 	static getDerivedStateFromProps = (props, state) => {
-		const { user, category } = props;
-		const { id } = state;
-		if ((user && category) && category.id !== id) {
+		const { user, site } = props;
+		const { id, userId } = state;
+		if ((user && site) && site.id !== id) {
 			return {
-				id: category.id,
-				ownerId: category.ownerId,
-				businessName: category.name,
-				businessLogo: category.image ? category.image.src : '',
-				imageId: category.image ? category.image.id : null,
-				imageFile: null,
-				name: user.profile.name,
-				email: user.profile.email,
-				phone: category.phone,
-				dni: category.dni,
-				ruc: category.ruc,
+				id: site.id,
+				userId: site.userId,
+				userName: user.profile.name,
+				userEmail: user.profile.email,
+				userPhone: site.userPhone,
+				userDni: site.userDni,
+				title: site.name,
+				bannerUrl: site.image ? site.image.src : '',
+				bannerId: site.image ? site.image.id : null,
+				bannerFile: null,
+				ruc: site.ruc,
 				uploadDialogOpen: false,
 				loading: false,
 				keyboardOpen: false
+			}
+		}
+		if (user && userId === '') {
+			return {
+				userId: user && user.profile.id ? user.profile.id : '',
+				userName: user && user.profile.name ? user.profile.name : '',
+				userEmail: user && user.profile.email ? user.profile.email : '',
 			}
 		}
 		return null
@@ -89,9 +96,9 @@ class CategoryForm extends Component {
 		if (typeof(value) === 'object' && value !== null) {
 			this.setState({
 				uploadDialogOpen: false,
-				businessLogo: value.imageUrl,
-				imageId: null,
-				imageFile: value.imageFile
+				bannerUrl: value.imageUrl,
+				bannerId: null,
+				bannerFile: value.bannerFile
 			});
 		} else {
 			this.setState({
@@ -104,22 +111,21 @@ class CategoryForm extends Component {
 		this.setState({ loading: true });
 		event.preventDefault();
 		const data = this.state;
-		const { businessName, businessLogo, imageFile, name, email, phone, dni } = this.state;
-		const { auth, category, createCategory, updateCategory } = this.props;
+		const { title, bannerFile, userName, userEmail, userPhone, userDni } = this.state;
+		const { auth, site, createSite, updateSite } = this.props;
 		if (
-			businessName !== '' &&
-			businessLogo !== '' &&
-			name !== '' &&
-			email !== '' &&
-			phone !== '' &&
-			dni !== ''
+			title !== '' &&
+			userName !== '' &&
+			userEmail !== '' &&
+			userPhone !== '' &&
+			userDni !== ''
 		) {
-			const callback = category ? updateCategory : createCategory;
-			if (imageFile) {
-				uploadMedia(imageFile)
+			const callback = site ? updateSite : createSite;
+			if (bannerFile) {
+				uploadMedia(bannerFile)
 					.then(res => {
 						console.log(res);
-						data.imageId = res.data.id;
+						data.bannerId = res.data.id;
 						callback(auth, data)
 							.then(() => {
 								this.setState({ loading: false });
@@ -143,9 +149,8 @@ class CategoryForm extends Component {
 	}
 
 	finishSubmit = () => {
-		console.log('yo')
-    const { category } = this.props;
-    if (category.approved) {
+    const { site } = this.props;
+    if (site.approved) {
       this.props.history.replace('/');
     } else {
       this.props.history.replace('/pagos');
@@ -153,17 +158,17 @@ class CategoryForm extends Component {
   }
   
 	handleInputChange = (event) => {
-		const { updateTitle, category } = this.props;
+		const { updateTitle, site } = this.props;
 		const target = event.target;
 		const name = target.name;
 		const value = target.value;
 		if ((
-			name === 'phone' ||
-			name === 'dni' ||
+			name === 'userPhone' ||
+			name === 'userDni' ||
 			name === 'ruc'
 		) && !value.match(/^(\s*|\d+)$/)) { return; }
-		if ((name === 'businessName') && (!category || !category.approved)) {
-			updateTitle(category ? 'Edita ' + value : 'Registra ' + value);
+		if ((name === 'title') && (!site || !site.approved)) {
+			updateTitle(site ? 'Edita ' + value : 'Registra ' + value);
 		}
 		this.setState({ [name]: value });
 	}
@@ -177,10 +182,10 @@ class CategoryForm extends Component {
 	}
   
 	render() {
-		const { user, category } = this.props;
-		const { uploadDialogOpen, loading, businessLogo, keyboardOpen } = this.state;
+		const { user, site } = this.props;
+		const { uploadDialogOpen, loading, bannerUrl, keyboardOpen } = this.state;
 	  return (
-			<div className='CategoryForm' style={{paddingBottom: 'calc(30px + 2em'}}>
+			<div className='SiteForm' style={{paddingBottom: 'calc(30px + 2em'}}>
 				{uploadDialogOpen && (
 					<UploadDialog
 						user={user}
@@ -201,14 +206,14 @@ class CategoryForm extends Component {
 							color='primary'
 							onClick={this.handleUploadDialogOpen}
 						>
-							{businessLogo === '' ? 'Banner' : null}
-							<FileUpload style={{display: businessLogo === '' ? 'block' : 'none'}} />
+							{bannerUrl === '' ? 'Banner' : null}
+							<FileUpload style={{display: bannerUrl === '' ? 'block' : 'none'}} />
 							<img
-								style={{display: businessLogo !== '' ? 'block' : 'none'}}
-								src={businessLogo}
-								alt={businessLogo} />
+								style={{display: bannerUrl !== '' ? 'block' : 'none'}}
+								src={bannerUrl}
+								alt={bannerUrl} />
 							<span
-								style={{display: businessLogo === '' ? 'block' : 'none'}}
+								style={{display: bannerUrl === '' ? 'block' : 'none'}}
 								className='Dimensions'>
 								480 x 270
 							</span>
@@ -219,8 +224,8 @@ class CategoryForm extends Component {
 						fullWidth
 						margin='normal'
 						label='Nombre del negocio'
-						name='businessName'
-						value={this.state.businessName}
+						name='title'
+						value={this.state.title}
 						type='text' />
 					<TextField
 						required
@@ -228,7 +233,7 @@ class CategoryForm extends Component {
 						margin='normal'
 						label='Nombre completo'
 						name='name'
-						value={this.state.name}
+						value={this.state.userName}
 						type='text' />
 					<TextField
 						required
@@ -236,22 +241,22 @@ class CategoryForm extends Component {
 						margin='normal'
 						label='Correo electrónico'
 						name='email'
-						value={this.state.email}
+						value={this.state.userEmail}
 						type='email' />
 					<TextField
 						required
 						fullWidth
 						margin='normal'
 						label='Número de teléfono celular'
-						name='phone'
-						value={this.state.phone} />
+						name='userPhone'
+						value={this.state.userPhone} />
 					<TextField
 						required
 						fullWidth
 						margin='normal'
 						label='Número de DNI'
-						name='dni'
-						value={this.state.dni} />
+						name='userDni'
+						value={this.state.userDni} />
 					<TextField
 						fullWidth
 						margin='normal'
@@ -271,7 +276,7 @@ class CategoryForm extends Component {
 						className='SaveButton'
 						disabled={loading}
 						onClick={this.handleSubmit}>
-						{category ? 'Guardar' : 'Agregar'} Tienda
+						{site ? 'Guardar' : 'Agregar'} Tienda
 					</Button>
 					{loading && <CircularProgress size={24} className='ButtonProgress' />}
 				</div>
@@ -283,16 +288,16 @@ class CategoryForm extends Component {
 const mapStateToProps = state => ({
 	user: state.auth.user,
   auth: state.auth.auth,
-	category: state.categories.category
+	site: state.site.site
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
 	updateTitle,
-	createCategory,
-	updateCategory
+	createSite,
+	updateSite
 }, dispatch)
 
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(withRouter(CategoryForm));
+)(withRouter(SiteForm));

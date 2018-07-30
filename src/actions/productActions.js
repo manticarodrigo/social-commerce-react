@@ -17,9 +17,9 @@ const options = {
 	}
 };
 
-export const fetchProducts = (categoryId) => {
+export const fetchProducts = (sitePath) => {
 	return (dispatch) => {
-		return axios.get(`${url}/wp-json/wc/v2/products/?category=${categoryId}`, options)
+		return axios.get(`${url + sitePath}/wp-json/wc/v2/products/`, options)
 			.then(res => {
 				console.log(res);
 				const products = res.data;

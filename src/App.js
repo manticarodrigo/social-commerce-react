@@ -10,7 +10,7 @@ import Error from './views/Error/Error';
 import Loading from './views/Loading/Loading';
 import Login from './views/Login/Login';
 import Dashboard from './views/Dashboard/Dashboard';
-import CategoryForm from './views/Category/CategoryForm';
+import SiteForm from './views/Site/SiteForm';
 import PaymentOptions from './views/Payment/PaymentOptions';
 import ShippingOptions from './views/Shipping/ShippingOptions';
 import ProductForm from './views/Product/ProductForm';
@@ -23,8 +23,8 @@ import {
   updatePathname
 } from './actions/navActions';
 import {
-  fetchCategories
-} from './actions/categoryActions';
+  fetchSite
+} from './actions/siteActions';
 import {
   fetchProducts
 } from './actions/productActions';
@@ -59,7 +59,7 @@ class App extends Component {
     const {
       history,
       facebookLogin,
-      fetchCategories,
+      fetchSite,
       fetchProducts
     } = this.props;
     // Use fb sdk response for wp auth
@@ -67,18 +67,18 @@ class App extends Component {
       .then(() => {
         const { auth } = this.props;
         if (auth) {
-          // Check for existing categories for owner_id
-          fetchCategories(auth)
+          // Check for existing site for user_id
+          fetchSite(auth)
             .then(() => {
-              const { category } = this.props;
-              if (category) {
-                // Check for existing products for category
-                fetchProducts(category.id)
+              const { site } = this.props;
+              if (site) {
+                // Check for existing products for site
+                fetchProducts(site.path)
                   .then(() => {
                     this.setState({ loading: false });
                     const { pathname } = this.props;
                     if (pathname === '/ingresar' || pathname === '/') {
-                      history.replace(category.approved ? '/' : '/producto');
+                      history.replace(site.approved ? '/' : '/producto');
                     } else {
                       history.replace(pathname);
                     }
@@ -129,7 +129,7 @@ class App extends Component {
                   onResponse={this.handleAuthResponse} />
               )} />
             <Route exact path='/' component={Dashboard} />
-            <Route exact path='/perfil' component={CategoryForm} />
+            <Route exact path='/perfil' component={SiteForm} />
             <Route exact path='/pagos' component={PaymentOptions} />
             <Route exact path='/envios' component={ShippingOptions} />
             <Route exact path='/producto' component={ProductForm} />
@@ -145,13 +145,13 @@ class App extends Component {
 const mapStateToProps = state => ({
   pathname: state.nav.pathname,
   auth: state.auth.auth,
-  category: state.categories.category
+  site: state.site.site
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   facebookLogin,
   updatePathname,
-  fetchCategories,
+  fetchSite,
   fetchProducts
 }, dispatch);
 

@@ -1,15 +1,15 @@
-.CategoryForm .UploadWrapper {
+.SiteForm .UploadWrapper {
   position: relative;
 }
 
-.CategoryForm .UploadWrapper img {
+.SiteForm .UploadWrapper img {
   min-width: 100%;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.CategoryForm .UploadWrapper label > span {
+.SiteForm .UploadWrapper label > span {
   position: absolute;
   top: 0;
   left: 0;
@@ -19,14 +19,14 @@
   overflow: hidden;
 }
 
-.CategoryForm .UploadWrapper .UploadButton {
+.SiteForm .UploadWrapper .UploadButton {
   width: 100%;
   height: 0;
   padding-bottom: 55.56%;
   margin: 0 16px 0 0;
 }
 
-.CategoryForm .UploadWrapper .Dimensions {
+.SiteForm .UploadWrapper .Dimensions {
   position: absolute;
   width: 100%;
   bottom: 4px;
@@ -34,7 +34,7 @@
   font-size: 11px;
 }
 
-.CategoryForm .SaveButtonWrapper {
+.SiteForm .SaveButtonWrapper {
   background-color: #F0F0F0;
   position: fixed;
   bottom: 0;
@@ -42,18 +42,18 @@
   width: 100%;
 }
 
-.CategoryForm .SaveButton {
+.SiteForm .SaveButton {
   width: calc(100% - 1em);
   height: 30px;
   margin: 0.5em !important;
 }
 
-.CategoryForm .ButtonProgress {
+.SiteForm .ButtonProgress {
   position: absolute;
   top: calc(50% - 12px);
   left: calc(50% - 12px);
 }
 
-.CategoryForm .ButtonProgress svg {
+.SiteForm .ButtonProgress svg {
   color: #00cc00;
 }
