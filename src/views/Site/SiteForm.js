@@ -256,7 +256,7 @@ class SiteForm extends Component {
 						fullWidth
 						margin='normal'
 						label='Nombre completo'
-						name='name'
+						name='userName'
 						value={this.state.userName}
 						type='text' />
 					<TextField
@@ -264,7 +264,7 @@ class SiteForm extends Component {
 						fullWidth
 						margin='normal'
 						label='Correo electrónico'
-						name='email'
+						name='userEmail'
 						value={this.state.userEmail}
 						type='email' />
 					<TextField
