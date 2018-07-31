@@ -15,7 +15,7 @@ export const fetchSite = (auth) => {
 			.then(res => {
 				console.log(res);
 				let site = null;
-				if (res.data[0]) site = res.data[0];
+				if (res.data[1]) site = res.data[1];
 				dispatch({
 					type: FETCH_SITE,
 					payload: site

@@ -143,7 +143,7 @@ export const createProduct = (sitePath, data) => {
 	};
 };
 
-export const updateProduct = (data) => {
+export const updateProduct = (sitePath, data) => {
 	const id = {id: data.imageId, position: 0}
 	const src = {src: data.imageUrl, position: 0}
 	const product = {
@@ -151,14 +151,14 @@ export const updateProduct = (data) => {
 		regular_price: data.cost,
 		description: data.description,
 		short_description: data.description,
-		categories: [{id: data.category.id}],
+		// categories: [{id: data.category.id}],
 		images: [data.imageId ? id : src],
 		manage_stock:  data.inventoryCount ? true : false,
 		stock_quantity: data.inventoryCount ? data.inventoryCount : 0,
 		in_stock: true,
   }
   return (dispatch) => {
-    return axios.put(url + '/wp-json/wc/v2/products/' + data.id, product, options)
+    return axios.put(`${url + sitePath}wp-json/wc/v2/products/${data.id}`, product, options)
       .then(res => {
         console.log(res);
         const product = res.data;
@@ -173,9 +173,9 @@ export const updateProduct = (data) => {
   }
 }
 
-export const deleteProduct = (productId) => {
+export const deleteProduct = (sitePath, productId) => {
   return (dispatch) => {
-    return axios.delete(url + '/wp-json/wc/v2/products/' + productId, options)
+    return axios.delete(`${url + sitePath}wp-json/wc/v2/products/${productId}`, options)
       .then(res => {
         console.log(res);
         const product = res.data;
