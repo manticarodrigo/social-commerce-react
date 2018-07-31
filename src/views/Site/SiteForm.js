@@ -22,17 +22,16 @@ import {
 class SiteForm extends Component {
 	constructor(props) {
 		super(props)
-		const { user, site } = props;
+		const { auth, user, site } = props;
 		this.state = {
-			id: site ? site.id : null,
-			userId: user && user.profile.id ? user.profile.id : '',
+			id: site ? site.blog_id : null,
 			userName: user && user.profile.name ? user.profile.name : '',
 			userEmail: user && user.profile.email ? user.profile.email : '',
 			userPhone: site ? site.userPhone : '',
 			userDni: site ? site.userDni : '',
 			title: site ? site.name : '',
-			bannerUrl: site && site.image ? site.image.src : '',
-			bannerId: site && site.image ? site.image.id : null,
+			bannerUrl: site && site.banner_url ? site.banner_url : '',
+			bannerId: site && site.banner_id ? site.banner_id : null,
 			bannerFile: null,
 			ruc: site ? site.ruc : '',
 			uploadDialogOpen: false,
@@ -49,26 +48,25 @@ class SiteForm extends Component {
 	componentDidUpdate(prevProps, prevState) {
 		const { updateTitle, site } = this.props;
 		const { title } = this.state;
-		const prevBusinessName = prevState.title;
-		if (site && (((title === prevBusinessName) || (prevBusinessName === '')))) {
-			updateTitle(site ? 'Edita ' + site.name : 'Registra tu Tienda')
+		const prevTitle = prevState.title;
+		if (site && (((title === prevTitle) || (prevTitle === '')))) {
+			updateTitle(site ? 'Edita ' + site.title : 'Registra tu Tienda')
 		}
 	}
 
 	static getDerivedStateFromProps = (props, state) => {
-		const { user, site } = props;
-		const { id, userId } = state;
-		if ((user && site) && site.id !== id) {
+		const { auth, user, site } = props;
+		if ((auth && site) && site.blog_id !== state.id) {
+			const siteUser = site.users[0];
 			return {
-				id: site.id,
-				userId: site.userId,
-				userName: user.profile.name,
-				userEmail: user.profile.email,
-				userPhone: site.userPhone,
-				userDni: site.userDni,
-				title: site.name,
-				bannerUrl: site.image ? site.image.src : '',
-				bannerId: site.image ? site.image.id : null,
+				id: site.blog_id,
+				userName: siteUser.user_name,
+				userEmail: siteUser.user_email,
+				userPhone: siteUser.user_cellphone,
+				userDni: siteUser.user_dni,
+				title: site.title,
+				bannerUrl: site.banner_url ? site.banner_url : '',
+				bannerId: site.banner_id ? site.banner_id : null,
 				bannerFile: null,
 				ruc: site.ruc,
 				uploadDialogOpen: false,
@@ -76,11 +74,10 @@ class SiteForm extends Component {
 				keyboardOpen: false
 			}
 		}
-		if (user && userId === '') {
+		if ((auth && user) && state.userName === '') {
 			return {
-				userId: user && user.profile.id ? user.profile.id : '',
-				userName: user && user.profile.name ? user.profile.name : '',
-				userEmail: user && user.profile.email ? user.profile.email : '',
+				userName: user.profile.name,
+				userEmail: user.profile.email
 			}
 		}
 		return null
@@ -98,7 +95,7 @@ class SiteForm extends Component {
 				uploadDialogOpen: false,
 				bannerUrl: value.imageUrl,
 				bannerId: null,
-				bannerFile: value.bannerFile
+				bannerFile: value.imageFile
 			});
 		} else {
 			this.setState({
@@ -111,9 +108,23 @@ class SiteForm extends Component {
 		this.setState({ loading: true });
 		event.preventDefault();
 		const data = this.state;
-		const { title, bannerFile, userName, userEmail, userPhone, userDni } = this.state;
-		const { auth, site, createSite, updateSite } = this.props;
+		const {
+			title,
+			bannerUrl,
+			bannerFile,
+			userName,
+			userEmail,
+			userPhone,
+			userDni
+		} = this.state;
+		const {
+			auth,
+			site,
+			createSite,
+			updateSite
+		} = this.props;
 		if (
+			bannerUrl !== '' &&
 			title !== '' &&
 			userName !== '' &&
 			userEmail !== '' &&
@@ -126,14 +137,20 @@ class SiteForm extends Component {
 					.then(res => {
 						console.log(res);
 						data.bannerId = res.data.id;
-						callback(auth, data)
-							.then(() => {
-								this.setState({ loading: false });
-								this.finishSubmit();
-							})
+						if (res.data.id) {
+							callback(auth, data)
+								.then(() => {
+									this.setState({ loading: false });
+									this.finishSubmit();
+								})
+						} else {
+							this.setState({ loading: false });
+							alert(res.data);
+						}
 					})
 					.catch(err => {
-						console.log(err)
+						this.setState({ loading: false });
+						alert(err);
 					});
 			} else {
 				callback(auth, data)
