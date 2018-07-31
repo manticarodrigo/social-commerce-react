@@ -22,19 +22,18 @@ import {
 class SiteForm extends Component {
 	constructor(props) {
 		super(props)
-		const { auth, user, site } = props;
+		const { user, site } = props;
 		this.state = {
 			id: site ? site.blog_id : null,
-			userName: user && user.profile.name ? user.profile.name : '',
-			userEmail: user && user.profile.email ? user.profile.email : '',
-			userPhone: site ? site.userPhone : '',
-			userDni: site ? site.userDni : '',
+			userName: site ? site.users[0].user_name : user && user.profile.name ? user.profile.name : '',
+			userEmail: site ? site.users[0].user_email : user && user.profile.email ? user.profile.email : '',
+			userPhone: site ? site.users[0].user_cellphone : '',
+			userDni: site ? site.users[0].user_dni : '',
 			title: site ? site.title : '',
 			bannerUrl: site && site.banner_url ? site.banner_url : '',
 			bannerId: site && site.banner_id ? site.banner_id : null,
 			bannerFile: null,
 			ruc: site ? site.ruc : '',
-			public: site ? site.public : false,
 			uploadDialogOpen: false,
 			loading: false,
 			keyboardOpen: false
@@ -70,13 +69,12 @@ class SiteForm extends Component {
 				bannerId: site.banner_id ? site.banner_id : null,
 				bannerFile: null,
 				ruc: site.ruc,
-				public: site.public,
 				uploadDialogOpen: false,
 				loading: false,
 				keyboardOpen: false
 			}
 		}
-		if ((auth && user) && state.userName === '') {
+		if ((auth && user) && state.id === null) {
 			return {
 				userName: user.profile.name,
 				userEmail: user.profile.email
@@ -133,8 +131,12 @@ class SiteForm extends Component {
 			userPhone !== '' &&
 			userDni !== ''
 		) {
+			// Choose action type
 			const callback = site ? updateSite : createSite;
+			// Add other properties if exists
 			data.bankAccount = site ? site.bank_account : '';
+			data.public = site ? site.public : false;
+			// Check for image file
 			if (bannerFile) {
 				uploadMedia('/', bannerFile)
 					.then(res => {
@@ -182,6 +184,8 @@ class SiteForm extends Component {
 		const target = event.target;
 		const name = target.name;
 		const value = target.value;
+		console.log(name)
+		console.log(value)
 		if ((
 			name === 'userPhone' ||
 			name === 'userDni' ||
