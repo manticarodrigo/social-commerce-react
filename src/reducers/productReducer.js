@@ -25,8 +25,7 @@ export default function(state = initialState, action) {
     case FETCH_PRODUCTS:
       return {
         ...state,
-        products: action.payload,
-        currentProduct: action.payload[0]
+        products: action.payload
       };
     case FETCH_PRODUCT_ANALYTICS:
       return {
@@ -34,7 +33,7 @@ export default function(state = initialState, action) {
         analytics: action.payload
       }
     case CREATE_PRODUCT:
-      products.push(action.payload)
+      products.unshift(action.payload)
       return {
         ...state,
         products: products

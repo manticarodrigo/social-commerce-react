@@ -261,7 +261,6 @@ class NavBar extends React.Component {
       history,
       pathname
     } = this.props;
-    this.updateProductLocations('forward');
     switch (pathname) {
       case '/perfil':
         history.replace('/pagos');
@@ -278,6 +277,7 @@ class NavBar extends React.Component {
       default:
         history.replace('/producto');
     }
+    this.updateProductLocations('forward');
   }
 
   updateProductLocations = (direction) => {
