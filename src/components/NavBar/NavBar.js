@@ -1,21 +1,36 @@
+// React
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+// Redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+// Material UI Core
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
+import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
+// Material UI Icons
+import MenuIcon from '@material-ui/icons/Menu';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import MoreVert from '@material-ui/icons/MoreVert';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-
+import LaunchIcon from '@material-ui/icons/Launch';
+import StoreIcon from '@material-ui/icons/Store';
+import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
+import LocalShippingIcon from '@material-ui/icons/LocalShipping';
+import DeleteIcon from '@material-ui/icons/Delete';
+import PowerOffIcon from '@material-ui/icons/Power';
+// Components
 import DeleteDialog from '../Dialog/DeleteDialog';
 
+// Actions
 import {
   deleteSite
 } from '../../actions/siteActions';
@@ -42,32 +57,28 @@ class NavBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      anchorEl: null,
-      deleteDialogOpen: false
+      deleteDialogOpen: false,
+      drawerOpen: false
     };
   }
 
-  handleMenu = (event) => {
-    this.setState({ anchorEl: event.currentTarget })
-  }
-
   handleClose = () => {
-    this.setState({ anchorEl: null })
+    this.setState({ drawerOpen: false });
   }
 
   handleEditSite = () => {
-    this.handleClose()
-    this.props.history.replace('/perfil')
+    this.handleClose();
+    this.props.history.replace('/perfil');
   }
 
   handleEditPayments = () => {
-    this.handleClose()
-    this.props.history.replace('/pagos')
+    this.handleClose();
+    this.props.history.replace('/pagos');
   }
 
   handleEditShipping = () => {
-    this.handleClose()
-    this.props.history.replace('/envios')
+    this.handleClose();
+    this.props.history.replace('/envios');
   }
 
   handleDeleteSite = () => {
@@ -124,9 +135,16 @@ class NavBar extends React.Component {
     return false;
   }
 
+  toggleDrawer = () => {
+    const { drawerOpen } = this.state;
+    this.setState({
+      drawerOpen: !drawerOpen,
+    });
+  };
+
   render() {
     const { classes, title, site } = this.props;
-    const { anchorEl, deleteDialogOpen } = this.state;
+    const { anchorEl, deleteDialogOpen, drawerOpen } = this.state;
     return (
       <div className={classes.root}>
         <DeleteDialog
@@ -160,62 +178,68 @@ class NavBar extends React.Component {
             <IconButton
               aria-owns={Boolean(anchorEl) ? 'menu-appbar' : null}
               aria-haspopup='true'
-              onClick={this.handleMenu}
+              onClick={this.toggleDrawer}
               color='inherit'
             >
-              <MoreVert />
+              <MenuIcon />
             </IconButton>
-            <Menu
-              id='menu-appbar'
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorEl)}
-              onClose={this.handleClose}
-            >
-              <MenuItem
-                style={{display: site && site.public ? 'block' : 'none'}}
-                onClick={this.handleShareSite}>
-                <a
-                  style={{ textDecoration: 'none', color: 'rgba(0, 0, 0, 0.87)'}}
-                  target='_blank'
-                  href={site && site.siteurl}>
-                Ver Tienda
-                </a>
-              </MenuItem>
-              <MenuItem
-                style={{display: site && site.public ? 'block' : 'none'}}
-                onClick={this.handleEditSite}>
-                Editar Tienda
-              </MenuItem>
-              <MenuItem
-                style={{display: site && site.public ? 'block' : 'none'}}
-                onClick={this.handleEditPayments}>
-                Editar Pagos
-              </MenuItem>
-              <MenuItem
-                style={{display: site && site.public ? 'block' : 'none'}}
-                onClick={this.handleEditShipping}>
-                Editar Envios
-              </MenuItem>
-              <MenuItem
-                style={{display: site && site.public ? 'block' : 'none'}}
-                onClick={this.handleDeleteSite}>
-                Eliminár Tienda
-              </MenuItem>
-              <MenuItem
-                onClick={this.handleLogout}>
-                Cerrar sesión
-              </MenuItem>
-            </Menu>
           </Toolbar>
         </AppBar>
+        <Drawer
+          anchor='right'
+          open={drawerOpen}
+          onClose={this.toggleDrawer}>
+          <div className={classes.list}>
+            {(site && site.public) && (
+              <List>
+                <ListItem
+                  button
+                  component='a'
+                  href={site && site.siteurl}
+                  target='_blank'
+                >
+                  <ListItemIcon>
+                    <LaunchIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={'Ver Tienda'} />
+                </ListItem>
+                <ListItem button onClick={this.handleEditSite}>
+                  <ListItemIcon>
+                    <StoreIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={'Editar Tienda'} />
+                </ListItem>
+                <ListItem button onClick={this.handleEditPayments}>
+                  <ListItemIcon>
+                    <AttachMoneyIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={'Editar Pagos'} />
+                </ListItem>
+                <ListItem button onClick={this.handleEditShipping}>
+                  <ListItemIcon>
+                    <LocalShippingIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={'Editar Envios'} />
+                </ListItem>
+                <ListItem button onClick={this.handleDeleteSite}>
+                  <ListItemIcon>
+                    <DeleteIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={'Eliminár Tienda'} />
+                </ListItem>
+              </List>
+            )}
+            <Divider />
+            <List>
+              <ListItem onClick={this.handleLogout}>
+                  <ListItemIcon>
+                    <PowerOffIcon />
+                  </ListItemIcon>
+                <ListItemText primary={'Cerrar sesión'} />
+              </ListItem>
+            </List>
+          </div>
+        </Drawer>
       </div>
     )
   }
