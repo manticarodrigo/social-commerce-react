@@ -25,7 +25,6 @@ import {
 } from '../../actions/navActions';
 import {
 	updateCurrentProduct,
-	resetProductLocations,
   deleteProduct
 } from '../../actions/productActions';
 
@@ -40,13 +39,13 @@ class Dashboard extends Component {
 	}
 
 	componentDidMount() {
-		const { updateTitle, category } = this.props;
-		updateTitle(category ? category.name : 'Tu Tienda');
+		const { updateTitle, site } = this.props;
+		updateTitle(site ? site.title : 'Tu Tienda');
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		const { updateTitle, category } = this.props;
-		updateTitle(category ? category.name : 'Tu Tienda');
+		const { updateTitle, site } = this.props;
+		updateTitle(site ? site.title : 'Tu Tienda');
 	}
 
 	handleMore = (event, product) => {
@@ -68,8 +67,8 @@ class Dashboard extends Component {
 	}
 
 	handleAdd = () => {
-		const { history, resetProductLocations } = this.props;
-		resetProductLocations();
+		const { history, updateCurrentProduct } = this.props;
+		updateCurrentProduct(null);
 		history.replace('/producto');
 	}
 
@@ -82,8 +81,8 @@ class Dashboard extends Component {
 	}
 
 	finishProductDelete = (product) => {
-		const { deleteProduct } = this.props;
-		deleteProduct(product.id);
+		const { site, deleteProduct } = this.props;
+		deleteProduct(site.path, product.id);
 		this.setState({
 			deleteDialogOpen: false,
 			moreProduct: null
@@ -103,7 +102,7 @@ class Dashboard extends Component {
   }
   
 	render() {
-		const { category, products } = this.props;
+		const { site, products } = this.props;
 		const { deleteDialogOpen, shareDialogOpen, moreProduct } = this.state;
 	  return (
 			<div>
@@ -118,7 +117,7 @@ class Dashboard extends Component {
 				/>
 				<ShareDialog
 					open={shareDialogOpen}
-					category={moreProduct ? null : category}
+					site={moreProduct ? null : site}
 					product={moreProduct ? moreProduct.product : null}
 					onClose={() => this.setState({ shareDialogOpen: false })} />
 				<DeleteDialog
@@ -185,14 +184,13 @@ class Dashboard extends Component {
 const mapStateToProps = state => ({
 	user: state.auth.user,
   auth: state.auth.auth,
-  category: state.categories.category,
+  site: state.site.site,
   products: state.products.products
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
 	updateTitle,
 	updateCurrentProduct,
-	resetProductLocations,
 	deleteProduct
 }, dispatch);
 

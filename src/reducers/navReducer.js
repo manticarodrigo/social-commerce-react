@@ -21,12 +21,6 @@ export default function(state = initialState, action) {
         ...state,
         pathname: action.payload
       };
-    case UPDATE_PRODUCT_LOCATIONS:
-      return {
-        ...state,
-        currentProduct: action.payload.currentProduct,
-        nextProduct: action.payload.nextProduct
-      };
     default:
       return state;
   }

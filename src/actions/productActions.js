@@ -1,9 +1,8 @@
 import axios from 'axios'
 import {
+  UPDATE_CURRENT_PRODUCT,
   FETCH_PRODUCTS,
   FETCH_PRODUCT_ANALYTICS,
-	UPDATE_PRODUCT_LOCATIONS,
-  RESET_PRODUCT_LOCATIONS,
   CREATE_PRODUCT,
   UPDATE_PRODUCT,
   DELETE_PRODUCT
@@ -16,6 +15,15 @@ const options = {
 		password: process.env.REACT_APP_WOOCOMMERCE_PASSWORD
 	}
 };
+
+export const updateCurrentProduct = (currentProduct) => {
+  return (dispatch) => {
+    dispatch({
+      type: UPDATE_CURRENT_PRODUCT,
+      payload: currentProduct
+    });
+  }
+}
 
 export const fetchProducts = (sitePath) => {
 	return (dispatch) => {
@@ -49,68 +57,6 @@ export const fetchProductAnalytics = (productId, period) => {
 				console.log(err);
 			});
 	};
-}
-
-export const updateProductLocations = (direction, products, currentProduct) => {
-  return (dispatch) => {
-    if (Boolean(products) && direction === 'back') {
-      var index = currentProduct ? (
-        products
-          .map(e => { return e.name; })
-          .indexOf(currentProduct.name) + 1
-      ) : 0;
-      dispatch({
-        type: UPDATE_PRODUCT_LOCATIONS,
-        payload: {
-          currentProduct: products[index],
-          nextProduct: products[index - 1] ? products[index - 1] : null
-        }
-      });
-    }
-    if (Boolean(products)) {
-      index = currentProduct ? (
-        products
-          .map(e => { return e.name })
-          .indexOf(currentProduct.name) - 1
-      ) : products.length - 1;
-      dispatch({
-        type: UPDATE_PRODUCT_LOCATIONS,
-        payload: {
-          currentProduct: products[index !== -1 ? index : 0],
-          nextProduct: products[index - 1] ? products[index - 1] : null
-        }
-      });
-    } else {
-      dispatch({
-        type: UPDATE_PRODUCT_LOCATIONS,
-        payload: {
-          currentProduct: null,
-          nextProduct: null
-        }
-      });
-    }
-  }
-}
-
-export const updateCurrentProduct = (currentProduct) => {
-  return (dispatch) => {
-    dispatch({
-      type: UPDATE_PRODUCT_LOCATIONS,
-      payload: {
-        currentProduct: currentProduct,
-        nextProduct: null
-      }
-    });
-  }
-}
-
-export const resetProductLocations = () => {
-  return (dispatch) => {
-    dispatch({
-      type: RESET_PRODUCT_LOCATIONS,
-      payload: null
-    });
-  }
 }
 
 export const createProduct = (sitePath, data) => {

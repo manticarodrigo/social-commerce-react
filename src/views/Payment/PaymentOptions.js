@@ -67,9 +67,6 @@ class PaymentOptions extends Component {
   }
 	
 	handleCheckboxChange = name => event => {
-		console.log(name)
-		console.log(event.target.checked)
-		console.log(this.state)
 		this.setState({ [name]: event.target.checked });
 	}
 
@@ -85,9 +82,22 @@ class PaymentOptions extends Component {
 		this.setState({ loading: true });
 		const { auth, site, updateSite } = this.props;
 		const { checkedTransfer, bankAccount } = this.state;
+		const siteUser = site.users[0];
+		const data = {
+			id: site.blog_id,
+			userName: siteUser.user_name,
+			userEmail: siteUser.user_email,
+			userPhone: siteUser.user_cellphone,
+			userDni: siteUser.user_dni,
+			title: site.title,
+			bannerUrl: site.banner_url ? site.banner_url : '',
+			bannerId: site.banner_id ? site.banner_id : null,
+			ruc: site.ruc,
+			public: site.public
+		}
 		if (site && checkedTransfer) {
 			if (bankAccount !== '') {
-				site.bankAccount = bankAccount;
+				data.bankAccount = bankAccount;
 				updateSite(auth, site)
 					.then(() => {
 						this.setState({ loading: false });
@@ -98,8 +108,8 @@ class PaymentOptions extends Component {
 				alert('Favor llenar campos requeridos.');
 			}
 		} else {
-			// site.bankAccount = '';
-			updateSite(auth, site)
+			// data.bankAccount = '';
+			updateSite(auth, data)
 				.then(() => {
 					this.setState({ loading: false });
 					this.finishSubmit();
@@ -112,7 +122,7 @@ class PaymentOptions extends Component {
 			history,
 			site
 		} = this.props;
-		if (site && site.approved) {
+		if (site && site.public) {
 			history.replace('/');
 		} else {
 			history.replace('/envios');

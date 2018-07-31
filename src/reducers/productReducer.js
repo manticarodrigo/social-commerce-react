@@ -1,8 +1,7 @@
 import {
+  UPDATE_CURRENT_PRODUCT,
   FETCH_PRODUCTS,
   FETCH_PRODUCT_ANALYTICS,
-  UPDATE_PRODUCT_LOCATIONS,
-  RESET_PRODUCT_LOCATIONS,
   CREATE_PRODUCT,
   UPDATE_PRODUCT,
   DELETE_PRODUCT
@@ -11,7 +10,6 @@ import {
 const initialState = {
   products: [],
   currentProduct: null,
-  nextProduct: null,
   analytics: null
 };
 
@@ -19,6 +17,11 @@ export default function(state = initialState, action) {
   var products = JSON.parse(JSON.stringify(state.products));
   var index;
   switch (action.type) {
+    case UPDATE_CURRENT_PRODUCT:
+      return {
+        ...state,
+        currentProduct: action.payload
+      };
     case FETCH_PRODUCTS:
       return {
         ...state,
@@ -30,18 +33,6 @@ export default function(state = initialState, action) {
         ...state,
         analytics: action.payload
       }
-    case UPDATE_PRODUCT_LOCATIONS:
-      return {
-        ...state,
-        currentProduct: action.payload.currentProduct,
-        nextProduct: action.payload.nextProduct
-      };
-    case RESET_PRODUCT_LOCATIONS:
-      return {
-        ...state,
-        currentProduct: null,
-        nextProduct: null
-      };
     case CREATE_PRODUCT:
       products.push(action.payload)
       return {

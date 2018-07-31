@@ -43,9 +43,9 @@ class ShippingOptions extends Component {
 	handleSubmit = () => {
     const {
       history,
-      category
+      site
     } = this.props;
-    if (category && category.approved) {
+    if (site && site.public) {
       history.replace('/');
     } else {
       history.replace('/producto');
@@ -185,7 +185,7 @@ class ShippingOptions extends Component {
 }
 
 const mapStateToProps = state => ({
-  category: state.categories.category
+  site: state.site.site
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

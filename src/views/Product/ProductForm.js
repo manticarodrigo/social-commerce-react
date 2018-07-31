@@ -24,7 +24,7 @@ import {
   updateSite
 } from '../../actions/siteActions';
 import {
-	resetProductLocations
+	updateCurrentProduct
 } from '../../actions/productActions';
 
 class ProductForm extends Component {
@@ -63,8 +63,7 @@ class ProductForm extends Component {
 
 	static getDerivedStateFromProps = (props, state) => {
 		const { product } = props;
-		const { id } = state;
-		if (product && product.id !== id) {
+		if (product && product.id !== state.id) {
 			return {
 				id: product.id,
 				name: product.name,
@@ -155,10 +154,10 @@ class ProductForm extends Component {
 			auth,
 			site,
 			updateSite,
-			resetProductLocations
+			updateCurrentProduct
 		} = this.props;
 		if (type === 'add') {
-			resetProductLocations()
+			updateCurrentProduct(null);
 			this.setState({
 				id: '',
 				name: '',
@@ -174,10 +173,22 @@ class ProductForm extends Component {
 			});
 			history.replace('/producto')
 		} else {
-			site.approved = true;
-			updateSite(auth, site)
+			const siteUser = site.users[0];
+			const data = {
+				id: site.blog_id,
+				userName: siteUser.user_name,
+				userEmail: siteUser.user_email,
+				userPhone: siteUser.user_cellphone,
+				userDni: siteUser.user_dni,
+				title: site.title,
+				bannerUrl: site.banner_url ? site.banner_url : '',
+				bannerId: site.banner_id ? site.banner_id : null,
+				ruc: site.ruc,
+				public: true
+			}
+			updateSite(auth, data)
 				.then(() => {
-					resetProductLocations()
+					updateCurrentProduct(null);
 					history.replace('/');
 				})
 		}
@@ -325,7 +336,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 	updateSite,
 	updateProduct,
 	createProduct,
-	resetProductLocations
+	updateCurrentProduct
 }, dispatch);
 
 export default withRouter(

@@ -48,7 +48,7 @@ const style = {
   }
 }
 
-const ShareDialog = ({ open, product, category, onClose}) => {
+const ShareDialog = ({ open, product, site, onClose}) => {
 
   let obj = {
     'kind': '',
@@ -65,13 +65,13 @@ const ShareDialog = ({ open, product, category, onClose}) => {
       'url': product.permalink,
       'body': `Compra el producto ${product.name} aquí: ${product.permalink}`
     }
-  } else if (category) {
+  } else if (site) {
     obj = {
       'kind': 'Tienda',
-      'name': category.name,
-      'subject': `Visita mi Tienda ${category.name} | heyshopper.co`,
-      'url': category.term_link,
-      'body': `Mira el catálogo de mi tienda ${category.name} aquí: ${category.term_link}`
+      'name': site.title,
+      'subject': `Visita mi Tienda ${site.title} | heyshopper.co`,
+      'url': site.siteurl,
+      'body': `Mira el catálogo de mi tienda ${site.title} aquí: ${site.siteurl}`
     }
   }
 

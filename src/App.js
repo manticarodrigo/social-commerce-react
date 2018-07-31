@@ -78,7 +78,7 @@ class App extends Component {
                     this.setState({ loading: false });
                     const { pathname } = this.props;
                     if (pathname === '/ingresar' || pathname === '/') {
-                      history.replace(site ? '/' : '/producto'); // No approved handling
+                      history.replace(site.public ? '/' : '/producto');
                     } else {
                       history.replace(pathname);
                     }

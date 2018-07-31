@@ -17,10 +17,11 @@ import Menu from '@material-ui/core/Menu';
 import DeleteDialog from '../Dialog/DeleteDialog';
 
 import {
-  deleteCategory
-} from '../../actions/categoryActions';
+  deleteSite
+} from '../../actions/siteActions';
+
 import {
-  updateProductLocations
+  updateCurrentProduct
 } from '../../actions/productActions';
 
 const styles = {
@@ -54,7 +55,7 @@ class NavBar extends React.Component {
     this.setState({ anchorEl: null })
   }
 
-  handleEditCategory = () => {
+  handleEditSite = () => {
     this.handleClose()
     this.props.history.replace('/perfil')
   }
@@ -69,13 +70,13 @@ class NavBar extends React.Component {
     this.props.history.replace('/envios')
   }
 
-  handleDeleteCategory = () => {
+  handleDeleteSite = () => {
     this.setState({ deleteDialogOpen: true });
   }
 
-  finishCategoryDelete = (category) => {
-    const { history, deleteCategory } = this.props;
-    deleteCategory(category.id)
+  finishSiteDelete = (site) => {
+    const { history, deleteSite } = this.props;
+    deleteSite(site.id)
       .then(() => {
         this.setState({
           deleteDialogOpen: false
@@ -91,8 +92,8 @@ class NavBar extends React.Component {
   }
 
   backCase = () => {
-    const { pathname, category } = this.props;
-    if (category && category.approved) {
+    const { pathname, site } = this.props;
+    if (site && site.public) {
       return  pathname !== '/' ? true : false;
     } else if (pathname !== '/perfil') {
       return true;
@@ -101,8 +102,14 @@ class NavBar extends React.Component {
   }
   
   forwardCase = () => {
-    const { pathname, category, nextProduct } = this.props;
-    if (category && !category.approved) {
+    const { pathname, site, products, currentProduct } = this.props;
+    var index = currentProduct ? (
+      products
+        .map(e => { return e.name; })
+        .indexOf(currentProduct.name)
+    ) : 0;
+    const nextProduct = products[index - 1] ? products[index - 1] : null;
+    if (site && !site.public) {
       if (pathname === '/perfil') {
         return true;
       } else if (pathname === '/producto' && nextProduct) {
@@ -118,15 +125,15 @@ class NavBar extends React.Component {
   }
 
   render() {
-    const { classes, title, category } = this.props;
+    const { classes, title, site } = this.props;
     const { anchorEl, deleteDialogOpen } = this.state;
     return (
       <div className={classes.root}>
         <DeleteDialog
 					open={deleteDialogOpen}
-					category={category}
+					site={site}
 					onClose={() => this.setState({ deleteDialogOpen: false })}
-					onConfirm={() => this.finishCategoryDelete(category)} />
+					onConfirm={() => this.finishSiteDelete(site)} />
         <AppBar position='fixed'>
           <Toolbar>
             {this.backCase() && (
@@ -173,33 +180,33 @@ class NavBar extends React.Component {
               onClose={this.handleClose}
             >
               <MenuItem
-                style={{display: category && category.approved ? 'block' : 'none'}}
-                onClick={this.handleShareCategory}>
+                style={{display: site && site.public ? 'block' : 'none'}}
+                onClick={this.handleShareSite}>
                 <a
                   style={{ textDecoration: 'none', color: 'rgba(0, 0, 0, 0.87)'}}
                   target='_blank'
-                  href={category && category.term_link}>
+                  href={site && site.siteurl}>
                 Ver Tienda
                 </a>
               </MenuItem>
               <MenuItem
-                style={{display: category && category.approved ? 'block' : 'none'}}
-                onClick={this.handleEditCategory}>
+                style={{display: site && site.public ? 'block' : 'none'}}
+                onClick={this.handleEditSite}>
                 Editar Tienda
               </MenuItem>
               <MenuItem
-                style={{display: category && category.approved ? 'block' : 'none'}}
+                style={{display: site && site.public ? 'block' : 'none'}}
                 onClick={this.handleEditPayments}>
                 Editar Pagos
               </MenuItem>
               <MenuItem
-                style={{display: category && category.approved ? 'block' : 'none'}}
+                style={{display: site && site.public ? 'block' : 'none'}}
                 onClick={this.handleEditShipping}>
                 Editar Envios
               </MenuItem>
               <MenuItem
-                style={{display: category && category.approved ? 'block' : 'none'}}
-                onClick={this.handleDeleteCategory}>
+                style={{display: site && site.public ? 'block' : 'none'}}
+                onClick={this.handleDeleteSite}>
                 Eliminár Tienda
               </MenuItem>
               <MenuItem
@@ -217,20 +224,15 @@ class NavBar extends React.Component {
     const {
       history,
       pathname,
-      category,
+      site,
       products,
-      currentProduct,
-      updateProductLocations
+      currentProduct
     } = this.props;
-    if (category && category.approved) {
+    if (site && site.public) {
       history.replace('/');
       return;
     }
-    updateProductLocations(
-      'back',
-      products,
-      currentProduct
-    );
+    this.updateProductLocations('back');
     switch (pathname) {
       case '/envios':
         history.replace('/pagos');
@@ -257,16 +259,9 @@ class NavBar extends React.Component {
   handleForward = () => {
     const {
       history,
-      pathname,
-      products,
-      currentProduct,
-      updateProductLocations
+      pathname
     } = this.props;
-    updateProductLocations(
-      'forward',
-      products,
-      currentProduct
-    );
+    this.updateProductLocations('forward');
     switch (pathname) {
       case '/perfil':
         history.replace('/pagos');
@@ -284,12 +279,39 @@ class NavBar extends React.Component {
         history.replace('/producto');
     }
   }
+
+  updateProductLocations = (direction) => {
+    const {
+      products,
+      currentProduct,
+      updateCurrentProduct
+    } = this.props;
+    if (Boolean(products) && direction === 'back') {
+      var index = currentProduct ? (
+        products
+          .map(e => { return e.name; })
+          .indexOf(currentProduct.name) + 1
+      ) : 0;
+      updateCurrentProduct(products[index]);
+      return;
+    }
+    if (Boolean(products)) {
+      index = currentProduct ? (
+        products
+          .map(e => { return e.name })
+          .indexOf(currentProduct.name) - 1
+      ) : products.length - 1;
+      updateCurrentProduct(products[index !== -1 ? index : 0]);
+      return;
+    }
+    updateCurrentProduct(null);
+  }
 }
 
 NavBar.propTypes = {
   classes: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
-  category: PropTypes.object,
+  site: PropTypes.object,
   products: PropTypes.array,
   pathname: PropTypes.string
 }
@@ -297,15 +319,14 @@ NavBar.propTypes = {
 const mapStateToProps = state => ({
   pathname: state.nav.pathname,
   title: state.nav.title,
-  category: state.categories.category,
+  site: state.site.site,
   products: state.products.products,
-  currentProduct: state.products.currentProduct,
-  nextProduct: state.products.nextProduct
+  currentProduct: state.products.currentProduct
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  deleteCategory,
-  updateProductLocations
+  deleteSite,
+  updateCurrentProduct
 }, dispatch);
 
 export default withRouter(

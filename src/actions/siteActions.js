@@ -34,7 +34,7 @@ export const createSite = (auth, data) => {
 		user_cellphone: data.userPhone,
 		banner_id: data.bannerId,
 		title: data.title,
-		site_name: data.title.toLowerCase(),
+		site_name: data.title.toLowerCase().replace(/\s+/g, ''),
 		ruc: data.ruc
 	}
 	return (dispatch) => {
@@ -61,8 +61,9 @@ export const updateSite = (auth, data) => {
 		user_cellphone: data.userPhone,
 		banner_id: data.bannerId,
 		title: data.title,
-		site_name: data.title.toLowerCase(),
-		ruc: data.ruc
+		site_name: data.title.toLowerCase().replace(/\s+/g, ''),
+		ruc: data.ruc,
+		public: data.public,
 	}
 	return (dispatch) => {
 		return axios.put(`${url}/wp-json/multisite/v1/sites/${data.id}`, site)
@@ -80,7 +81,7 @@ export const updateSite = (auth, data) => {
 	}
 }
 
-export const deleteCategory = (siteId) => {
+export const deleteSite = (siteId) => {
 	return (dispatch) => {
 		return axios.delete(`${url}/wp-json/multisite/v1/sites/${siteId}`, { data: { force: true } })
 			.then(res => {

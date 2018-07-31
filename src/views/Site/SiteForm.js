@@ -29,11 +29,12 @@ class SiteForm extends Component {
 			userEmail: user && user.profile.email ? user.profile.email : '',
 			userPhone: site ? site.userPhone : '',
 			userDni: site ? site.userDni : '',
-			title: site ? site.name : '',
+			title: site ? site.title : '',
 			bannerUrl: site && site.banner_url ? site.banner_url : '',
 			bannerId: site && site.banner_id ? site.banner_id : null,
 			bannerFile: null,
 			ruc: site ? site.ruc : '',
+			public: site ? site.public : false,
 			uploadDialogOpen: false,
 			loading: false,
 			keyboardOpen: false
@@ -42,7 +43,7 @@ class SiteForm extends Component {
 
 	componentDidMount() {
 		const { updateTitle, site } = this.props;
-		updateTitle(site ? 'Edita ' + site.name : 'Registra tu Tienda');
+		updateTitle(site ? 'Edita ' + site.title : 'Registra tu Tienda');
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -69,6 +70,7 @@ class SiteForm extends Component {
 				bannerId: site.banner_id ? site.banner_id : null,
 				bannerFile: null,
 				ruc: site.ruc,
+				public: site.public,
 				uploadDialogOpen: false,
 				loading: false,
 				keyboardOpen: false
@@ -133,7 +135,7 @@ class SiteForm extends Component {
 		) {
 			const callback = site ? updateSite : createSite;
 			if (bannerFile) {
-				uploadMedia(site.path, bannerFile)
+				uploadMedia('/', bannerFile)
 					.then(res => {
 						console.log(res);
 						data.bannerId = res.data.id;
@@ -167,7 +169,7 @@ class SiteForm extends Component {
 
 	finishSubmit = () => {
     const { site } = this.props;
-    if (site.approved) {
+    if (site.public) {
       this.props.history.replace('/');
     } else {
       this.props.history.replace('/pagos');
@@ -184,7 +186,7 @@ class SiteForm extends Component {
 			name === 'userDni' ||
 			name === 'ruc'
 		) && !value.match(/^(\s*|\d+)$/)) { return; }
-		if ((name === 'title') && (!site || !site.approved)) {
+		if ((name === 'title') && (!site || !site.public)) {
 			updateTitle(site ? 'Edita ' + value : 'Registra ' + value);
 		}
 		this.setState({ [name]: value });
