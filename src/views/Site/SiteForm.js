@@ -122,7 +122,7 @@ class SiteForm extends Component {
 		) {
 			const callback = site ? updateSite : createSite;
 			if (bannerFile) {
-				uploadMedia(bannerFile)
+				uploadMedia(site.path, bannerFile)
 					.then(res => {
 						console.log(res);
 						data.bannerId = res.data.id;

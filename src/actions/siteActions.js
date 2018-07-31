@@ -82,19 +82,19 @@ export const updateSite = (auth, data) => {
 	}
 }
 
-// export const deleteCategory = (categoryId) => {
-// 	return (dispatch) => {
-// 		return axios.delete(url + '/wp-json/wc/v2/products/categories/' + categoryId, { data: { force: true } })
-// 			.then(res => {
-// 				console.log(res);
-// 				const category = res.data;
-// 				dispatch({
-// 					type: DELETE_CATEGORY,
-// 					payload: category
-// 				});
-// 			})
-// 			.catch(err => {
-// 				console.log(err);
-// 			});
-// 	}
-// }
+export const deleteCategory = (siteId) => {
+	return (dispatch) => {
+		return axios.delete(`${url}/wp-json/multisite/v1/sites/${siteId}`, { data: { force: true } })
+			.then(res => {
+				console.log(res);
+				const site = res.data;
+				dispatch({
+					type: DELETE_SITE,
+					payload: site
+				});
+			})
+			.catch(err => {
+				console.log(err);
+			});
+	}
+}

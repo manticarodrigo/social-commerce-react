@@ -19,7 +19,7 @@ const options = {
 
 export const fetchProducts = (sitePath) => {
 	return (dispatch) => {
-		return axios.get(`${url + sitePath}/wp-json/wc/v2/products/`, options)
+		return axios.get(`${url + sitePath}wp-json/wc/v2/products/`, options)
 			.then(res => {
 				console.log(res);
 				const products = res.data;
@@ -113,7 +113,7 @@ export const resetProductLocations = () => {
   }
 }
 
-export const createProduct = (data) => {
+export const createProduct = (sitePath, data) => {
 	const id = { id: data.imageId, position: 0 };
 	const src = { src: data.imageUrl, position: 0 };
 	const product = {
@@ -121,14 +121,14 @@ export const createProduct = (data) => {
 		regular_price: data.cost,
 		description: data.description,
 		short_description: data.description,
-		categories: [{id: data.category.id}],
+		// categories: [{id: data.category.id}],
 		images: [data.imageId ? id : src],
 		manage_stock: data.inventoryCount ? true : false,
 		stock_quantity: data.inventoryCount ? data.inventoryCount : 0,
 		in_stock: true,
   };
   return (dispatch) => {
-		return axios.post(url + '/wp-json/wc/v2/products/', product, options)
+		return axios.post(`${url + sitePath}wp-json/wc/v2/products/`, product, options)
       .then(res => {
         console.log(res);
         const product = res.data;

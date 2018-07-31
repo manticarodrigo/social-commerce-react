@@ -21,8 +21,8 @@ import {
 	uploadMedia
 } from '../../services/WordPress';
 import {
-  updateCategory
-} from '../../actions/categoryActions';
+  updateSite
+} from '../../actions/siteActions';
 import {
 	resetProductLocations
 } from '../../actions/productActions';
@@ -113,30 +113,36 @@ class ProductForm extends Component {
 			cost !== '' &&
 			imageUrl !== ''
 		) {
-			const { product, category, updateProduct, createProduct } = this.props;
+			const { product, site, updateProduct, createProduct } = this.props;
 			const callback = product ? updateProduct : createProduct;
-			data.category = category;
-			if (imageFile) {
-				uploadMedia(imageFile)
-					.then(res => {
-						console.log(res);
-						data.imageId = res.data.id;
-						callback(data)
-							.then(() => {
-								this.setState({ loading: false });
-								this.finishSubmit(type);
-							})
-					})
-					.catch(err => {
-						console.log(err);
-					})
-			} else {
-				callback(data)
+			data.site = site;
+			// if (imageFile) {
+			// 	uploadMedia(site.path, imageFile)
+			// 		.then(res => {
+			// 			console.log(res);
+			// 			if (res.data.id) {
+			// 				data.imageId = res.data.id;
+			// 				callback(site.path, data)
+			// 					.then(() => {
+			// 						this.setState({ loading: false });
+			// 						this.finishSubmit(type);
+			// 					})
+			// 			} else {
+			// 				this.setState({ loading: false });
+			// 				alert(res.data);
+			// 			}
+			// 		})
+			// 		.catch(err => {
+			// 			this.setState({ loading: false });
+			// 			alert(err);
+			// 		})
+			// } else {
+				callback(site.path, data)
 					.then(() => {
 						this.setState({ loading: false });
 						this.finishSubmit(type);
 					})
-			}
+			// }
 		} else {
 			this.setState({ loading: false });
 			alert('Favor llenar campos requeridos.');
@@ -147,8 +153,8 @@ class ProductForm extends Component {
 		const {
 			history,
 			auth,
-			category,
-			updateCategory,
+			site,
+			updateSite,
 			resetProductLocations
 		} = this.props;
 		if (type === 'add') {
@@ -168,18 +174,14 @@ class ProductForm extends Component {
 			});
 			history.replace('/producto')
 		} else {
-			category.approved = true;
-			updateCategory(auth, category)
+			site.approved = true;
+			updateSite(auth, site)
 				.then(() => {
 					resetProductLocations()
 					history.replace('/');
 				})
 		}
 	}
-
-	handleApprove = () => {
-    
-  }
   
 	handleInputChange = (event) => {
 	  const target = event.target
@@ -314,13 +316,13 @@ class ProductForm extends Component {
 const mapStateToProps = state => ({
 	user: state.auth.user,
 	auth: state.auth.auth,
-	category: state.categories.category,
+	site: state.site.site,
   product: state.products.currentProduct
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
 	updateTitle,
-	updateCategory,
+	updateSite,
 	updateProduct,
 	createProduct,
 	resetProductLocations
