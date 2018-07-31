@@ -116,33 +116,33 @@ class ProductForm extends Component {
 			const { product, site, updateProduct, createProduct } = this.props;
 			const callback = product ? updateProduct : createProduct;
 			data.site = site;
-			// if (imageFile) {
-			// 	uploadMedia(site.path, imageFile)
-			// 		.then(res => {
-			// 			console.log(res);
-			// 			if (res.data.id) {
-			// 				data.imageId = res.data.id;
-			// 				callback(site.path, data)
-			// 					.then(() => {
-			// 						this.setState({ loading: false });
-			// 						this.finishSubmit(type);
-			// 					})
-			// 			} else {
-			// 				this.setState({ loading: false });
-			// 				alert(res.data);
-			// 			}
-			// 		})
-			// 		.catch(err => {
-			// 			this.setState({ loading: false });
-			// 			alert(err);
-			// 		})
-			// } else {
+			if (imageFile) {
+				uploadMedia(site.path, imageFile)
+					.then(res => {
+						console.log(res);
+						if (res.data.id) {
+							data.imageId = res.data.id;
+							callback(site.path, data)
+								.then(() => {
+									this.setState({ loading: false });
+									this.finishSubmit(type);
+								})
+						} else {
+							this.setState({ loading: false });
+							alert(res.data);
+						}
+					})
+					.catch(err => {
+						this.setState({ loading: false });
+						alert(err);
+					})
+			} else {
 				callback(site.path, data)
 					.then(() => {
 						this.setState({ loading: false });
 						this.finishSubmit(type);
 					})
-			// }
+			}
 		} else {
 			this.setState({ loading: false });
 			alert('Favor llenar campos requeridos.');
@@ -317,7 +317,7 @@ const mapStateToProps = state => ({
 	user: state.auth.user,
 	auth: state.auth.auth,
 	site: state.site.site,
-  product: state.products.currentProduct
+  	product: state.products.currentProduct
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

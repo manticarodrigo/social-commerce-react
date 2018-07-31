@@ -27,7 +27,8 @@ export const fetchCategories = (auth) => {
 }
 
 export const createCategory = (auth, data) => {
-	const image = data.imageId ? { id: data.imageId } : data.image ? { id: data.image.id } : { src: data.businessLogo }
+	// const image = data.imageId ? { id: data.imageId } : data.image ? { id: data.image.id } : { src: data.businessLogo }
+	const image = null;
 	const category = {
 		name: data.businessName,
 		owner_id: auth.wp_user_id,
@@ -55,7 +56,8 @@ export const createCategory = (auth, data) => {
 }
 
 export const updateCategory = (auth, data) => {
-	const image = data.imageId ? { id: data.imageId } : data.image ? { id: data.image.id } : { src: data.businessLogo }
+	// const image = data.imageId ? { id: data.imageId } : data.image ? { id: data.image.id } : { src: data.businessLogo }
+	const image = null;
 	const category = {
 		approved: data.approved,
 		name: data.businessName,

@@ -24,17 +24,17 @@ import {
 	updateTitle
 } from '../../actions/navActions';
 import {
-	updateCategory
-} from '../../actions/categoryActions';
+	updateSite
+} from '../../actions/siteActions';
 
 class PaymentOptions extends Component {
 	constructor(props) {
 		super(props)
-		const { category } = props
+		const { site } = props
 		this.state = {
-			id: category ? category.id : null,
+			id: site ? site.id : null,
 			checkedCash: true,
-			checkedTransfer: category && category.bank_account !== '' ? true : false,
+			checkedTransfer: site && site.bank_account !== '' ? true : false,
 			checkedPayPal: false,
 			checkedBitcoin: false,
 			checkedMercadoPago: false,
@@ -42,7 +42,7 @@ class PaymentOptions extends Component {
 			checkedCulqi: false,
 			checkedPagoFlash: false,
 			checkedCard: false,
-			bankAccount: category ? category.bank_account : '',
+			bankAccount: site ? site.bank_account : '',
 			loading: false,
 			keyboardOpen: false
 		};
@@ -54,13 +54,13 @@ class PaymentOptions extends Component {
 	}
 
 	static getDerivedStateFromProps = (props, state) => {
-		const { category } = props;
+		const { site } = props;
 		const { id } = state;
-		if (category && category.id !== id) {
+		if (site && site.id !== id) {
 			return {
-				id: category.id,
-				checkedTransfer: category.bank_account !== '' ? true : false,
-				bankAccount: category.bank_account
+				id: site.id,
+				checkedTransfer: site.bank_account !== '' ? true : false,
+				bankAccount: site.bank_account
 			};
 		}
 		return null;
@@ -83,12 +83,12 @@ class PaymentOptions extends Component {
 	
 	handleSubmit = () => {
 		this.setState({ loading: true });
-		const { auth, category, updateCategory } = this.props;
+		const { auth, site, updateSite } = this.props;
 		const { checkedTransfer, bankAccount } = this.state;
-		if (category && checkedTransfer) {
+		if (site && checkedTransfer) {
 			if (bankAccount !== '') {
-				category.bankAccount = bankAccount;
-				updateCategory(auth, category)
+				site.bankAccount = bankAccount;
+				updateSite(auth, site)
 					.then(() => {
 						this.setState({ loading: false });
 							this.finishSubmit();
@@ -98,8 +98,8 @@ class PaymentOptions extends Component {
 				alert('Favor llenar campos requeridos.');
 			}
 		} else {
-			category.bankAccount = '';
-			updateCategory(auth, category)
+			// site.bankAccount = '';
+			updateSite(auth, site)
 				.then(() => {
 					this.setState({ loading: false });
 					this.finishSubmit();
@@ -110,9 +110,9 @@ class PaymentOptions extends Component {
 	finishSubmit() {
 		const {
 			history,
-			category
+			site
 		} = this.props;
-		if (category && category.approved) {
+		if (site && site.approved) {
 			history.replace('/');
 		} else {
 			history.replace('/envios');
@@ -333,12 +333,12 @@ class PaymentOptions extends Component {
 
 const mapStateToProps = state => ({
 	auth: state.auth.auth,
-  category: state.categories.category
+	site: state.site.site
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
 	updateTitle,
-	updateCategory
+	updateSite
 }, dispatch)
 
 export default withRouter(
