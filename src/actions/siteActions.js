@@ -63,6 +63,7 @@ export const updateSite = (auth, data) => {
 		title: data.title,
 		site_name: data.title.toLowerCase().replace(/\s+/g, ''),
 		ruc: data.ruc,
+		bank_account: data.bankAccount,
 		public: data.public,
 	}
 	return (dispatch) => {

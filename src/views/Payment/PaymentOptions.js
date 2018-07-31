@@ -92,13 +92,13 @@ class PaymentOptions extends Component {
 			title: site.title,
 			bannerUrl: site.banner_url ? site.banner_url : '',
 			bannerId: site.banner_id ? site.banner_id : null,
+			bankAccount: bankAccount,
 			ruc: site.ruc,
 			public: site.public
 		}
 		if (site && checkedTransfer) {
 			if (bankAccount !== '') {
-				data.bankAccount = bankAccount;
-				updateSite(auth, site)
+				updateSite(auth, data)
 					.then(() => {
 						this.setState({ loading: false });
 							this.finishSubmit();
@@ -108,7 +108,6 @@ class PaymentOptions extends Component {
 				alert('Favor llenar campos requeridos.');
 			}
 		} else {
-			// data.bankAccount = '';
 			updateSite(auth, data)
 				.then(() => {
 					this.setState({ loading: false });

@@ -134,6 +134,7 @@ class SiteForm extends Component {
 			userDni !== ''
 		) {
 			const callback = site ? updateSite : createSite;
+			data.bankAccount = site ? site.bank_account : '';
 			if (bannerFile) {
 				uploadMedia('/', bannerFile)
 					.then(res => {

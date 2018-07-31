@@ -183,6 +183,7 @@ class ProductForm extends Component {
 				title: site.title,
 				bannerUrl: site.banner_url ? site.banner_url : '',
 				bannerId: site.banner_id ? site.banner_id : null,
+				bankAccount: site.bank_account,
 				ruc: site.ruc,
 				public: true
 			}
