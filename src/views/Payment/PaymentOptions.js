@@ -32,7 +32,7 @@ class PaymentOptions extends Component {
 		super(props)
 		const { site } = props
 		this.state = {
-			id: site ? site.id : null,
+			id: site ? site.blog_id : null,
 			checkedCash: true,
 			checkedTransfer: site && site.bank_account !== '' ? true : false,
 			checkedPayPal: false,
@@ -56,9 +56,9 @@ class PaymentOptions extends Component {
 	static getDerivedStateFromProps = (props, state) => {
 		const { site } = props;
 		const { id } = state;
-		if (site && site.id !== id) {
+		if (site && site.blog_id !== id) {
 			return {
-				id: site.id,
+				id: site.blog_id,
 				checkedTransfer: site.bank_account !== '' ? true : false,
 				bankAccount: site.bank_account
 			};

@@ -52,6 +52,9 @@ class SiteForm extends Component {
 		if (site && (((title === prevTitle) || (prevTitle === '')))) {
 			updateTitle(site ? 'Edita ' + site.title : 'Registra tu Tienda')
 		}
+		if (!site && title === '') {
+			updateTitle('Registra tu Tienda')
+		}
 	}
 
 	static getDerivedStateFromProps = (props, state) => {
@@ -69,6 +72,23 @@ class SiteForm extends Component {
 				bannerId: site.banner_id ? site.banner_id : null,
 				bannerFile: null,
 				ruc: site.ruc,
+				uploadDialogOpen: false,
+				loading: false,
+				keyboardOpen: false
+			}
+		}
+		if ((auth && !site) && state.id !== null) {
+			return {
+				id: null,
+				userName: user && user.profile.name ? user.profile.name : '',
+				userEmail: user && user.profile.email ? user.profile.email : '',
+				userPhone: '',
+				userDni: '',
+				title: '',
+				bannerUrl: '',
+				bannerId: null,
+				bannerFile: null,
+				ruc: '',
 				uploadDialogOpen: false,
 				loading: false,
 				keyboardOpen: false

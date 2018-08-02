@@ -87,7 +87,7 @@ class NavBar extends React.Component {
 
   finishSiteDelete = (site) => {
     const { history, deleteSite } = this.props;
-    deleteSite(site.id)
+    deleteSite(site.blog_id)
       .then(() => {
         this.setState({
           deleteDialogOpen: false
