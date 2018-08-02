@@ -91,7 +91,7 @@ const ShareDialog = ({ open, product, site, onClose}) => {
         </DialogContentText>
         <ul style={style.socialButtonList}>
           <li style={style.socialButton}>
-              <a href={encodeURI(`whatsapp://send?text=${obj.body}`)}
+              <a href={encodeURI(`https://wa.me?text=${obj.body}`)}
                  style={{...style.socialButtonItem, ...style.whatsapp}} target='_blank' title='Compartir en WhatsApp'>
                   <WhatsappIcon style={style.svgItem} />
               </a>
