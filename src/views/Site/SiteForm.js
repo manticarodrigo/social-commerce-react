@@ -125,9 +125,10 @@ class SiteForm extends Component {
 	}
 	
   handleSubmit = (event) => {
-		this.setState({ loading: true });
 		event.preventDefault();
+		this.setState({ loading: true });
 		const data = this.state;
+		const site = this.props.site;
 		const {
 			title,
 			bannerUrl,
@@ -137,12 +138,6 @@ class SiteForm extends Component {
 			userPhone,
 			userDni
 		} = this.state;
-		const {
-			auth,
-			site,
-			createSite,
-			updateSite
-		} = this.props;
 		if (
 			bannerUrl !== '' &&
 			title !== '' &&
@@ -151,79 +146,12 @@ class SiteForm extends Component {
 			userPhone !== '' &&
 			userDni !== ''
 		) {
-			// Add other properties if exists
 			data.bankAccount = site ? site.bank_account : '';
 			data.public = site ? site.public : false;
-			// Check for image file
 			if (site) {
-				if (bannerFile) {
-					uploadMedia(site.path, bannerFile)
-						.then(res => {
-							console.log(res);
-							data.bannerId = res.data.id;
-							if (res.data.id) {
-								updateSite(auth, data)
-									.then(() => {
-										this.setState({ loading: false });
-										this.finishSubmit();
-									})
-									.catch(err => {
-										console.log(err.response.data.message);
-										this.setState({ loading: false });
-										alert(err.response.data.message);
-									});
-							} else {
-								this.setState({ loading: false });
-								alert(res.data);
-							}
-						})
-						.catch(err => {
-							this.setState({ loading: false });
-							alert(err);
-						});
-				} else {
-					updateSite(auth, data)
-						.then(() => {
-							this.setState({ loading: false });
-							this.finishSubmit();
-						})
-						.catch(err => {
-							console.log(err.response.data.message);
-							this.setState({ loading: false });
-							alert(err.response.data.message);
-						});
-				}
+				this.updateSite(data);
 			} else if (!site && bannerFile) {
-				createSite(auth, data)
-					.then(res => {
-						console.log(res);
-						data.id = res.blog_id;
-						uploadMedia(res.path, bannerFile)
-							.then(res => {
-								console.log(res);
-								data.bannerId = res.data.id;
-								updateSite(auth, data)
-									.then(() => {
-										this.setState({ loading: false });
-										this.finishSubmit();
-									})
-									.catch(err => {
-										console.log(err.response.data.message);
-										this.setState({ loading: false });
-										alert(err.response.data.message);
-									});
-							})
-							.catch(err => {
-								console.log(err.response.data.message);
-								this.setState({ loading: false });
-								alert(err.response.data.message);
-							});
-					})
-					.catch(err => {
-						console.log(err);
-						this.setState({ loading: false });
-						alert(err.response.data.message);
-					});
+				this.registerSite(data);
 			} else {
 				this.setState({ loading: false });
 				alert('Favor llenar campos requeridos.');
@@ -232,6 +160,95 @@ class SiteForm extends Component {
 			this.setState({ loading: false });
 			alert('Favor llenar campos requeridos.');
 		}
+	}
+
+	updateSite = (data) => {
+		const {
+			auth,
+			site,
+			updateSite
+		} = this.props;
+		const {
+			bannerFile
+		} = this.state;
+		if (bannerFile) {
+			uploadMedia(site.path, bannerFile)
+				.then(res => {
+					console.log(res);
+					data.bannerId = res.data.id;
+					if (res.data.id) {
+						updateSite(auth, data)
+							.then(() => {
+								this.setState({ loading: false });
+								this.finishSubmit();
+							})
+							.catch(err => {
+								console.log(err.response.data.message);
+								this.setState({ loading: false });
+								alert(err.response.data.message);
+							});
+					} else {
+						this.setState({ loading: false });
+						alert(res.data);
+					}
+				})
+				.catch(err => {
+					this.setState({ loading: false });
+					alert(err);
+				});
+		} else {
+			updateSite(auth, data)
+				.then(() => {
+					this.setState({ loading: false });
+					this.finishSubmit();
+				})
+				.catch(err => {
+					console.log(err.response.data.message);
+					this.setState({ loading: false });
+					alert(err.response.data.message);
+				});
+		}
+	}
+
+	registerSite = (data) => {
+		const {
+			auth,
+			createSite,
+			updateSite
+		} = this.props;
+		const {
+			bannerFile
+		} = this.state;
+		createSite(auth, data)
+			.then(res => {
+				console.log(res);
+				data.id = res.blog_id;
+				uploadMedia(res.path, bannerFile)
+					.then(res => {
+						console.log(res);
+						data.bannerId = res.data.id;
+						updateSite(auth, data)
+							.then(() => {
+								this.setState({ loading: false });
+								this.finishSubmit();
+							})
+							.catch(err => {
+								console.log(err.response.data.message);
+								this.setState({ loading: false });
+								alert(err.response.data.message);
+							});
+					})
+					.catch(err => {
+						console.log(err.response.data.message);
+						this.setState({ loading: false });
+						alert(err.response.data.message);
+					});
+			})
+			.catch(err => {
+				console.log(err);
+				this.setState({ loading: false });
+				alert(err.response.data.message);
+			});
 	}
 
 	finishSubmit = () => {
