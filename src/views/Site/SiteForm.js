@@ -338,7 +338,7 @@ class SiteForm extends Component {
 				<div
 					className='SaveButtonWrapper'
 					style={{
-						opacity: keyboardOpen ? '0.25' : '1',
+						marginBottom: keyboardOpen ? '-2em' : '0em',
 					}}>
 					<Button
 						size='large'
@@ -346,7 +346,8 @@ class SiteForm extends Component {
 						color='primary'
 						className='SaveButton'
 						disabled={loading}
-						onClick={this.handleSubmit}>
+						onClick={this.handleSubmit}
+					>
 						{site ? 'Guardar' : 'Agregar'} Tienda
 					</Button>
 					{loading && <CircularProgress size={24} className='ButtonProgress' />}

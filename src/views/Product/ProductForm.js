@@ -299,7 +299,7 @@ class ProductForm extends Component {
 				<div
 					className='AddButtonWrapper'
 					style={{
-						opacity: keyboardOpen ? '0.25' : '1',
+						marginBottom: keyboardOpen ? '-4em' : '0em',
 					}}>
 					<Button
 						size='large'
@@ -316,7 +316,7 @@ class ProductForm extends Component {
 				<div
 					className='ShareButtonWrapper'
 					style={{
-						opacity: keyboardOpen ? '0.25' : '1',
+						marginBottom: keyboardOpen ? '-4em' : '0em',
 					}}>
 					<Button
 						size='large'

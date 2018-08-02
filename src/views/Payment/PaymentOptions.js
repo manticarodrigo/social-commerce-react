@@ -202,7 +202,7 @@ class PaymentOptions extends Component {
 						style={{textAlign:'left'}}
 						onChange={this.handleTextFieldChange}
 						onFocus={this.handleInputFocus}
-						onBlur={this.handleBlur}
+						onBlur={this.handleInputBlur}
 						onSubmit={this.handleSubmit}>
 						<TextField
 							required
@@ -331,7 +331,7 @@ class PaymentOptions extends Component {
 				<div
 					className='SaveButtonWrapper'
 					style={{
-						opacity: keyboardOpen ? '0.25' : '1',
+						marginBottom: keyboardOpen ? '-2em' : '0em',
 					}}>
 					<Button
 						size='large'
@@ -339,7 +339,8 @@ class PaymentOptions extends Component {
 						color='primary'
 						className='SaveButton'
 						disabled={loading}
-						onClick={this.handleSubmit}>
+						onClick={this.handleSubmit}
+					>
 						Guardar Ajustes
 					</Button>
 					{loading && <CircularProgress size={24} className='ButtonProgress' />}

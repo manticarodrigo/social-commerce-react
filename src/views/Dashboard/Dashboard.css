@@ -20,17 +20,17 @@
   min-width: 60px;
   width: 60px;
   height: 60px;
-  object-fit: cover
+  object-fit: cover;
 }
 
 .ShareFab {
   position: fixed !important;
   bottom: 1em;
-  right: 4em
+  right: 4em;
 }
 
 .AddFab {
   position: fixed !important;
   bottom: 1em;
-  right: 1em
+  right: 1em;
 }
