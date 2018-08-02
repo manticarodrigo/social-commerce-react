@@ -41,10 +41,10 @@ export const createSite = (auth, data) => (dispatch) => {
 			.then(res => {
 				console.log(res);
 				const site = res.data;
-				dispatch({
-					type: CREATE_SITE,
-					payload: site
-				});
+				// dispatch({
+				// 	type: CREATE_SITE,
+				// 	payload: site
+				// });
 				resolve(site);
 			})
 			.catch(err => {
