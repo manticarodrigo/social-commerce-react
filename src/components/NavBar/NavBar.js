@@ -36,7 +36,8 @@ import {
 } from '../../actions/siteActions';
 
 import {
-  updateCurrentProduct
+  updateCurrentProduct,
+  updateProducts
 } from '../../actions/productActions';
 
 const styles = {
@@ -86,13 +87,16 @@ class NavBar extends React.Component {
   }
 
   finishSiteDelete = (site) => {
-    const { history, deleteSite } = this.props;
+    const { history, deleteSite, updateProducts } = this.props;
     deleteSite(site.blog_id)
       .then(() => {
-        this.setState({
-          deleteDialogOpen: false
-        })
+        updateProducts([]);
+        this.setState({ deleteDialogOpen: false });
         history.replace('/perfil');
+      })
+      .catch(err => {
+        console.log(err.response.data.message);
+        alert(err.response.data.message);
       });
   }
 
@@ -350,7 +354,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   deleteSite,
-  updateCurrentProduct
+  updateCurrentProduct,
+  updateProducts
 }, dispatch);
 
 export default withRouter(

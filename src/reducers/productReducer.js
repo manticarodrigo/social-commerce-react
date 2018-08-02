@@ -1,5 +1,6 @@
 import {
   UPDATE_CURRENT_PRODUCT,
+  UPDATE_PRODUCTS,
   FETCH_PRODUCTS,
   FETCH_PRODUCT_ANALYTICS,
   CREATE_PRODUCT,
@@ -21,6 +22,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         currentProduct: action.payload
+      };
+    case UPDATE_PRODUCTS:
+      return {
+        ...state,
+        products: action.payload
       };
     case FETCH_PRODUCTS:
       return {

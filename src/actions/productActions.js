@@ -1,6 +1,7 @@
 import axios from 'axios'
 import {
-  UPDATE_CURRENT_PRODUCT,
+	UPDATE_CURRENT_PRODUCT,
+	UPDATE_PRODUCTS,
   FETCH_PRODUCTS,
   FETCH_PRODUCT_ANALYTICS,
   CREATE_PRODUCT,
@@ -21,6 +22,15 @@ export const updateCurrentProduct = (currentProduct) => {
     dispatch({
       type: UPDATE_CURRENT_PRODUCT,
       payload: currentProduct
+    });
+  }
+}
+
+export const updateProducts = (products) => {
+  return (dispatch) => {
+    dispatch({
+      type: UPDATE_PRODUCTS,
+      payload: products
     });
   }
 }
