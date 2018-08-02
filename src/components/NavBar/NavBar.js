@@ -90,6 +90,7 @@ class NavBar extends React.Component {
     const { history, deleteSite, updateProducts } = this.props;
     deleteSite(site.blog_id)
       .then(() => {
+        updateCurrentProduct(null);
         updateProducts([]);
         this.setState({ deleteDialogOpen: false });
         history.replace('/perfil');
