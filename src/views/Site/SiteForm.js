@@ -145,31 +145,31 @@ class SiteForm extends Component {
 		} = this.props;
 		if (
 			bannerUrl !== '' &&
+			bannerFile !== null &&
 			title !== '' &&
 			userName !== '' &&
 			userEmail !== '' &&
 			userPhone !== '' &&
 			userDni !== ''
 		) {
-			// Choose action type
-			const callback = site ? updateSite : createSite;
 			// Add other properties if exists
 			data.bankAccount = site ? site.bank_account : '';
 			data.public = site ? site.public : false;
 			// Check for image file
-			if (bannerFile) {
+			if (site) {
 				uploadMedia('/', bannerFile)
 					.then(res => {
 						console.log(res);
 						data.bannerId = res.data.id;
 						if (res.data.id) {
-							callback(auth, data)
+							updateSite(auth, data)
 								.then(() => {
 									this.setState({ loading: false });
 									this.finishSubmit();
 								})
 								.catch(err => {
 									console.log(err.response.data.message);
+									this.setState({ loading: false });
 									alert(err.response.data.message);
 								});
 						} else {
@@ -181,14 +181,35 @@ class SiteForm extends Component {
 						this.setState({ loading: false });
 						alert(err);
 					});
-			} else {
-				callback(auth, data)
-					.then(() => {
-						this.setState({ loading: false });
-						this.finishSubmit();
+			} else if (!site) {
+				createSite(auth, data)
+					.then(res => {
+						console.log(res);
+						data.id = res.blog_id;
+						uploadMedia(res.path, bannerFile)
+							.then(res => {
+								console.log(res);
+								data.bannerId = res.data.id;
+								updateSite(auth, data)
+									.then(() => {
+										this.setState({ loading: false });
+										this.finishSubmit();
+									})
+									.catch(err => {
+										console.log(err.response.data.message);
+										this.setState({ loading: false });
+										alert(err.response.data.message);
+									});
+							})
+							.catch(err => {
+								console.log(err.response.data.message);
+								this.setState({ loading: false });
+								alert(err.response.data.message);
+							});
 					})
 					.catch(err => {
-						console.log(err.response.data.message);
+						console.log(err);
+						this.setState({ loading: false });
 						alert(err.response.data.message);
 					});
 			}

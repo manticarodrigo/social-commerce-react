@@ -1,7 +1,6 @@
 import {
   UPDATE_TITLE,
-  UPDATE_PATHNAME,
-  UPDATE_PRODUCT_LOCATIONS
+  UPDATE_PATHNAME
 } from '../actions/types';
 
 const initialState = {

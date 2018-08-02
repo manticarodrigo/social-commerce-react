@@ -128,6 +128,7 @@ class ProductForm extends Component {
 								})
 								.catch(err => {
 									console.log(err.response.data.message);
+									this.setState({ loading: false });
 									alert(err.response.data.message);
 								});
 						} else {
@@ -147,6 +148,7 @@ class ProductForm extends Component {
 					})
 					.catch(err => {
 						console.log(err.response.data.message);
+						this.setState({ loading: false });
 						alert(err.response.data.message);
 					});
 			}

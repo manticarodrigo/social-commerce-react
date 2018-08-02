@@ -22,23 +22,22 @@ export const fetchSite = (auth) => {
 				});
 			})
 			.catch(err => {
-				throw(err);
+				console.log(err);
 			});
 	};
 }
 
-export const createSite = (auth, data) => {
+export const createSite = (auth, data) => (dispatch) => {
 	const site = {
 		user_id: auth.wp_user_id,
 		user_dni: data.userDni,
 		user_cellphone: data.userPhone,
-		banner_id: data.bannerId,
 		title: data.title,
 		site_name: data.title.toLowerCase().replace(/\s+/g, ''),
 		ruc: data.ruc
 	}
-	return (dispatch) => {
-		return axios.post(`${url}/wp-json/multisite/v1/sites/`, site)
+	return new Promise((resolve, reject) => {
+		axios.post(`${url}/wp-json/multisite/v1/sites/`, site)
 			.then(res => {
 				console.log(res);
 				const site = res.data;
@@ -46,15 +45,16 @@ export const createSite = (auth, data) => {
 					type: CREATE_SITE,
 					payload: site
 				});
+				resolve(site);
 			})
 			.catch(err => {
-				throw(err);
+				console.log(err);
+				reject(err);
 			});
-	}
+	});
 }
 
 export const updateSite = (auth, data) => {
-	console.log(data);
 	const site = {
 		user_id: auth.wp_user_id,
 		user_dni: data.userDni,
@@ -77,7 +77,7 @@ export const updateSite = (auth, data) => {
 				});
 			})
 			.catch(err => {
-				throw(err);
+				console.log(err);
 			});
 	}
 }
