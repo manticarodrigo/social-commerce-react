@@ -94,7 +94,7 @@ class SiteForm extends Component {
 				keyboardOpen: false
 			}
 		}
-		if ((auth && user) && state.id === null) {
+		if ((auth && user) && state.userName === '') {
 			return {
 				userName: user.profile.name,
 				userEmail: user.profile.email
@@ -314,10 +314,12 @@ class SiteForm extends Component {
 							<img
 								style={{display: bannerUrl !== '' ? 'block' : 'none'}}
 								src={bannerUrl}
-								alt={bannerUrl} />
+								alt={bannerUrl}
+							/>
 							<span
 								style={{display: bannerUrl === '' ? 'block' : 'none'}}
-								className='Dimensions'>
+								className='Dimensions'
+							>
 								480 x 270
 							</span>
 						</Button>
@@ -329,7 +331,8 @@ class SiteForm extends Component {
 						label='Nombre del negocio'
 						name='title'
 						value={this.state.title}
-						type='text' />
+						type='text'
+					/>
 					<TextField
 						required
 						fullWidth
@@ -337,7 +340,8 @@ class SiteForm extends Component {
 						label='Nombre completo'
 						name='userName'
 						value={this.state.userName}
-						type='text' />
+						type='text'
+					/>
 					<TextField
 						required
 						fullWidth
@@ -345,27 +349,32 @@ class SiteForm extends Component {
 						label='Correo electrónico'
 						name='userEmail'
 						value={this.state.userEmail}
-						type='email' />
+						type='email' 
+						disabled={Boolean(site)}
+					/>
 					<TextField
 						required
 						fullWidth
 						margin='normal'
 						label='Número de teléfono celular'
 						name='userPhone'
-						value={this.state.userPhone} />
+						value={this.state.userPhone}
+					/>
 					<TextField
 						required
 						fullWidth
 						margin='normal'
 						label='Número de DNI'
 						name='userDni'
-						value={this.state.userDni} />
+						value={this.state.userDni}
+					/>
 					<TextField
 						fullWidth
 						margin='normal'
 						label='Número RUC'
 						name='ruc'
-						value={this.state.ruc} />
+						value={this.state.ruc}
+					/>
 				</form>
 				<div
 					className='SaveButtonWrapper'
