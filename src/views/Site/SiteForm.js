@@ -145,7 +145,6 @@ class SiteForm extends Component {
 		} = this.props;
 		if (
 			bannerUrl !== '' &&
-			bannerFile !== null &&
 			title !== '' &&
 			userName !== '' &&
 			userEmail !== '' &&
@@ -157,31 +156,44 @@ class SiteForm extends Component {
 			data.public = site ? site.public : false;
 			// Check for image file
 			if (site) {
-				uploadMedia('/', bannerFile)
-					.then(res => {
-						console.log(res);
-						data.bannerId = res.data.id;
-						if (res.data.id) {
-							updateSite(auth, data)
-								.then(() => {
-									this.setState({ loading: false });
-									this.finishSubmit();
-								})
-								.catch(err => {
-									console.log(err.response.data.message);
-									this.setState({ loading: false });
-									alert(err.response.data.message);
-								});
-						} else {
+				if (bannerFile) {
+					uploadMedia(site.path, bannerFile)
+						.then(res => {
+							console.log(res);
+							data.bannerId = res.data.id;
+							if (res.data.id) {
+								updateSite(auth, data)
+									.then(() => {
+										this.setState({ loading: false });
+										this.finishSubmit();
+									})
+									.catch(err => {
+										console.log(err.response.data.message);
+										this.setState({ loading: false });
+										alert(err.response.data.message);
+									});
+							} else {
+								this.setState({ loading: false });
+								alert(res.data);
+							}
+						})
+						.catch(err => {
 							this.setState({ loading: false });
-							alert(res.data);
-						}
-					})
-					.catch(err => {
-						this.setState({ loading: false });
-						alert(err);
-					});
-			} else if (!site) {
+							alert(err);
+						});
+				} else {
+					updateSite(auth, data)
+						.then(() => {
+							this.setState({ loading: false });
+							this.finishSubmit();
+						})
+						.catch(err => {
+							console.log(err.response.data.message);
+							this.setState({ loading: false });
+							alert(err.response.data.message);
+						});
+				}
+			} else if (!site && bannerFile) {
 				createSite(auth, data)
 					.then(res => {
 						console.log(res);
@@ -212,6 +224,9 @@ class SiteForm extends Component {
 						this.setState({ loading: false });
 						alert(err.response.data.message);
 					});
+			} else {
+				this.setState({ loading: false });
+				alert('Favor llenar campos requeridos.');
 			}
 		} else {
 			this.setState({ loading: false });
