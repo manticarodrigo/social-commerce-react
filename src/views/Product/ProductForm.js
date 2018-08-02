@@ -126,6 +126,10 @@ class ProductForm extends Component {
 									this.setState({ loading: false });
 									this.finishSubmit(type);
 								})
+								.catch(err => {
+									console.log(err.response.data.message);
+									alert(err.response.data.message);
+								});
 						} else {
 							this.setState({ loading: false });
 							alert(res.data);
@@ -141,6 +145,10 @@ class ProductForm extends Component {
 						this.setState({ loading: false });
 						this.finishSubmit(type);
 					})
+					.catch(err => {
+						console.log(err.response.data.message);
+						alert(err.response.data.message);
+					});
 			}
 		} else {
 			this.setState({ loading: false });

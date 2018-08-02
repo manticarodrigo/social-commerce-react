@@ -103,6 +103,10 @@ class PaymentOptions extends Component {
 						this.setState({ loading: false });
 							this.finishSubmit();
 					})
+					.catch(err => {
+						console.log(err.response.data.message);
+						alert(err.response.data.message);
+					});
 			} else {
 				this.setState({ loading: false });
 				alert('Favor llenar campos requeridos.');
@@ -113,6 +117,10 @@ class PaymentOptions extends Component {
 				.then(() => {
 					this.setState({ loading: false });
 					this.finishSubmit();
+				})
+				.catch(err => {
+					console.log(err.response.data.message);
+					alert(err.response.data.message);
 				});
 		}
 	}
