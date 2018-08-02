@@ -57,6 +57,8 @@ export const createSite = (auth, data) => (dispatch) => {
 export const updateSite = (auth, data) => {
 	const site = {
 		user_id: auth.wp_user_id,
+		user_name: data.userName,
+		user_email: data.userEmail,
 		user_dni: data.userDni,
 		user_cellphone: data.userPhone,
 		banner_id: data.bannerId,
