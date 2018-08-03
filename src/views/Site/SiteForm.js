@@ -35,8 +35,7 @@ class SiteForm extends Component {
 			bannerFile: null,
 			ruc: site ? site.ruc : '',
 			uploadDialogOpen: false,
-			loading: false,
-			keyboardOpen: false
+			loading: false
 		};
 	}
 
@@ -73,8 +72,7 @@ class SiteForm extends Component {
 				bannerFile: null,
 				ruc: site.ruc,
 				uploadDialogOpen: false,
-				loading: false,
-				keyboardOpen: false
+				loading: false
 			}
 		}
 		if ((auth && !site) && state.id !== null) {
@@ -90,8 +88,7 @@ class SiteForm extends Component {
 				bannerFile: null,
 				ruc: '',
 				uploadDialogOpen: false,
-				loading: false,
-				keyboardOpen: false
+				loading: false
 			}
 		}
 		if ((auth && user) && state.userName === '') {
@@ -275,20 +272,12 @@ class SiteForm extends Component {
 		}
 		this.setState({ [name]: value });
 	}
-
-	handleInputFocus = (event) => {
-		this.setState({ keyboardOpen: true})
-	}
-
-	handleInputBlur = (event) => {
-		this.setState({ keyboardOpen: false})
-	}
   
 	render() {
 		const { user, site } = this.props;
-		const { uploadDialogOpen, loading, bannerUrl, keyboardOpen } = this.state;
+		const { uploadDialogOpen, loading, bannerUrl } = this.state;
 	  return (
-			<div className='SiteForm' style={{paddingBottom: 'calc(30px + 2em'}}>
+			<div className='SiteForm'>
 				{uploadDialogOpen && (
 					<UploadDialog
 						user={user}
@@ -301,7 +290,7 @@ class SiteForm extends Component {
 					onFocus={this.handleInputFocus}
 					onBlur={this.handleInputBlur}
 					onSubmit={this.handleSubmit}
-					autocomplete='off'
+					autoComplete='off'
 				>
 					<div className='UploadWrapper'>
 						<Button
@@ -378,12 +367,9 @@ class SiteForm extends Component {
 						value={this.state.ruc}
 					/>
 				</form>
-				<div
-					className='SaveButtonWrapper'
-					style={{
-						marginBottom: keyboardOpen ? '-2em' : '0em',
-					}}>
+				<div className='SaveButtonWrapper'>
 					<Button
+						fullWidth
 						size='large'
 						variant='contained'
 						color='primary'

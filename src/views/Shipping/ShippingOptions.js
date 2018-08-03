@@ -169,6 +169,7 @@ class ShippingOptions extends Component {
 				</FormGroup>
 				<div className='SaveButtonWrapper'>
 					<Button
+						fullWidth
 						size='large'
 						variant='contained'
 						color='primary'

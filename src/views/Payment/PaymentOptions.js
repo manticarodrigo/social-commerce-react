@@ -43,8 +43,7 @@ class PaymentOptions extends Component {
 			checkedPagoFlash: false,
 			checkedCard: false,
 			bankAccount: site ? site.bank_account : '',
-			loading: false,
-			keyboardOpen: false
+			loading: false
 		};
 	}
 
@@ -137,14 +136,6 @@ class PaymentOptions extends Component {
 		}
 	}
 
-	handleInputFocus = (event) => {
-		this.setState({ keyboardOpen: true})
-	}
-
-	handleInputBlur = (event) => {
-		this.setState({ keyboardOpen: false})
-	}
-
   render() {
 		const {
 			checkedCash,
@@ -157,8 +148,7 @@ class PaymentOptions extends Component {
 			checkedPagoFlash,
 			checkedCard,
 			bankAccount,
-			loading,
-			keyboardOpen
+			loading
 		} = this.state;
     return (
 			<div className='PaymentOptions'>
@@ -204,7 +194,7 @@ class PaymentOptions extends Component {
 						onFocus={this.handleInputFocus}
 						onBlur={this.handleInputBlur}
 						onSubmit={this.handleSubmit}
-						autocomplete='off'
+						autoComplete='off'
 					>
 						<TextField
 							required
@@ -330,12 +320,9 @@ class PaymentOptions extends Component {
 						label='PagoFlash'
 					/>
 				</FormGroup>
-				<div
-					className='SaveButtonWrapper'
-					style={{
-						marginBottom: keyboardOpen ? '-2em' : '0em',
-					}}>
+				<div className='SaveButtonWrapper'>
 					<Button
+						fullWidth
 						size='large'
 						variant='contained'
 						color='primary'

@@ -42,8 +42,7 @@ class ProductForm extends Component {
 			imageFile: null,
 			uploadDialogOpen: false,
 			loading: false,
-			adding: false,
-			keyboardOpen: false
+			adding: false
 		}
 	}
 
@@ -218,20 +217,12 @@ class ProductForm extends Component {
 		}
 	  this.setState({ [name]: value })
 	}
-
-	handleInputFocus = (event) => {
-		this.setState({ keyboardOpen: true})
-	}
-
-	handleInputBlur = (event) => {
-		this.setState({ keyboardOpen: false})
-	}
   
 	render() {
 		const { user, product } = this.props;
-		const { uploadDialogOpen, loading, adding, keyboardOpen } = this.state;
+		const { uploadDialogOpen, loading, adding } = this.state;
 	  return (
-			<div className='ProductForm' style={{paddingBottom: 'calc(75px + 2em'}}>
+			<div className='ProductForm'>
 				{uploadDialogOpen && (
 					<UploadDialog
 						user={user}
@@ -244,7 +235,7 @@ class ProductForm extends Component {
 					onFocus={this.handleInputFocus}
 					onBlur={this.handleInputBlur}
 					onSubmit={this.handleSubmit}
-					autocomplete='off'
+					autoComplete='off'
 				>
 					<div className='UploadWrapper'>
 						<Button
@@ -298,12 +289,9 @@ class ProductForm extends Component {
 						name='inventoryCount'
 						value={this.state.inventoryCount} />
 				</form>
-				<div
-					className='AddButtonWrapper'
-					style={{
-						marginBottom: keyboardOpen ? '-4em' : '0em',
-					}}>
+				<div className='AddButtonWrapper'>
 					<Button
+						fullWidth
 						size='large'
 						variant='contained'
 						color='primary'
@@ -315,16 +303,13 @@ class ProductForm extends Component {
 					</Button>
 					{(loading && adding) && <CircularProgress size={24} className='ButtonProgress' />}
 				</div>
-				<div
-					className='ShareButtonWrapper'
-					style={{
-						marginBottom: keyboardOpen ? '-4em' : '0em',
-					}}>
+				<div className='FinishButtonWrapper'>
 					<Button
+						fullWidth
 						size='large'
 						variant='contained'
 						color='primary'
-						className='SaveButton ShareButton'
+						className='SaveButton'
 						disabled={loading}
 						onClick={() => this.handleSubmit('finish')}
 					>

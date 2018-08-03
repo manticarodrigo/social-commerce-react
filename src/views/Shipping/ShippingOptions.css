@@ -1,7 +1,3 @@
-.ShippingOptions {
-  padding-bottom: calc(75px + 2em);
-}
-
 .ShippingOptions .CheckBoxLabel {
   position: relative;
   text-align: center;
@@ -52,17 +48,13 @@
 }
 
 .ShippingOptions .SaveButtonWrapper {
-  background-color: #F0F0F0;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+  position: relative;
+  margin-top: 1em;
 }
 
 .ShippingOptions .SaveButton {
-  width: calc(100% - 1em);
   height: 30px;
-  margin: 0.5em !important;
+  margin: 0.5em 0 !important;
 }
 
 .ShippingOptions .ButtonProgress {

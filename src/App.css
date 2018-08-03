@@ -4,7 +4,7 @@
 }
 
 .Content {
-  height: calc(100vh - 64px - 1em);
+  height: auto;
   padding: 1em;
   padding-top: 80px;
 }
