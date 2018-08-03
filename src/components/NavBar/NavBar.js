@@ -173,7 +173,8 @@ class NavBar extends React.Component {
                 className={classes.menuButton}
                 color='inherit'
                 aria-label='Forward'
-                onClick={this.handleForward}>
+                onClick={this.handleForward}
+              >
                   <ArrowForwardIcon />
               </IconButton>
             )}

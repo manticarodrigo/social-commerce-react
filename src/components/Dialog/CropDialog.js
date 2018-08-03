@@ -1,13 +1,35 @@
 import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+import CloseIcon from '@material-ui/icons/Close';
+import CropIcon from '@material-ui/icons/Crop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ReactCrop, { makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import './CropDialog.css';
+
+const styles = {
+  root: {
+    flexGrow: 1,
+  },
+  flex: {
+    flex: 1,
+    fontSize: '1.2em'
+  },
+  menuButton: {
+    marginLeft: -12,
+    marginRight: 0,
+  },
+};
 
 class CropDialog extends React.Component {
   constructor(props) {
@@ -121,17 +143,44 @@ class CropDialog extends React.Component {
   }
 
   render() {
-    const { open, src } = this.props;
+    const { classes, open, src } = this.props;
     const { crop, loading } = this.state;
     return (
       <Dialog
+        fullScreen
         open={open}
         onClose={this.handleClose}
         aria-labelledby='crop-dialog-title'
         aria-describedby='crop-dialog-description'
       >
-        <DialogTitle id='crop-dialog-title'>Recortar Imagen</DialogTitle>
-        <DialogContent>
+        <AppBar position='fixed'>
+          <Toolbar>
+            <IconButton
+              className={classes.menuButton}
+              color='inherit'
+              aria-label='Close'
+              onClick={this.handleClose}
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography variant='title' color='inherit' className={classes.flex}>
+              Recortar Imagen
+            </Typography>
+            <IconButton
+              className={classes.menuButton}
+              color='inherit'
+              aria-label='Crop'
+              onClick={this.handleConfirm}
+            >
+              <CropIcon />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+        <DialogContent style={{ paddingTop: '5em' }}>
+          <DialogContentText id='delete-dialog-description'>
+            Arrastra el selector para recortar tu imagen a tu gusto.
+          </DialogContentText>
+          <br />
           {src && (
             <ReactCrop
               src={src}
@@ -159,4 +208,4 @@ class CropDialog extends React.Component {
   }
 }
 
-export default CropDialog;
+export default withStyles(styles)(CropDialog);

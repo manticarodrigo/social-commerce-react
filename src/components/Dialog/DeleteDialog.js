@@ -1,23 +1,23 @@
-import React from 'react'
-import Button from '@material-ui/core/Button'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
-import DialogTitle from '@material-ui/core/DialogTitle'
+import React from 'react';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 class DeleteDialog extends React.Component {
 
   handleClose = () => {
-    this.props.onClose()
+    this.props.onClose();
   }
 
   handleConfirm = () => {
-    this.props.onConfirm(true)
+    this.props.onConfirm(true);
   }
 
   render() {
-    const { open, product, site } = this.props
+    const { open, product, site } = this.props;
     return (
       <Dialog
         open={open}
@@ -44,4 +44,4 @@ class DeleteDialog extends React.Component {
   }
 }
 
-export default DeleteDialog
+export default DeleteDialog;
