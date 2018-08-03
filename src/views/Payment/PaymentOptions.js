@@ -203,7 +203,9 @@ class PaymentOptions extends Component {
 						onChange={this.handleTextFieldChange}
 						onFocus={this.handleInputFocus}
 						onBlur={this.handleInputBlur}
-						onSubmit={this.handleSubmit}>
+						onSubmit={this.handleSubmit}
+						autocomplete='off'
+					>
 						<TextField
 							required
 							fullWidth

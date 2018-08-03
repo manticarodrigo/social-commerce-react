@@ -300,7 +300,9 @@ class SiteForm extends Component {
 					onChange={this.handleInputChange}
 					onFocus={this.handleInputFocus}
 					onBlur={this.handleInputBlur}
-					onSubmit={this.handleSubmit}>
+					onSubmit={this.handleSubmit}
+					autocomplete='off'
+				>
 					<div className='UploadWrapper'>
 						<Button
 							className='UploadButton'
