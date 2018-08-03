@@ -174,7 +174,7 @@ class ShippingOptions extends Component {
 						variant='contained'
 						color='primary'
 						className='SaveButton'
-						disabled={loading}
+						disabled={loading || !checkedSelf}
 						onClick={this.handleSubmit}>
 						Guardar Ajustes
 					</Button>

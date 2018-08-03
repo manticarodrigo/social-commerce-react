@@ -327,7 +327,7 @@ class PaymentOptions extends Component {
 						variant='contained'
 						color='primary'
 						className='SaveButton'
-						disabled={loading}
+						disabled={loading || (!checkedTransfer && !checkedCash)}
 						onClick={this.handleSubmit}
 					>
 						Guardar Ajustes
