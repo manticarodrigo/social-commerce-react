@@ -48,13 +48,20 @@ class ProductAnalytics extends Component {
 		fetchProductAnalytics(productId, period)
 			.then(() => {
 				const { analytics } = this.props;
-				this.setState({
-					labels: analytics.dates,
-					values: analytics.quantities,
-					totalRevenue: analytics.total_revenues,
-					totalQuantity: analytics.total_quantity,
-					loading: false
-				});
+				if (analytics) {
+					this.setState({
+						labels: analytics.dates,
+						values: analytics.quantities,
+						totalRevenue: analytics.total_revenues,
+						totalQuantity: analytics.total_quantity,
+						loading: false
+					});
+				} else {
+					alert('No se ha encontrado la data de analytica.');
+					this.setState({
+						loading: false
+					});
+				}
 			});
 	}
 
