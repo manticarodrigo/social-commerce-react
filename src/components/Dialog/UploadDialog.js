@@ -27,8 +27,7 @@ class UploadDialog extends Component {
     if (value === undefined) {
       this.props.onClose(value);
     } else if (value === constants.DEVICE_UPLOAD) {
-      this.inputElement.click()
-      this.setState({ optionsDialogOpen: false });
+      this.inputElement.click();
 		} else if (value === constants.FACEBOOK_UPLOAD) {
       this.setState({
         optionsDialogOpen: false,
@@ -71,6 +70,7 @@ class UploadDialog extends Component {
 			let reader = new FileReader();
 			reader.onload = (e) => {
         this.setState({
+          optionsDialogOpen: false,
           cropDialogData: e.target.result
         });
 			};
