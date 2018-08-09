@@ -46,6 +46,7 @@ class NavBar extends React.Component {
   }
 
   backCase = () => {
+    // Case match to display back button
     const { pathname, site } = this.props;
     if (site && site.public) {
       return  pathname !== '/' ? true : false;
@@ -56,6 +57,7 @@ class NavBar extends React.Component {
   }
   
   forwardCase = () => {
+    // Case match to display forward button
     const { pathname, site, products, currentProduct } = this.props;
     var index = currentProduct ? (
       products

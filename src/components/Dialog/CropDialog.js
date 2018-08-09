@@ -114,6 +114,7 @@ class CropDialog extends React.Component {
       canvas.width = pixelCrop.width;
       canvas.height = pixelCrop.height;
       const ctx = canvas.getContext('2d');
+      // Apply any resizes here
       ctx.drawImage(
         image,
         pixelCrop.x,
