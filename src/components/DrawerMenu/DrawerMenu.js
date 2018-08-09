@@ -19,7 +19,7 @@ import LocalShippingIcon from '@material-ui/icons/LocalShipping';
 import DeleteIcon from '@material-ui/icons/Delete';
 import PowerOffIcon from '@material-ui/icons/Power';
 // Components
-import DeleteDialog from '../Dialog/DeleteDialog';
+import DeleteDialog from '../DeleteDialog/DeleteDialog';
 // Actions
 import {
   deleteSite

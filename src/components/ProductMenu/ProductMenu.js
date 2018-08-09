@@ -7,7 +7,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import ShareIcon from '@material-ui/icons/Share';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 
-const MoreMenu = (props) => {
+const ProductMenu = (props) => {
 	const {
 		open,
 		anchorEl,
@@ -19,7 +19,7 @@ const MoreMenu = (props) => {
 	} = props
   return (
     <Menu
-      id='long-menu'
+      id='product-menu'
       anchorEl={anchorEl}
       open={open}
       onClose={onClose}>
@@ -54,4 +54,4 @@ const MoreMenu = (props) => {
   )
 }
 
-export default MoreMenu;
+export default ProductMenu;

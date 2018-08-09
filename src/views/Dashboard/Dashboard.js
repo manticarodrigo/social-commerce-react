@@ -16,9 +16,9 @@ import ShareIcon from '@material-ui/icons/Share';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import './Dashboard.css';
 
-import MoreMenu from '../../components/Menu/MoreMenu';
-import DeleteDialog from '../../components/Dialog/DeleteDialog';
-import ShareDialog from '../../components/Dialog/ShareDialog';
+import ProductMenu from '../../components/ProductMenu/ProductMenu';
+import DeleteDialog from '../../components/DeleteDialog/DeleteDialog';
+import ShareDialog from '../../components/ShareDialog/ShareDialog';
 
 import {
 	updateTitle
@@ -106,7 +106,7 @@ class Dashboard extends Component {
 		const { deleteDialogOpen, shareDialogOpen, moreProduct } = this.state;
 	  return (
 			<div>
-				<MoreMenu
+				<ProductMenu
 					open={Boolean(moreProduct)}
 					anchorEl={moreProduct ? moreProduct.anchorEl : null}
 					product={moreProduct ? moreProduct.product : null}

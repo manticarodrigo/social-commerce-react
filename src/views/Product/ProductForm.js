@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button';
 import FileUpload from '@material-ui/icons/FileUpload';
 import './ProductForm.css';
 
-import UploadDialog from '../../components/Dialog/UploadDialog';
+import UploadDialog from '../../components/UploadDialog/UploadDialog';
 
 import {
 	updateTitle

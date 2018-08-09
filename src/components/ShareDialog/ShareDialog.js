@@ -48,7 +48,7 @@ const style = {
   }
 }
 
-const ShareDialog = ({ open, product, site, onClose}) => {
+const ShareDialog = ({ open, product, site, onClose }) => {
 
   let obj = {
     'kind': '',

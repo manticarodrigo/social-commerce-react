@@ -3,7 +3,7 @@ import SocialButton from '../../components/SocialButton/SocialButton';
 import './Login.css';
 import Logo from '../../assets/png/Logo.png';
 
-import TermsDialog from '../../components/Dialog/TermsDialog';
+import TermsDialog from '../../components/TermsDialog/TermsDialog';
 
 class Login extends Component {
 	constructor(props) {

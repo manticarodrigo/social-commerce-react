@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 import FileUpload from '@material-ui/icons/FileUpload';
 import './SiteForm.css';
 
-import UploadDialog from '../../components/Dialog/UploadDialog';
+import UploadDialog from '../../components/UploadDialog/UploadDialog';
 
 import {
 	createSite,
