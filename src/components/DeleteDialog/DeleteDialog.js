@@ -6,42 +6,39 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-class DeleteDialog extends React.Component {
+const DeleteDialog = ({ onClose, onConfirm, open, product, site }) => {
 
-  handleClose = () => {
-    this.props.onClose();
+  const handleClose = () => {
+    onClose();
   }
 
-  handleConfirm = () => {
-    this.props.onConfirm(true);
+  const handleConfirm = () => {
+    onConfirm(true);
   }
 
-  render() {
-    const { open, product, site } = this.props;
-    return (
-      <Dialog
-        open={open}
-        onClose={this.handleClose}
-        aria-labelledby='delete-dialog-title'
-        aria-describedby='delete-dialog-description'
-      >
-        <DialogTitle id='delete-dialog-title'>Elimina {site ? 'Sitio' : product ? 'Producto' : null}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id='delete-dialog-description'>
-            ¿Desea eliminar {site ? 'la categoria ' + site.title : product ? 'el producto ' + product.name : null}?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={this.handleClose} color='primary'>
-            No
-          </Button>
-          <Button onClick={this.handleConfirm} color='primary' autoFocus>
-            Si
-          </Button>
-        </DialogActions>
-      </Dialog>
-    )
-  }
+  return (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby='delete-dialog-title'
+      aria-describedby='delete-dialog-description'
+    >
+      <DialogTitle id='delete-dialog-title'>Elimina {site ? 'Sitio' : product ? 'Producto' : null}</DialogTitle>
+      <DialogContent>
+        <DialogContentText id='delete-dialog-description'>
+          ¿Desea eliminar {site ? 'la categoria ' + site.title : product ? 'el producto ' + product.name : null}?
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color='primary'>
+          No
+        </Button>
+        <Button onClick={handleConfirm} color='primary' autoFocus>
+          Si
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
 }
 
 export default DeleteDialog;
