@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Error.css';
 
 const Error = () => {
@@ -6,7 +7,7 @@ const Error = () => {
     <div className='Error'>
       <div>
         <p>Este url no existe.</p>
-        <p>Por favor regrese a su <a href='/'>tienda</a>.</p>
+        <p>Por favor regrese a su <Link to='/'>tienda</Link>.</p>
       </div>
     </div>
   )
