@@ -1,13 +1,15 @@
+// React
 import React, { Component } from 'react';
 import { Route, Switch, withRouter } from 'react-router-dom';
+import './App.css';
+// Redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import './App.css';
-
+// Components
 import NavBar from './components/NavBar/NavBar';
-
-import Error from './views/Error/Error';
-import Loading from './views/Loading/Loading';
+import Error from './components/Error/Error';
+import Loading from './components/Loading/Loading';
+// Views (containers)
 import Login from './views/Login/Login';
 import Dashboard from './views/Dashboard/Dashboard';
 import SiteForm from './views/Site/SiteForm';
@@ -15,7 +17,7 @@ import PaymentOptions from './views/Payment/PaymentOptions';
 import ShippingOptions from './views/Shipping/ShippingOptions';
 import ProductForm from './views/Product/ProductForm';
 import ProductAnalytics from './views/ProductAnalytics/ProductAnalytics';
-
+// Actions
 import {
   facebookLogin
 } from './actions/authActions';
