@@ -1,7 +1,7 @@
 import axios from 'axios'
 import {
   FETCH_SITE,
-  CREATE_SITE,
+  // CREATE_SITE,
   UPDATE_SITE,
   DELETE_SITE
 } from './types';
@@ -27,6 +27,8 @@ export const fetchSite = (auth) => {
 	};
 }
 
+// Works more like a service with new worflow
+// (returns promise instead of dispatching to redux)
 export const createSite = (auth, data) => (dispatch) => {
 	const site = {
 		user_id: auth.wp_user_id,

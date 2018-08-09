@@ -8,33 +8,16 @@ import { connect } from 'react-redux';
 // Material UI Core
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
-import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
 // Material UI Icons
 import MenuIcon from '@material-ui/icons/Menu';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import LaunchIcon from '@material-ui/icons/Launch';
-import StoreIcon from '@material-ui/icons/Store';
-import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
-import LocalShippingIcon from '@material-ui/icons/LocalShipping';
-import DeleteIcon from '@material-ui/icons/Delete';
-import PowerOffIcon from '@material-ui/icons/Power';
 // Components
-import DeleteDialog from '../Dialog/DeleteDialog';
-
+import DrawerMenu from '../DrawerMenu/DrawerMenu';
 // Actions
-import {
-  deleteSite
-} from '../../actions/siteActions';
-
 import {
   updateCurrentProduct,
   updateProducts
@@ -58,53 +41,8 @@ class NavBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      deleteDialogOpen: false,
       drawerOpen: false
     };
-  }
-
-  handleClose = () => {
-    this.setState({ drawerOpen: false });
-  }
-
-  handleEditSite = () => {
-    this.handleClose();
-    this.props.history.replace('/perfil');
-  }
-
-  handleEditPayments = () => {
-    this.handleClose();
-    this.props.history.replace('/pagos');
-  }
-
-  handleEditShipping = () => {
-    this.handleClose();
-    this.props.history.replace('/envios');
-  }
-
-  handleDeleteSite = () => {
-    this.setState({ deleteDialogOpen: true });
-  }
-
-  finishSiteDelete = (site) => {
-    const { history, deleteSite, updateProducts } = this.props;
-    deleteSite(site.blog_id)
-      .then(() => {
-        updateCurrentProduct(null);
-        updateProducts([]);
-        this.setState({ deleteDialogOpen: false });
-        history.replace('/perfil');
-      })
-      .catch(err => {
-        console.log(err.response.data.message);
-        alert(err.response.data.message);
-      });
-  }
-
-  handleLogout = () => {
-    this.handleClose();
-    localStorage.clear();
-    this.props.history.replace('/ingresar');
   }
 
   backCase = () => {
@@ -148,15 +86,10 @@ class NavBar extends React.Component {
   };
 
   render() {
-    const { classes, title, site } = this.props;
-    const { anchorEl, deleteDialogOpen, drawerOpen } = this.state;
+    const { classes, title } = this.props;
+    const { anchorEl, drawerOpen } = this.state;
     return (
       <div className={classes.root}>
-        <DeleteDialog
-					open={deleteDialogOpen}
-					site={site}
-					onClose={() => this.setState({ deleteDialogOpen: false })}
-					onConfirm={() => this.finishSiteDelete(site)} />
         <AppBar position='fixed'>
           <Toolbar>
             {this.backCase() && (
@@ -191,61 +124,10 @@ class NavBar extends React.Component {
             </IconButton>
           </Toolbar>
         </AppBar>
-        <Drawer
-          anchor='right'
+        <DrawerMenu
           open={drawerOpen}
-          onClose={this.toggleDrawer}>
-          <div className={classes.list}>
-            {(site && site.public) && (
-              <List>
-                <ListItem
-                  button
-                  component='a'
-                  href={site && site.siteurl}
-                  target='_blank'
-                >
-                  <ListItemIcon>
-                    <LaunchIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={'Ver Tienda'} />
-                </ListItem>
-                <ListItem button onClick={this.handleEditSite}>
-                  <ListItemIcon>
-                    <StoreIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={'Editar Tienda'} />
-                </ListItem>
-                <ListItem button onClick={this.handleEditPayments}>
-                  <ListItemIcon>
-                    <AttachMoneyIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={'Editar Pagos'} />
-                </ListItem>
-                <ListItem button onClick={this.handleEditShipping}>
-                  <ListItemIcon>
-                    <LocalShippingIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={'Editar Envios'} />
-                </ListItem>
-                <ListItem button onClick={this.handleDeleteSite}>
-                  <ListItemIcon>
-                    <DeleteIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={'Eliminár Tienda'} />
-                </ListItem>
-              </List>
-            )}
-            <Divider />
-            <List>
-              <ListItem onClick={this.handleLogout}>
-                  <ListItemIcon>
-                    <PowerOffIcon />
-                  </ListItemIcon>
-                <ListItemText primary={'Cerrar sesión'} />
-              </ListItem>
-            </List>
-          </div>
-        </Drawer>
+          onClose={this.toggleDrawer}
+        />
       </div>
     )
   }
@@ -355,7 +237,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  deleteSite,
   updateCurrentProduct,
   updateProducts
 }, dispatch);
