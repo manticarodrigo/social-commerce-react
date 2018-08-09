@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
-import DialogTitle from '@material-ui/core/DialogTitle';
+// import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import AppBar from '@material-ui/core/AppBar';
@@ -109,36 +109,28 @@ class CropDialog extends React.Component {
 
   getCroppedImg = (image, pixelCrop, fileName) => {
     return new Promise((resolve, reject) => {
-      // Create new image object
-      var img = new Image();
-      img.setAttribute('crossOrigin', 'anonymous');
-      img.onload = () => {
-        // Paint in canvas for resize
-        const canvas = document.createElement('canvas');
-        canvas.width = pixelCrop.width;
-        canvas.height = pixelCrop.height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(
-          img,
-          pixelCrop.x,
-          pixelCrop.y,
-          pixelCrop.width,
-          pixelCrop.height,
-          0,
-          0,
-          pixelCrop.width,
-          pixelCrop.height
-        );
-        // Convert to blob
-        canvas.toBlob(blob => {
-          const properties = { type: 'image/jpeg', lastModified: Date.now() }
-          const file = new File([blob], fileName + '.jpeg', properties)
-          resolve(file)
-        }, 'image/jpeg');
-        
-      }
-      // Set local image src from loaded image
-      img.src = image.src;
+      // Paint in canvas for resize
+      const canvas = document.createElement('canvas');
+      canvas.width = pixelCrop.width;
+      canvas.height = pixelCrop.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(
+        image,
+        pixelCrop.x,
+        pixelCrop.y,
+        pixelCrop.width,
+        pixelCrop.height,
+        0,
+        0,
+        pixelCrop.width,
+        pixelCrop.height
+      );
+      // Convert to blob
+      canvas.toBlob(blob => {
+        const properties = { type: 'image/jpeg', lastModified: Date.now() }
+        const file = new File([blob], fileName + '.jpeg', properties)
+        resolve(file)
+      }, 'image/jpeg');
     });
   }
 
@@ -183,6 +175,7 @@ class CropDialog extends React.Component {
           <br />
           {src && (
             <ReactCrop
+              crossorigin={'anonymous'}
               src={src}
               crop={crop}
               onImageLoaded={this.handleImageLoaded}
