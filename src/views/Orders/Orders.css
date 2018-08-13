@@ -1,0 +1,40 @@
+.OrderCard .OrderInfo > p {
+  height: 3em;
+  overflow: hidden;
+}
+
+.OrderCard {
+  padding: 0.5em 1em !important;
+  margin: 0.5em 0;
+  border-radius: 2px;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2);
+}
+
+.OrderCard .OrderAvatar {
+  /* border-radius: 0px; */
+  width: 50px;
+  height: 50px;
+}
+
+.OrderCard .OrderAvatar div {
+  font-size: 0.75em;
+}
+
+.OrderCard .OrderImage {
+  min-width: 60px;
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+}
+
+.ShareFab {
+  position: fixed !important;
+  bottom: 1em;
+  right: 4em;
+}
+
+.AddFab {
+  position: fixed !important;
+  bottom: 1em;
+  right: 1em;
+}

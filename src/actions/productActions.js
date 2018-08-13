@@ -47,7 +47,7 @@ export const fetchProducts = (sitePath) => {
 				});
 			})
 			.catch(err => {
-				throw(err);
+				console.log(err);
 			});
 	};
 }

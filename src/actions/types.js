@@ -11,6 +11,11 @@ export const CREATE_SITE = 'CREATE_SITE';
 export const UPDATE_SITE = 'UPDATE_SITE';
 export const DELETE_SITE = 'DELETE_SITE';
 
+// ORDER
+export const FETCH_ORDERS = 'FETCH_ORDERS';
+export const UPDATE_ORDER = 'UPDATE_ORDER';
+export const DELETE_ORDER = 'DELETE_ORDER';
+
 // CATEGORY
 export const FETCH_CATEGORIES = 'FETCH_CATEGORIES';
 export const CREATE_CATEGORY = 'CREATE_CATEGORY';

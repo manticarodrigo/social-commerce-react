@@ -13,6 +13,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 // Material UI Icons
 import LaunchIcon from '@material-ui/icons/Launch';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import StoreIcon from '@material-ui/icons/Store';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import LocalShippingIcon from '@material-ui/icons/LocalShipping';
@@ -44,6 +45,11 @@ class DrawerMenu extends React.Component {
   handleEditSite = () => {
     this.handleClose();
     this.props.history.replace('/perfil');
+  }
+
+  handleManageOrders = () => {
+    this.handleClose();
+    this.props.history.replace('/pedidos');
   }
 
   handleEditPayments = () => {
@@ -108,6 +114,12 @@ class DrawerMenu extends React.Component {
                     <LaunchIcon />
                   </ListItemIcon>
                   <ListItemText primary={'Ver Tienda'} />
+                </ListItem>
+                <ListItem button onClick={this.handleManageOrders}>
+                  <ListItemIcon>
+                    <ShoppingCartIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={'Manejar Pedidos'} />
                 </ListItem>
                 <ListItem button onClick={this.handleEditSite}>
                   <ListItemIcon>

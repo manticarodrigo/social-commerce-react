@@ -12,6 +12,7 @@ import Loading from './components/Loading/Loading';
 // Views (containers)
 import Login from './views/Login/Login';
 import Dashboard from './views/Dashboard/Dashboard';
+import Orders from './views/Orders/Orders';
 import SiteForm from './views/Site/SiteForm';
 import PaymentOptions from './views/Payment/PaymentOptions';
 import ShippingOptions from './views/Shipping/ShippingOptions';
@@ -27,6 +28,9 @@ import {
 import {
   fetchSite
 } from './actions/siteActions';
+import {
+  fetchOrders
+} from './actions/orderActions';
 import {
   fetchProducts
 } from './actions/productActions';
@@ -62,7 +66,8 @@ class App extends Component {
       history,
       facebookLogin,
       fetchSite,
-      fetchProducts
+      fetchProducts,
+      fetchOrders
     } = this.props;
     // Use fb sdk response for wp auth
     facebookLogin(response)
@@ -75,7 +80,7 @@ class App extends Component {
               const { site } = this.props;
               if (site) {
                 // Check for existing products for site
-                fetchProducts(site.path)
+                Promise.all([fetchProducts(site.path), fetchOrders(site.path)])
                   .then(() => {
                     this.setState({ loading: false });
                     const { pathname } = this.props;
@@ -135,6 +140,7 @@ class App extends Component {
                   onResponse={this.handleAuthResponse} />
               )} />
             <Route exact path='/' component={Dashboard} />
+            <Route exact path='/pedidos' component={Orders} />
             <Route exact path='/perfil' component={SiteForm} />
             <Route exact path='/pagos' component={PaymentOptions} />
             <Route exact path='/envios' component={ShippingOptions} />
@@ -158,6 +164,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   facebookLogin,
   updatePathname,
   fetchSite,
+  fetchOrders,
   fetchProducts
 }, dispatch);
 
