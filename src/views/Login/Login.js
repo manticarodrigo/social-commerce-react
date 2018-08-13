@@ -53,7 +53,7 @@ class Login extends Component {
             appId={process.env.REACT_APP_GOOGLE_APP_ID}
             // onLoginSuccess={this.handleResponse}
             // onLoginFailure={this.handleResponse}
-            onClick={() => alert('Not implemented')}>
+            onClick={() => alert('Función aún no se ha implementado.')}>
             {this.state.login ? 'Ingresar' : 'Registrar'} con Google
           </SocialButton>
           <p
