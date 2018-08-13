@@ -96,6 +96,10 @@ class App extends Component {
           history.replace('/ingresar');
         }
       })
+      .catch(err => {
+        console.log(err);
+        alert('Error de autenticación.')
+      });
   }
 
   handleAuthResponse = (response) => {
