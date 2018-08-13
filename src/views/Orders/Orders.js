@@ -47,13 +47,8 @@ class Orders extends Component {
 	}
 
 	componentDidMount() {
-		const { updateTitle, site } = this.props;
-		updateTitle(site ? site.title : 'Pedidos');
-	}
-
-	componentDidUpdate(prevProps, prevState) {
-		const { updateTitle, site } = this.props;
-		updateTitle(site ? site.title : 'Pedidos');
+		const { updateTitle } = this.props;
+		updateTitle('Pedidos');
 	}
 
 	handleMore = (event, order) => {
@@ -124,7 +119,7 @@ class Orders extends Component {
 							<ListItemAvatar>
 								<Avatar className='OrderAvatar'>
 									<div>
-										# {order.number}
+										#{order.number}
 									</div>
 								</Avatar>
 							</ListItemAvatar>
