@@ -26,6 +26,9 @@ import {
   deleteSite
 } from '../../actions/siteActions';
 import {
+  fetchOrders
+} from '../../actions/orderActions';
+import {
   updateCurrentProduct,
   updateProducts
 } from '../../actions/productActions';
@@ -48,6 +51,8 @@ class DrawerMenu extends React.Component {
   }
 
   handleManageOrders = () => {
+    const { site, fetchOrders } = this.props;
+    fetchOrders(site.path);
     this.handleClose();
     this.props.history.replace('/pedidos');
   }
@@ -171,6 +176,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   deleteSite,
+  fetchOrders,
   updateCurrentProduct,
   updateProducts
 }, dispatch);
