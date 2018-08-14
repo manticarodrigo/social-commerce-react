@@ -74,6 +74,10 @@ class App extends Component {
       .then(() => {
         const { auth } = this.props;
         if (auth) {
+          // Send user email to Sentry events
+          window.Raven.setUserContext({
+              email: response.profile.email
+          })
           // Check for existing site for user_id
           fetchSite(auth)
             .then(() => {
