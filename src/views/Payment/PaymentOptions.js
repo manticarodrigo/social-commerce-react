@@ -104,6 +104,7 @@ class PaymentOptions extends Component {
 					})
 					.catch(err => {
 						console.log(err.response.data.message);
+						window.Raven.captureException(err);
 						alert(err.response.data.message);
 					});
 			} else {
@@ -119,6 +120,7 @@ class PaymentOptions extends Component {
 				})
 				.catch(err => {
 					console.log(err.response.data.message);
+					window.Raven.captureException(err);
 					alert(err.response.data.message);
 				});
 		}

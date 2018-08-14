@@ -8,6 +8,9 @@ import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
+if (window.Raven) {
+  window.Raven.config('https://f23145982b1440e2b40ff6154f83f7b3@sentry.io/1262334').install();
+}
 
 const theme = createMuiTheme({
   palette: {

@@ -126,17 +126,21 @@ class ProductForm extends Component {
 									this.finishSubmit(type);
 								})
 								.catch(err => {
-									console.log(err.response.data.message);
 									this.setState({ loading: false });
+									console.log(err.response.data.message);
+									window.Raven.captureException(err);
 									alert(err.response.data.message);
 								});
 						} else {
 							this.setState({ loading: false });
+							window.Raven.captureException(res.data);
 							alert(res.data);
 						}
 					})
 					.catch(err => {
 						this.setState({ loading: false });
+						console.log(err);
+						window.Raven.captureException(err);
 						alert(err);
 					})
 			} else {
@@ -146,8 +150,9 @@ class ProductForm extends Component {
 						this.finishSubmit(type);
 					})
 					.catch(err => {
-						console.log(err.response.data.message);
 						this.setState({ loading: false });
+						console.log(err.response.data.message);
+						window.Raven.captureException(err);
 						alert(err.response.data.message);
 					});
 			}
