@@ -98,8 +98,9 @@ class DrawerMenu extends React.Component {
     return (
       <div>
         <DeleteDialog
-					open={deleteDialogOpen}
-					site={site}
+          open={deleteDialogOpen}
+          type='Sitio'
+					title={site ? site.title : null}
 					onClose={() => this.setState({ deleteDialogOpen: false })}
 					onConfirm={() => this.finishSiteDelete(site)} />
         <Drawer

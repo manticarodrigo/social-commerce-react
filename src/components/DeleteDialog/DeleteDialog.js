@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-const DeleteDialog = ({ onClose, onConfirm, open, product, site }) => {
+const DeleteDialog = ({ onClose, onConfirm, open, type, title }) => {
 
   const handleClose = () => {
     onClose();
@@ -23,10 +23,10 @@ const DeleteDialog = ({ onClose, onConfirm, open, product, site }) => {
       aria-labelledby='delete-dialog-title'
       aria-describedby='delete-dialog-description'
     >
-      <DialogTitle id='delete-dialog-title'>Elimina {site ? 'Sitio' : product ? 'Producto' : null}</DialogTitle>
+      <DialogTitle id='delete-dialog-title'>Elimina {type}</DialogTitle>
       <DialogContent>
         <DialogContentText id='delete-dialog-description'>
-          ¿Desea eliminar {site ? 'la categoria ' + site.title : product ? 'el producto ' + product.name : null}?
+          ¿Desea eliminar {title}?
         </DialogContentText>
       </DialogContent>
       <DialogActions>

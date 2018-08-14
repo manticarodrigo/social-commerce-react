@@ -9,14 +9,11 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/Button';
-import AddIcon from '@material-ui/icons/Add';
-import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
-import ShareIcon from '@material-ui/icons/Share';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import './Orders.css';
 
 import OrderMenu from '../../components/OrderMenu/OrderMenu';
+import OrderDialog from '../../components/OrderDialog/OrderDialog';
 import DeleteDialog from '../../components/DeleteDialog/DeleteDialog';
 
 import {
@@ -42,7 +39,8 @@ class Orders extends Component {
 		super(props);
 		this.state = {
 			deleteDialogOpen: false,
-			moreOrder: null
+			moreOrder: null,
+			selectedOrder: null
 		};
 	}
 
@@ -82,8 +80,7 @@ class Orders extends Component {
 	}
 
 	handleOrderDelete = (order) => {
-		// this.setState({ deleteDialogOpen: true});
-		alert('Función aún no se ha implementado.')
+		this.setState({ deleteDialogOpen: true});
 	}
 
 	finishOrderDelete = (order) => {
@@ -94,10 +91,14 @@ class Orders extends Component {
 			moreOrder: null
 		});
 	}
+
+	handleOrderSelected = (order) => {
+    this.setState({ selectedOrder: order });
+  }
   
 	render() {
-		const { site, orders } = this.props;
-		const { deleteDialogOpen, moreOrder } = this.state;
+		const { orders } = this.props;
+		const { deleteDialogOpen, moreOrder, selectedOrder } = this.state;
 	  return (
 			<div>
 				<OrderMenu
@@ -109,12 +110,24 @@ class Orders extends Component {
 					onDelete={this.handleOrderDelete}
 					onClose={this.handleMoreClose}
 				/>
+				<OrderDialog
+					open={Boolean(selectedOrder)}
+					order={selectedOrder}
+					onClose={() => this.setState({ selectedOrder: null })}
+				/>
+				<DeleteDialog
+					open={deleteDialogOpen}
+					type={'Pedido'}
+					title={moreOrder ? `#${moreOrder.order.number}` : null}
+					onClose={() => this.setState({ deleteDialogOpen: false })}
+					onConfirm={() => this.finishOrderDelete(moreOrder ? moreOrder.order : null)}
+				/>
 				<List dense={false}>
 					{orders && orders.map(order => (
 						<ListItem
 							key={order.id}
 							className='OrderCard'
-							// onClick={() => this.handleOrderSelected(order)}
+							onClick={() => this.handleOrderSelected(order)}
 						>
 							<ListItemAvatar>
 								<Avatar className='OrderAvatar'>
@@ -125,8 +138,17 @@ class Orders extends Component {
 							</ListItemAvatar>
 							<ListItemText
 								className='OrderInfo'
-								primary={`${order.billing.first_name} ${order.billing.last_name}`}
-								secondary={statusMap[order.status]}
+								primary={(
+									<div>
+										<p style={{ fontSize:'0.85em', lineHeight: '1.25em' }}>
+											<strong style={{ fontSize:'1rem' }}>
+												{order.billing.first_name} {order.billing.last_name}
+											</strong>
+											<br />{order.total} {order.currency}
+											<br />{statusMap[order.status]}
+										</p>
+									</div>
+								)}
 							/>
 							<ListItemSecondaryAction>
 								<IconButton
