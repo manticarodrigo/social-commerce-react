@@ -24,24 +24,31 @@ const OrderDialog = ({ onClose, open, order }) => {
         <DialogTitle id='order-dialog-title'>Pedido #{order.number}</DialogTitle>
         <DialogContent style={{ fontSize: '0.75em' }}>
           <p>
-          <strong>Pedido:</strong>
-          <br />
-          {order.total} {order.currency}
-          <br />
-          {order.payment_method_title}
-          <br />
-          Creado {date}
+            <strong>Pedido:</strong>
+            <br />
+            {order.payment_method_title}
+            <br />
+            Creado {date}
           </p>
           <p>
-          <strong>Cliente:</strong>
-          <br />
-          {order.billing.first_name} {order.billing.last_name}
-          <br />
-          {order.billing.email}
-          <br />
-          {order.billing.address_1}
-          <br />
-          {order.billing.phone}
+            <strong>Cliente:</strong>
+            <br />
+            {order.billing.first_name} {order.billing.last_name}
+            <br />
+            {order.billing.email}
+            <br />
+            {order.billing.address_1}
+            <br />
+            {order.billing.phone}
+          </p>
+          <p>
+            <strong>Detalle del Pedido: </strong>
+            <ul style={{'paddingLeft': '1rem'}}>
+              {order.line_items && order.line_items.map(item => (
+                <li>{item.quantity}x <strong>{item.name}</strong> ({item.price} {order.currency}) = {item.total} {order.currency}</li>
+              ) ) }
+            </ul>
+            <span><strong>Total: </strong>{order.total} {order.currency}</span>
           </p>
         </DialogContent>
         <DialogActions>
