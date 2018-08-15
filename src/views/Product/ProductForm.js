@@ -1,15 +1,20 @@
+// React
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import './ProductForm.css';
+// Redux
+import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+// Raven
+import Raven from "raven-js";
+// Material UI Corre
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FileUpload from '@material-ui/icons/FileUpload';
-import './ProductForm.css';
-
+// Components
 import UploadDialog from '../../components/UploadDialog/UploadDialog';
-
+// Actions
 import {
 	updateTitle
 } from '../../actions/navActions';
@@ -18,14 +23,15 @@ import {
 	updateProduct
 } from '../../actions/productActions';
 import {
-	uploadMedia
-} from '../../services/WordPress';
-import {
   updateSite
 } from '../../actions/siteActions';
 import {
 	updateCurrentProduct
 } from '../../actions/productActions';
+// Services
+import {
+	uploadMedia
+} from '../../services/WordPress';
 
 class ProductForm extends Component {
 	constructor(props) {
@@ -128,19 +134,19 @@ class ProductForm extends Component {
 								.catch(err => {
 									this.setState({ loading: false });
 									console.log(err.response.data.message);
-									window.Raven.captureException(err);
+									Raven.captureException(JSON.stringify(err));
 									alert(err.response.data.message);
 								});
 						} else {
 							this.setState({ loading: false });
-							window.Raven.captureException(res.data);
+							Raven.captureException(res.data);
 							alert(res.data);
 						}
 					})
 					.catch(err => {
 						this.setState({ loading: false });
 						console.log(err);
-						window.Raven.captureException(err);
+						Raven.captureException(JSON.stringify(err));
 						alert(err);
 					})
 			} else {
@@ -152,7 +158,7 @@ class ProductForm extends Component {
 					.catch(err => {
 						this.setState({ loading: false });
 						console.log(err.response.data.message);
-						window.Raven.captureException(err);
+						Raven.captureException(JSON.stringify(err));
 						alert(err.response.data.message);
 					});
 			}

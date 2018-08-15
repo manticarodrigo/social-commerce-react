@@ -4,6 +4,8 @@ import { withRouter } from 'react-router-dom';
 // Redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+// Raven
+import Raven from "raven-js";
 // Material UI Core
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
@@ -82,7 +84,7 @@ class DrawerMenu extends React.Component {
       })
       .catch(err => {
         console.log(err.response.data.message);
-        window.Raven.captureException(err);
+        Raven.captureException(JSON.stringify(err));
         alert(err.response.data.message);
       });
   }

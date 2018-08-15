@@ -1,15 +1,20 @@
+// React
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import './PaymentOptions.css';
+// Redux
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+// Raven
+import Raven from "raven-js";
+// Material UI Core
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import './PaymentOptions.css';
-
+// Material UI Icons
 import Cash from 'mdi-material-ui/Cash';
 import Bank from 'mdi-material-ui/Bank';
 import Paypal from 'mdi-material-ui/Paypal';
@@ -19,7 +24,7 @@ import MercadoPago from '../../assets/png/MercadoPago.png';
 import PayU from '../../assets/png/PayU.png';
 import Culqi from '../../assets/png/Culqi.png';
 import PagoFlash from '../../assets/png/PagoFlash.png';
-
+// Actions
 import {
 	updateTitle
 } from '../../actions/navActions';
@@ -104,7 +109,7 @@ class PaymentOptions extends Component {
 					})
 					.catch(err => {
 						console.log(err.response.data.message);
-						window.Raven.captureException(err);
+						Raven.captureException(JSON.stringify(err));
 						alert(err.response.data.message);
 					});
 			} else {
@@ -120,7 +125,7 @@ class PaymentOptions extends Component {
 				})
 				.catch(err => {
 					console.log(err.response.data.message);
-					window.Raven.captureException(err);
+					Raven.captureException(JSON.stringify(err));
 					alert(err.response.data.message);
 				});
 		}

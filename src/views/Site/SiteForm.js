@@ -1,20 +1,28 @@
+// React
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import './SiteForm.css';
+// Redux
+import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { updateTitle } from '../../actions/navActions';
+// Raven
+import Raven from "raven-js";
+// Material UI Core
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FileUpload from '@material-ui/icons/FileUpload';
-import './SiteForm.css';
-
+// Components
 import UploadDialog from '../../components/UploadDialog/UploadDialog';
-
+// Actions
+import {
+	updateTitle
+} from '../../actions/navActions';
 import {
 	createSite,
 	updateSite
 } from '../../actions/siteActions';
+// Services
 import {
 	uploadMedia
 } from '../../services/WordPress';
@@ -182,19 +190,19 @@ class SiteForm extends Component {
 							.catch(err => {
 								this.setState({ loading: false });
 								console.log(err.response.data.message);
-								window.Raven.captureException(err);
+								Raven.captureException(JSON.stringify(err));
 								alert(err.response.data.message);
 							});
 					} else {
 						this.setState({ loading: false });
-						window.Raven.captureException(res.data);
+						Raven.captureException(res.data);
 						alert(res.data);
 					}
 				})
 				.catch(err => {
 					this.setState({ loading: false });
 					console.log(err);
-					window.Raven.captureException(err);
+					Raven.captureException(JSON.stringify(err));
 					alert(err);
 				});
 		} else {
@@ -206,7 +214,7 @@ class SiteForm extends Component {
 				.catch(err => {
 					this.setState({ loading: false });
 					console.log(err.response.data.message);
-					window.Raven.captureException(err);
+					Raven.captureException(JSON.stringify(err));
 					alert(err.response.data.message);
 				});
 		}
@@ -237,21 +245,21 @@ class SiteForm extends Component {
 							.catch(err => {
 								this.setState({ loading: false });
 								console.log(err.response.data.message);
-								window.Raven.captureException(err);
+								Raven.captureException(JSON.stringify(err));
 								alert(err.response.data.message);
 							});
 					})
 					.catch(err => {
 						this.setState({ loading: false });
 						console.log(err.response.data.message);
-						window.Raven.captureException(err);
+						Raven.captureException(JSON.stringify(err));
 						alert(err.response.data.message);
 					});
 			})
 			.catch(err => {
 				this.setState({ loading: false });
 				console.log(err);
-				window.Raven.captureException(err);
+				Raven.captureException(JSON.stringify(err));
 				alert(err.response.data.message);
 			});
 	}

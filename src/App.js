@@ -5,6 +5,8 @@ import './App.css';
 // Redux
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+// Raven
+import Raven from "raven-js";
 // Components
 import NavBar from './components/NavBar/NavBar';
 import Error from './components/Error/Error';
@@ -75,7 +77,7 @@ class App extends Component {
         const { auth } = this.props;
         if (auth) {
           // Send user email to Sentry events
-          window.Raven.setUserContext({
+          Raven.setUserContext({
               email: response.profile.email
           })
           // Check for existing site for user_id
@@ -107,7 +109,7 @@ class App extends Component {
       })
       .catch(err => {
         console.log(err);
-        window.Raven.captureException(err);
+        Raven.captureException(JSON.stringify(err));
         alert('Error de autenticación.')
       });
   }
